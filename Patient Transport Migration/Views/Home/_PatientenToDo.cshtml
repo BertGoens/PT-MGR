@@ -1,0 +1,20 @@
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
+
+<table class="table">
+    <tr>
+        <th>Verwacht ophaaltijdstip</th>
+        <th>Aanvragen</th>
+        <th>Patient</th>
+        <th>Kamer</th>
+    </tr>
+
+@foreach (var taak in Model.PatientenToDo) {
+    <tr>
+        <td><!-- TODO Geschatte tijd --></td>
+        <th><!-- TODO Aanvragen--> Aanvragenlijst</th>
+        <th><!-- TODO Patient -->@taak.PatientId</th>
+        <th>@taak.Van</th>
+    </tr>
+}
+
+</table>

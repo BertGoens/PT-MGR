@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Patient_Transport_Migration.Models.DAL.Dokter>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Dokters</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm()) {
+    @Html.DisplayForModel()
+    <hr />
+    @Html.EditorForModel()
+}

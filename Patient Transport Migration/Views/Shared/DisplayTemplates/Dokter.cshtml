@@ -1,0 +1,12 @@
+﻿@model Patient_Transport_Migration.Models.DAL.Dokter
+
+<table class="table">
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.Name)</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>@Html.DisplayNameFor(m => m.ConsultOpen)</td>
+        <td>@Html.DisplayFor(m => @Model.ConsultOpen)</td>
+    </tr>
+</table>

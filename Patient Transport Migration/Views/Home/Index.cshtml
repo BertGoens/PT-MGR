@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<ul>
+    <li>@Html.ActionLink("Dokter Status", "DokterStatus", "Home")</li>
+    <li>@Html.ActionLink("Patiënt Info", "PatientInfo", "Home")</li>
+    <li>@Html.ActionLink("Verpleging Overzicht", "VerplegingOverzicht", "Home")</li>
+    <li>?</li>
+    <li>@Html.ActionLink("Dokters", "Index", "Dokters", new { area = "" })</li>
+    <li>@Html.ActionLink("Transport Tasks", "Index", "TransportTasks")</li>
+    <li>@Html.ActionLink("Request Status", "Index", "RequestStatus")</li>
+    <li>@Html.ActionLink("Transport Types", "Index", "RequestTypes")</li>
+</ul>

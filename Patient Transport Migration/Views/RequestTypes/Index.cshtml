@@ -1,0 +1,153 @@
+﻿@model IEnumerable<Patient_Transport_Migration.Models.DAL.RequestType>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_datum_van_aanvraag)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_datum_behandeld)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_huidige_klachten)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_aan_dokter)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_andere_notas)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_aanvragende_geneesheer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_patient_wordt_behandeld_voor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_bevindingen_en_advies)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_relevante_klinische_inlichtingen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_diagnostische_vraagstelling)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_transport_te_voet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_transport_rolstoel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_transport_bed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_zwanger)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_diabeet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_implantaat)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_nierinsufficientie)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_allergie)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Include_andere)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateCreated)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_datum_van_aanvraag)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_datum_behandeld)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_huidige_klachten)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_aan_dokter)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_andere_notas)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_aanvragende_geneesheer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_patient_wordt_behandeld_voor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_bevindingen_en_advies)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_relevante_klinische_inlichtingen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_diagnostische_vraagstelling)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_transport_te_voet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_transport_rolstoel)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_transport_bed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_zwanger)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_diabeet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_implantaat)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_nierinsufficientie)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_allergie)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Include_andere)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

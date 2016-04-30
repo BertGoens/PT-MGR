@@ -1,0 +1,32 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfoVM
+
+@{
+    ViewBag.Title = "Patiënt Info";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<h2>Patiënt Info</h2>
+<hr />
+
+<div>
+    <div>
+        <label for="ddlPatienten">Selecteer een patiënt</label>
+        <br />
+        @Html.DropDownListFor(model => model.PatientSelected, Model.Patients, "Patienten",
+    htmlAttributes: new { @id = "ddlPatienten", @onchange = "loadPatientDetails(this.value)" })
+    </div>
+
+    <div><!--Container-->
+        <div id="dvLoadPatientDetails">
+            @{Html.RenderPartial("_PatientDetails", Model);}
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadPatientDetails(visitId) {
+        $("#dvLoadPatientDetails").load('GetSelectedPatient?visitId=' + visitId);
+    }
+</script>

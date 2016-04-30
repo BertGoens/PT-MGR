@@ -1,0 +1,51 @@
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
+
+@{
+    ViewBag.Title = "Verpleging Overzicht";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div>
+    <h2>Verpleging Overzicht</h2>
+    <div>
+        <div id="dvPatientenInOrde"></div>
+        <br />
+        <div id="dvPatientenToDo"></div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        //disable caching of ajax requests
+        $.ajaxSetup({ cache: false });
+        //Load page manually once
+        refreshPatientenInOrde();
+        refreshPatientenToDo();
+        //Refresh page every x time
+        var interval = 300000; //300 Seconds = 5 minutes
+        setInterval(refreshPatientenInOrde(), interval);
+        setInterval(refreshPatientenToDo(), interval);
+
+    });
+
+    function refreshPatientenInOrde() {
+        $.ajax({
+            type: "GET",
+            url: "GetPatientenInOrde",
+            success: function (result) {
+                $("#dvPatientenInOrde").html(result);
+            }
+        });
+    }
+
+    function refreshPatientenToDo() {
+        $.ajax({
+            type: "GET",
+            url: "GetPatientenToDo",
+            success: function (result) {
+                $("#dvPatientenToDo").html(result);
+            }
+        })
+    }
+</script>

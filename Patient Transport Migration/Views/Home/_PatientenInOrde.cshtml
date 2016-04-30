@@ -1,0 +1,22 @@
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
+
+<table class="table">
+    <tr>
+        <th>Tijdstip</th>
+        <th>Aanvragen</th>
+        <th>Patient</th>
+        <th>Kamer</th>
+    </tr>
+
+    @if  (Model != null && null != Model.PatientInOrde) {
+
+        @foreach (var taak in Model.PatientInOrde) {
+            <tr>
+                <td>@taak.DateComplete</td>
+                <td>Aanvragen</td>
+                <td>@taak.Patient.Name</td>
+                <td>@taak.Patient.RoomId</td>
+            </tr>
+        }
+    }
+</table>
