@@ -1,15 +1,15 @@
 ﻿@model Patient_Transport_Migration.Models.VM.DokterStatusVM
 
-@if (Model.Doctor != null) {
-    @Html.HiddenFor(model => model.Doctor.ID)
-    @Html.HiddenFor(model => model.Doctor.Name)
+@if (Model.DokterDetailsVM.Dokter != null) {
+    @Html.HiddenFor(model => model.DokterDetailsVM.Dokter.Id)
+    @Html.HiddenFor(model => model.DokterDetailsVM.Dokter.Naam)
+    @Html.HiddenFor(model => model.DokterDetailsVM.Dokter.IsConsultDokter)
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Doctor.ConsultOpen, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.DokterDetailsVM.Dokter.IsConsultVerwachtend, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-5">
             <div class="checkbox">
-                @Html.EditorFor(model => model.Doctor.ConsultOpen)
-                @Html.ValidationMessageFor(model => model.Doctor.ConsultOpen, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.DokterDetailsVM.Dokter.IsConsultVerwachtend)
             </div>
         </div>
     </div>

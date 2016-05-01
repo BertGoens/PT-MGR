@@ -5,11 +5,11 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models.VM {
     public class PatientInfoVM {
 
-        public int PatientSelected { get; set; }
+        public int PatientenLijstSelected { get; set; }
         /// <summary>
         /// Used by PatientInfo
         /// </summary>
-        public SelectList Patients { get; set; }
+        public SelectList PatientenLijst { get; set; }
 
         /// <summary>
         /// Used by _PatientDetails
@@ -19,7 +19,7 @@ namespace Patient_Transport_Migration.Models.VM {
         /// <summary>
         /// Used by _PatientDetails
         /// </summary>
-        public List<TransportTask> PatientRequests { get; set; }
+        public List<TransportTaak> PatientRequests { get; set; }
 
         public int RequestTypeSelected { get; set; }
         /// <summary>
@@ -30,6 +30,6 @@ namespace Patient_Transport_Migration.Models.VM {
         /// <summary>
         /// Used by _RequestDetails
         /// </summary>
-        public TransportTask RequestDetails { get; set; }
+        public TransportTaak AanvraagDetails { get; set; }
     }
 }

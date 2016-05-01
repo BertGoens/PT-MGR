@@ -9,8 +9,17 @@ using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.VM;
 
 namespace Patient_Transport_Migration.Controllers {
+    [HandleError]
     public class HomeController : Controller {
+
         private MSSQLContext db = new MSSQLContext();
+
+        private string getViewModelErrors() {
+            return string.Join(",", ModelState.Values.Where(e => e.Errors.Count > 0)
+                    .SelectMany(e => e.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToArray());
+        }
 
         [HttpGet]
         public ActionResult Index() {
@@ -19,49 +28,15 @@ namespace Patient_Transport_Migration.Controllers {
 
         [HttpGet]
         public ActionResult DokterStatus() {
-            var dsvm = new DokterStatusVM();
-
-            //Query db for doctors
-            var doctorList = db.Docters.ToList();
-            //Sort A-Z
-            doctorList.OrderBy(doctor => doctor.Name);
-            //Include in VM
-            dsvm.DoctorList = new SelectList(doctorList, "ID", "Name");
-
-            //Get the persistent cookie if it exists
-            var doctorCookie = Request.Cookies["dokterId"] as HttpCookie;
-            if (doctorCookie != null) {
-                //find docter with the saved id
-                try {
-                    //get the id
-                    int docterId = Convert.ToInt32(doctorCookie.Value);
-                    //find doctor in db
-                    dsvm.Doctor = (Dokter)db.Docters.First(dx => dx.ID == docterId);
-
-                    //set standard selected on this doctor (we need to create a new list)
-                    var indexOfDoctorInList = doctorList.IndexOf(dsvm.Doctor);
-                    // Add 1 because we insert a description on item 0 in the view
-                    indexOfDoctorInList++;
-                    dsvm.DoctorListId = indexOfDoctorInList;
-                    //Add SelectList to VM
-                    dsvm.DoctorList = new SelectList(doctorList, "ID", "Name", indexOfDoctorInList);
-
-                } catch (Exception) {
-                    //Cookie aangepast door de user of de entry bestaat niet meer in de db
-                    throw;
-                }
-            }
-
-            return View(dsvm);
+            HttpCookie doctorCookie = Request.Cookies["dokterId"];
+            var vm = DokterStatusVM.Create(doctorCookie);
+            return View(vm);
         }
 
         [HttpGet]
         public PartialViewResult GetDokterDetails(string docterId) {
-            int id;
             var vm = new DokterStatusVM();
-            if (int.TryParse(docterId, out id)) {
-                vm.Doctor = db.Docters.Where(d => d.ID == id).First();
-            }
+            vm.DokterDetailsVM = DokterDetailsVM.Create(docterId);
             return PartialView("_EditDokter", vm);
         }
 
@@ -69,22 +44,19 @@ namespace Patient_Transport_Migration.Controllers {
         public ActionResult DokterStatus(DokterStatusVM viewModel) {
             if (ModelState.IsValid) {
                 //Save chosen doctor to cookie
-                var docId = viewModel.DoctorListId;
+                var docId = viewModel.DokterLijstSelected;
                 var dokterIdCookie = new HttpCookie("dokterId", docId.ToString());
                 dokterIdCookie.Expires.AddDays(365);
                 Response.SetCookie(dokterIdCookie);
 
                 //Save doctor consult status
-                db.Entry(viewModel.Doctor).State = EntityState.Modified;
+                db.Entry(viewModel.DokterDetailsVM.Dokter).State = EntityState.Modified;
                 db.SaveChanges();
 
                 return RedirectToAction("DokterStatus");
-            } else {
-                var errors = string.Join(",", ModelState.Values.Where(e => e.Errors.Count > 0)
-                    .SelectMany(e => e.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToArray());
-                errors.ToString();
+            } else 
+           {
+                var errors = getViewModelErrors();
                 ViewBag.ErrorMessage = errors;
             }
 
@@ -97,13 +69,13 @@ namespace Patient_Transport_Migration.Controllers {
             var pivm = new PatientInfoVM();
 
             //Query db for unique patients
-            var patientEntries = db.Patients.ToList();
+            var patientEntries = db.tblPatienten.ToList();
             //Query patients with unique numbers
 
             //Sort A-Z
-            patientEntries.OrderBy(patient => patient.LastName);
+            patientEntries.OrderBy(patient => patient.Achternaam);
             //Add to VM
-            pivm.Patients = new SelectList(patientEntries, "VisitId", "Name"); //(Items / DataValueField / DataTextField)
+            pivm.PatientenLijst = new SelectList(patientEntries, "PatientVisit", "Naam"); //(Items / DataValueField / DataTextField)
 
             return View(pivm);
         }
@@ -114,10 +86,10 @@ namespace Patient_Transport_Migration.Controllers {
 
             if (!string.IsNullOrEmpty(visitId) && visitId.Length > 0) {
                 // Get the patient for his details
-                vm.PatientDetails = db.Patients.Where(p => p.VisitId.Equals(visitId)).First();
+                vm.PatientDetails = db.tblPatienten.Where(p => p.PatientVisit.Equals(visitId)).First();
                 // Get all the requests including said patient
-                // TODO! Patient Transport Requests filteren: huidige visit, alleen taken met Include_Patient
-                var error = db.TransportTasks.Where(task => task.PatientVisit.Equals(visitId)).ToList();
+                // TODO Patient Transport Requests filteren: huidige visit, alleen taken met Include_Patient
+                var error = db.tblTransportTaken.Where(task => task.Aanvraag.PatientVisit.Equals(visitId)).ToList();
                 vm.PatientRequests = error;
             }
 
@@ -130,9 +102,9 @@ namespace Patient_Transport_Migration.Controllers {
             var vm = new PatientInfoVM();
 
             //Query db for request types
-            var reqList = db.RequestTypes.ToList();
+            var reqList = db.tblAanvraagTypes.ToList();
             //Include in VM
-            vm.RequestTypes = new SelectList(reqList, "Id", "Description");
+            vm.RequestTypes = new SelectList(reqList, "Id", "Omschrijving");
 
             return PartialView("_RequestTypes", vm);
         }

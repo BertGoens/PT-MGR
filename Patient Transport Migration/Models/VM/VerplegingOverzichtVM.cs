@@ -6,8 +6,8 @@ using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models.VM {
     public class VerplegingOverzichtVM {
-        public List<TransportTask> PatientInOrde { get; set; }
+        public List<TransportTaak> PatientInOrde { get; set; }
 
-        public List<TransportTask> PatientenToDo { get; set; }
+        public List<TransportTaak> PatientenToDo { get; set; }
     }
 }

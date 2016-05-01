@@ -4,6 +4,7 @@
     ViewBag.Title = "Dokter Status";
 }
 
+
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
@@ -15,17 +16,19 @@
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div>
+        <div style="padding-left:1em">
             <label for="ddlDokters">Selecteer een dokter om zijn status te veranderen</label>
             <div>
-                @Html.DropDownListFor(model => model.DoctorListId, Model.DoctorList, "Dokters", 
-               new { @onchange = "loadEditDokter(this.value)", @id="ddlDokters" })
+                @Html.DropDownListFor(model => model.DokterLijstSelected, Model.DokterLijst, "Dokters",
+               new { @onchange = "loadEditDokter(this.value)", @id = "ddlDokters" })
             </div>
-        </div>
 
-        <div><!--Container-->
-            <div id="dvEditDokterStatus">
-                @{Html.RenderPartial("_EditDokter", Model);}
+
+            <div>
+                <!--Container-->
+                <div id="dvEditDokterStatus">
+                    @{Html.RenderPartial("_EditDokter", Model); }
+                </div>
             </div>
         </div>
     </div>
