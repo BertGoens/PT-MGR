@@ -1,39 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models {
     public class MSSQLContext : DbContext {
 
         public MSSQLContext() 
-            : base("MSSQLDB") {
+            : base("MSSQLDB_V2") {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MSSQLContext, Migrations.Configuration >());
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-            //base.OnModelCreating(modelBuilder);
-            
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<ExceptionLogger> ExceptionLoggers { get; set; }
+        public DbSet<ExceptionLogger> tblExceptionLogger { get; set; }
 
-        public DbSet<Dokter> Docters { get; set; }
+        public DbSet<Dokter> tblDokters { get; set; }
 
-        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Patient> tblPatienten { get; set; }
 
-        public DbSet<TransportTask> TransportTasks { get; set; }
+        public DbSet<TransportTaak> tblTransportTaken { get; set; }
 
-        public System.Data.Entity.DbSet<Patient_Transport_Migration.Models.DAL.RequestStatus> RequestStatus { get; set; }
+        public DbSet<TransportWerknemer> tblTransportWerknemers { get; set; }
 
-        public System.Data.Entity.DbSet<Patient_Transport_Migration.Models.DAL.RequestType> RequestTypes { get; set; }
+        public DbSet<TransportWerknemerTaak> tblTransportWerknemerTaken { get; set; }
 
-        //public DbSet<DiagnostischeOnderzoeken> DiagnostischeOnderzoeken { get; set; }
+        public DbSet<Aanvraag> tblAanvragen { get; set; }
 
-        //public DbSet<RequestData> RequestData { get; set; }
+        public DbSet<Transportwijze> tblTransportwijzes { get; set; }
 
-        //public DbSet<RequestType> RequestTypes { get; set; }
+        public DbSet<AanvraagType> tblAanvraagTypes { get; set; }
 
-        //public DbSet<RequestStatus> RequestStatus { get; set; }
+        public DbSet<AanvraagStatus> tblAanvraagStatusen { get; set; }
+
     }
 }
