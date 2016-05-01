@@ -1,0 +1,20 @@
+﻿Views weer werkend krijgen
+.Create factory
+
+Data Annotations aanpassen voor [Aanvraag]
+--> Multiline , ...
+
+Partial View _Aanvraag maken
+
+Database typed data invullen +- 50%
+
+
+/* Verre Todo */
+
+Caching
+
+Security Mergen
+
+
+
+Db Triggers (standaard datum))

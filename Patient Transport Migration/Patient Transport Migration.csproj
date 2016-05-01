@@ -97,9 +97,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Css\bootstrap.css" />
+    <Content Include="Content\Css\bootstrap.min.css" />
+    <Content Include="Content\Css\Site.css" />
+    <Content Include="Content\Images\favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Readme.txt" />
@@ -114,34 +115,26 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Views\Dokters\Create.cshtml" />
-    <Content Include="Views\Dokters\Delete.cshtml" />
-    <Content Include="Views\Dokters\Details.cshtml" />
-    <Content Include="Views\Dokters\Edit.cshtml" />
-    <Content Include="Views\Dokters\Index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\DoktersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RequestStatusController.cs" />
-    <Compile Include="Controllers\RequestTypesController.cs" />
-    <Compile Include="Controllers\TransportTasksController.cs" />
-    <Compile Include="CustomFilter\ExceptionHandlerAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\DAL\DiagnostischeOnderzoeken.cs" />
+    <Compile Include="Models\DAL\Aanvraag.cs" />
+    <Compile Include="Models\DAL\AanvraagStatus.cs" />
+    <Compile Include="Models\DAL\AanvraagType.cs" />
     <Compile Include="Models\DAL\Dokter.cs" />
-    <Compile Include="Models\DAL\Employee.cs" />
     <Compile Include="Models\DAL\ExceptionLogger.cs" />
     <Compile Include="Models\DAL\Patient.cs" />
-    <Compile Include="Models\DAL\RequestStatus.cs" />
-    <Compile Include="Models\DAL\RequestType.cs" />
-    <Compile Include="Models\DAL\Sex.cs" />
-    <Compile Include="Models\DAL\TransportTask.cs" />
+    <Compile Include="Models\DAL\Geslacht.cs" />
+    <Compile Include="Models\DAL\TransportTaak.cs" />
+    <Compile Include="Models\DAL\TransportWerknemerTaak.cs" />
+    <Compile Include="Models\DAL\Transportwijze.cs" />
+    <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
     <Compile Include="Models\VM\DokterStatusVM.cs" />
     <Compile Include="Models\VM\PatientInfoVM.cs" />
@@ -157,26 +150,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\TransportTasks\Create.cshtml" />
-    <Content Include="Views\TransportTasks\Delete.cshtml" />
-    <Content Include="Views\TransportTasks\Details.cshtml" />
-    <Content Include="Views\TransportTasks\Edit.cshtml" />
-    <Content Include="Views\TransportTasks\Index.cshtml" />
-    <Content Include="Views\RequestStatus\Create.cshtml" />
-    <Content Include="Views\RequestStatus\Delete.cshtml" />
-    <Content Include="Views\RequestStatus\Details.cshtml" />
-    <Content Include="Views\RequestStatus\Edit.cshtml" />
-    <Content Include="Views\RequestStatus\Index.cshtml" />
-    <Content Include="Views\RequestTypes\Create.cshtml" />
-    <Content Include="Views\RequestTypes\Delete.cshtml" />
-    <Content Include="Views\RequestTypes\Details.cshtml" />
-    <Content Include="Views\RequestTypes\Edit.cshtml" />
-    <Content Include="Views\RequestTypes\Index.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Dokter.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\Dokter.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\DokterStatus.cshtml" />
-    <Content Include="Views\Dokters\Index.cshtml" />
     <Content Include="Views\Home\PatientInfo.cshtml" />
     <Content Include="Views\Home\_PatientDetails.cshtml" />
     <Content Include="Views\Home\_EditDokter.cshtml" />
@@ -195,6 +170,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="HtmlExtensions\" />
+    <Folder Include="Views\Shared\DisplayTemplates\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
