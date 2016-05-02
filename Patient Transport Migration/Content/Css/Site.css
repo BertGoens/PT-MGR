@@ -22,3 +22,43 @@ select,
 textarea {
     max-width: 280px;
 }
+
+table {
+    border-collapse: collapse;
+    width: auto;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: cornflowerblue;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#header{
+
+}
+
+#content-container {
+    margin:20px auto;
+}
+
+#content-left {
+    float:left;
+    width:50%;
+}
+
+#content-right {
+    float:left;
+    width:50%;
+}
+
+#footer {
+    clear:both;
+}

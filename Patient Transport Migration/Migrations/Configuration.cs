@@ -32,18 +32,20 @@ namespace Patient_Transport_Migration.Migrations {
 
             // Transportwijze
             context.tblTransportwijzes.AddOrUpdate(t => t.Id,
-                new Transportwijze() { Omschrijving = "Te Voet"},
-                new Transportwijze() { Omschrijving = "Rolstoel"},
-                new Transportwijze() { Omschrijving = "Bed"}
+                new Transportwijze() { Id = 1, Omschrijving = "Te Voet"},
+                new Transportwijze() { Id = 2, Omschrijving = "Rolstoel"},
+                new Transportwijze() { Id = 3, Omschrijving = "Bed"}
                 );
 
             // AanvraagType
             context.tblAanvraagTypes.AddOrUpdate(at => at.Id,
-                new AanvraagType() { Omschrijving = "Emerged Request", Include_er_Omschrijving = true },
-                new AanvraagType() { Omschrijving = "Aanvraag van Consult", Include_avc_AanDokter = true, Include_avc_AanvragendeGeneesheer = true,
+                new AanvraagType() { Id = 1, Omschrijving = "Emerged Request", Include_er_Omschrijving = true },
+                new AanvraagType() { Id = 2, Omschrijving = "Aanvraag van Consult", Include_Patient = true, Include_PatientVisit = true,
+                    Include_avc_AanDokter = true, Include_avc_AanvragendeGeneesheer = true,
                     Include_avc_AndereNotas = true, Include_avc_BevindingenEnAdvies = true, Include_avc_DatumBevindingen = true,
                     Include_avc_HuidigeKlachten = true, Include_avc_PatientWordtBehandeldVoor = true, Include_avc_UwAdviesGevraagdVoor = true},
-                new AanvraagType() { Omschrijving = "Aanvraag voor Radiologie", Include_avr_Allergieen = true, Include_avr_Andere = true,
+                new AanvraagType() { Id = 3, Omschrijving = "Aanvraag voor Radiologie", Include_Patient = true, Include_PatientVisit = true,
+                    Include_avr_Allergieen = true, Include_avr_Andere = true,
                     Include_avr_AndereInlichtingen = true, Include_avr_CT = true, Include_avr_DiagnostischeVraagstelling = true,
                     Include_avr_Echografie = true, Include_avr_HeeftImplantaat = true, Include_avr_HeeftNierInsufficientie = true,
                     Include_avr_IsDiabeet = true, Include_avr_IsZwanger = true, Include_avr_NMR = true, Include_avr_Onbekend = true,

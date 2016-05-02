@@ -153,13 +153,14 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\DokterStatus.cshtml" />
     <Content Include="Views\Home\PatientInfo.cshtml" />
-    <Content Include="Views\Home\_PatientDetails.cshtml" />
-    <Content Include="Views\Home\_EditDokter.cshtml" />
-    <Content Include="Views\Home\_RequestTypes.cshtml" />
+    <Content Include="Views\Home\_PatientInfoPatientDetails.cshtml" />
+    <Content Include="Views\Home\_DokterStatusEditDokter.cshtml" />
+    <Content Include="Views\Home\_PatientInfoAanvraagTypes.cshtml" />
     <Content Include="Views\Home\_Request.cshtml" />
     <Content Include="Views\Home\VerplegingOverzicht.cshtml" />
     <Content Include="Views\Home\_PatientenInOrde.cshtml" />
     <Content Include="Views\Home\_PatientenToDo.cshtml" />
+    <Content Include="Views\Home\_PatientInfoPatientMedischeAanvragen.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

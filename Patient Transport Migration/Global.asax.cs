@@ -29,7 +29,7 @@ namespace Patient_Transport_Migration {
             context.tblExceptionLogger.Add(logger);
             context.SaveChanges();
 
-            Server.ClearError();
+            //Server.ClearError();
 
             //Response.Redirect("/Home/Error");
         }

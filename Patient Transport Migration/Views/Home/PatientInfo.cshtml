@@ -7,26 +7,41 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
-<h2>Patiënt Info</h2>
-<hr />
+<div id="content-container">
+    <div id="content-left">
+        <div>
+            <label for="ddlPatienten">Selecteer een patiënt</label>
+            <br />
+            @Html.DropDownListFor(model => model.PatientenLijstSelected, Model.PatientenLijst, "Patienten",
+    htmlAttributes: new { @id = "ddlPatienten", @onchange = "ddlPatienten_OnChange(this.value)" })
+        </div>
 
-<div>
-    <div>
-        <label for="ddlPatienten">Selecteer een patiënt</label>
-        <br />
-        @Html.DropDownListFor(model => model.PatientSelected, Model.Patients, "Patienten",
-    htmlAttributes: new { @id = "ddlPatienten", @onchange = "loadPatientDetails(this.value)" })
-    </div>
-
-    <div><!--Container-->
         <div id="dvLoadPatientDetails">
-            @{Html.RenderPartial("_PatientDetails", Model);}
+            @{Html.RenderPartial("_PatientInfoPatientDetails", Model);}
+        </div>
+
+        <div id="dvLoadPatientMedischeAanvragen">
+            @*{Html.RenderPartial("_PatientInfoPatientMedischeAanvragen", Model);}*@
+        </div>
+
+    </div>
+    <div id="content-right">
+        <div id="dvLoadAanvraagDetails">
         </div>
     </div>
 </div>
 
 <script>
-    function loadPatientDetails(visitId) {
-        $("#dvLoadPatientDetails").load('GetSelectedPatient?visitId=' + visitId);
+    function ddlPatienten_OnChange(visitId) {
+        $("#dvLoadPatientDetails").load('GetPatientDetails?visitId=' + visitId);
+        //$("#dvLoadPatientMedischeAanvragen").load('GetPatientMedischeAanvragen?visitId=' + visitId);
+
+        $.ajax({
+            type: "GET",
+            url: "GetPatientMedischeAanvragen?visitId=" + visitId ,
+            success: function (result) {
+                $("#dvLoadPatientMedischeAanvragen").html(result);
+            }
+        });
     }
 </script>

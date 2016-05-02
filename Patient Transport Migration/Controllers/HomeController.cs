@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models;
-using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.VM;
 
 namespace Patient_Transport_Migration.Controllers {
@@ -37,7 +34,7 @@ namespace Patient_Transport_Migration.Controllers {
         public PartialViewResult GetDokterDetails(string docterId) {
             var vm = new DokterStatusVM();
             vm.DokterDetailsVM = DokterDetailsVM.Create(docterId);
-            return PartialView("_EditDokter", vm);
+            return PartialView("_DokterStatusEditDokter", vm);
         }
 
         [HttpPost]
@@ -66,48 +63,32 @@ namespace Patient_Transport_Migration.Controllers {
 
         [HttpGet]
         public ActionResult PatientInfo() {
-            var pivm = new PatientInfoVM();
-
-            //Query db for unique patients
-            var patientEntries = db.tblPatienten.ToList();
-            //Query patients with unique numbers
-
-            //Sort A-Z
-            patientEntries.OrderBy(patient => patient.Achternaam);
-            //Add to VM
-            pivm.PatientenLijst = new SelectList(patientEntries, "PatientVisit", "Naam"); //(Items / DataValueField / DataTextField)
-
-            return View(pivm);
+            var vm = PatientInfoVM.Create();
+            return View(vm);
         }
 
         [HttpGet]
-        public PartialViewResult GetSelectedPatient(string visitId) {
+        public PartialViewResult GetPatientDetails(string visitId) {
             var vm = new PatientInfoVM();
-
-            if (!string.IsNullOrEmpty(visitId) && visitId.Length > 0) {
-                // Get the patient for his details
-                vm.PatientDetails = db.tblPatienten.Where(p => p.PatientVisit.Equals(visitId)).First();
-                // Get all the requests including said patient
-                // TODO Patient Transport Requests filteren: huidige visit, alleen taken met Include_Patient
-                var error = db.tblTransportTaken.Where(task => task.Aanvraag.PatientVisit.Equals(visitId)).ToList();
-                vm.PatientRequests = error;
-            }
-
-            return PartialView("_PatientDetails", vm);
+            vm.PatientDetailsVM = PatientDetailsVM.Create(visitId);
+            return PartialView("_PatientInfoPatientDetails", vm);
         }
 
         [HttpGet]
-        //[ChildActionOnly]
-        public PartialViewResult GetRequestTypes() {
+        public PartialViewResult GetPatientMedischeAanvragen(string visitId) {
             var vm = new PatientInfoVM();
-
-            //Query db for request types
-            var reqList = db.tblAanvraagTypes.ToList();
-            //Include in VM
-            vm.RequestTypes = new SelectList(reqList, "Id", "Omschrijving");
-
-            return PartialView("_RequestTypes", vm);
+            vm.PatientMedischeAanvragenVM = PatientMedischeAanvragenVM.Create(visitId);
+            return PartialView("_PatientInfoPatientMedischeAanvragen", vm);
         }
+
+        [HttpGet]
+        public PartialViewResult GetAanvraagTypes() {
+            var vm = new PatientInfoVM();
+            vm.AanvraagTypesVM = AanvraagTypesVM.Create();
+            return PartialView("_PatientInfoAanvraagTypes", vm);
+        }
+
+        // TODO PatientInfo_PatientAanvraagDetails(aanvraagId)
 
         [HttpGet]
         public ActionResult VerplegingOverzicht() {

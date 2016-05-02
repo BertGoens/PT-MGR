@@ -11,7 +11,7 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" id="header">
         <div class="container">
             <div class="navbar-header">
                 @Html.Label("Patient Tranport Migration", new { @class = "navbar-brand" })
@@ -20,9 +20,14 @@
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
+        <h2>@ViewBag.Title</h2>
         <hr />
-        <footer>
+
+        @RenderBody()
+        
+        <footer id="footer">
+            <br />
+            <hr />
             <p>&copy; Bert Goens - Patient Transport - @DateTime.Now.Year</p>
         </footer>
     </div>

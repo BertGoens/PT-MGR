@@ -3,7 +3,7 @@
 <div>
     <label for="dllRequestTypes">Selecteer een aanvraag</label>
     <br />
-    @Html.DropDownListFor(model => model.RequestTypeSelected, Model.RequestTypes, "Aanvragen",
+    @Html.DropDownListFor(model => model.AanvraagTypesVM.AanvraagTypeSelected, Model.AanvraagTypesVM.AanvraagTypeLijst, "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
 </div>
 
