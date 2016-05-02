@@ -20,28 +20,40 @@
             @{Html.RenderPartial("_PatientInfoPatientDetails", Model);}
         </div>
 
-        <div id="dvLoadPatientMedischeAanvragen">
-            @*{Html.RenderPartial("_PatientInfoPatientMedischeAanvragen", Model);}*@
+        <div>
+            <div id="dvPatientMedischeAanvragen"></div>
+            <div id="dvLoaderPatientMedischeAanvragen" class="ajax-loader"></div>
         </div>
+
 
     </div>
     <div id="content-right">
-        <div id="dvLoadAanvraagDetails">
-        </div>
+        <div id="dvLoaderAanvraagDetails" class="ajax-loader"></div>
+        <div id="dvAanvraagDetails"></div>
     </div>
 </div>
 
 <script>
     function ddlPatienten_OnChange(visitId) {
         $("#dvLoadPatientDetails").load('GetPatientDetails?visitId=' + visitId);
-        //$("#dvLoadPatientMedischeAanvragen").load('GetPatientMedischeAanvragen?visitId=' + visitId);
 
-        $.ajax({
-            type: "GET",
-            url: "GetPatientMedischeAanvragen?visitId=" + visitId ,
-            success: function (result) {
-                $("#dvLoadPatientMedischeAanvragen").html(result);
-            }
-        });
+        var $dvLoaderPMA = $('#dvLoaderPatientMedischeAanvragen');
+        var $dvContentPMA = $("#dvPatientMedischeAanvragen");
+        $dvContentPMA.html('');
+
+        if (visitId != "") {
+            $.ajax({
+                type: "GET",
+                url: "GetPatientMedischeAanvragen?visitId=" + visitId,
+                beforeSend: function () {
+                    $dvLoaderPMA.show();
+                },
+                success: function (result) {
+                    $dvLoaderPMA.hide();
+                    $dvContentPMA.html(result);
+                }
+
+            });
+        }
     }
 </script>

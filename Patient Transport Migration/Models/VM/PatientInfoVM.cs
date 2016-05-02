@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models.VM {
-    // Used by PatientInfo
     public class PatientInfoVM {
         public PatientInfoVM() { }
 
@@ -34,15 +33,18 @@ namespace Patient_Transport_Migration.Models.VM {
         public PatientMedischeAanvragenVM PatientMedischeAanvragenVM { get; set; }
 
         public AanvraagTypesVM AanvraagTypesVM { get; set; }
+
+        public PatientCreateAanvraagVM PatientAanvraagDetailsVM { get; set; }
     }
 
-    // Used by _PatientDetails
     public class PatientDetailsVM {
         public PatientDetailsVM() { }
 
         public static PatientDetailsVM Create(string visitId = null) {
             var vm = new PatientDetailsVM();
-            
+
+            vm.PatientVisitId = visitId;
+
             if (!string.IsNullOrEmpty(visitId)) {
                 var db = new MSSQLContext();
                 // Zoek de patient via visitId
@@ -52,6 +54,8 @@ namespace Patient_Transport_Migration.Models.VM {
             return vm;
         }
 
+        public string PatientVisitId { get; set; }
+
         public Patient PatientDetails { get; set; }
     }
 
@@ -59,7 +63,9 @@ namespace Patient_Transport_Migration.Models.VM {
         public PatientMedischeAanvragenVM() { }
 
         public static PatientMedischeAanvragenVM Create(string visitId = null) {
-            var vm = new PatientMedischeAanvragenVM();      
+            var vm = new PatientMedischeAanvragenVM();
+
+            vm.PatientVisitId = visitId;
 
             if (!string.IsNullOrEmpty(visitId)) {
                 var db = new MSSQLContext();
@@ -70,13 +76,14 @@ namespace Patient_Transport_Migration.Models.VM {
             return vm;
         }
 
+        public string PatientVisitId { get; set; }
+
         /// <summary>
         /// Lijst van medische <c>Aanvraag</c> van ... voor deze patient
         /// </summary>
         public List<Aanvraag> PatientAanvragen { get; set; }
     }
 
-    // Used by _RequestTypes
     public class AanvraagTypesVM {
         public AanvraagTypesVM() { }
 
@@ -97,5 +104,34 @@ namespace Patient_Transport_Migration.Models.VM {
         public SelectList AanvraagTypeLijst { get; set; }
         
     }
-       //public TransportTaak AanvraagDetails { get; set; }
+
+    public class PatientCreateAanvraagVM {
+        public PatientCreateAanvraagVM() { }
+
+        public static PatientCreateAanvraagVM Create(string aanvraagTypeId = null) {
+            var vm = new PatientCreateAanvraagVM();
+
+            if (!string.IsNullOrEmpty(aanvraagTypeId)) {
+                int aanvrType;
+                bool aanvraagTypeIsInt = int.TryParse(aanvraagTypeId, out aanvrType);
+                if (aanvraagTypeIsInt) {
+                    var db = new MSSQLContext();
+                    var aanvraagEntry = db.tblAanvraagTypes.First(at => at.Id == aanvrType);
+                    vm.PatientCreateAanvraagType = aanvraagEntry;
+                }
+            }
+
+            return vm;
+        }
+
+        /// <summary>
+        /// Type aanvraag om te maken
+        /// </summary>
+        public AanvraagType PatientCreateAanvraagType { get; set; }
+
+        /// <summary>
+        /// Bedoeld voor POST naar de server
+        /// </summary>
+        public Aanvraag PatientCreateAanvraag { get; set; }
+    }
 }

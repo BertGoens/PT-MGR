@@ -62,3 +62,12 @@ tr:nth-child(even) {
 #footer {
     clear:both;
 }
+
+.ajax-loader {
+    /*background-image: url("../Images/cat_waiting.gif");*/
+    background-image: url("../Images/ajax-loader.gif");
+    height: 32px;
+    width: 32px;
+    background-repeat: no-repeat;
+    display:none;
+}

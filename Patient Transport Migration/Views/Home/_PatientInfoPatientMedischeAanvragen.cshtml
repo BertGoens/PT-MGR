@@ -1,44 +1,61 @@
 ﻿@model Patient_Transport_Migration.Models.VM.PatientInfoVM
 
-<div style="overflow-x:auto;">
-    @if (Model.PatientMedischeAanvragenVM != null) {
-        <table>
-            <tr>
-                <th>Onderzoek</th>
-                <th>In orde</th>
-                <th>Link</th>
-            </tr>
-            @if (Model.PatientMedischeAanvragenVM.PatientAanvragen != null) {
-                foreach (var aanvraag in Model.PatientMedischeAanvragenVM.PatientAanvragen) {
-                    <tr>
-                        <td>@aanvraag.AanvraagType.Omschrijving</td>
-                        <td>@if (@aanvraag.AanvraagStatus.IsLaatsteStap) { @Html.Raw("Ja") } else { @Html.Raw("Nee") }</td>
-                        <!--TODO! Add Controller Support (Read / Edit) & Edit this link -->
-                        <td>Html.ActionLink("Open", "GetaanvraagDetails", @aanvraag.Id)</td>
-                    </tr>
+@if (Model.PatientMedischeAanvragenVM != null) {
+    if (Model.PatientMedischeAanvragenVM.PatientVisitId != null) {
+        <div style="overflow-x:auto;">
+            <table>
+                <tr>
+                    <th>Onderzoek</th>
+                    <th>In orde</th>
+                    <th>Link</th>
+                </tr>
+                @if (Model.PatientMedischeAanvragenVM.PatientAanvragen != null) {
+                    foreach (var aanvraag in Model.PatientMedischeAanvragenVM.PatientAanvragen) {
+                        <tr>
+                            <td>@aanvraag.AanvraagType.Omschrijving</td>
+                            <td>@if (@aanvraag.AanvraagStatus.IsLaatsteStap) { @Html.Raw("Ja") } else { @Html.Raw("Nee") }</td>
+                            <!--TODO! Add Controller Support (Read / Edit) & Edit this link -->
+                            <td>Html.ActionLink("Open", "GetaanvraagDetails", @aanvraag.Id)</td>
+                        </tr>
+                    }
                 }
+            </table>
+            <br />
+
+            @if (Model.PatientMedischeAanvragenVM.PatientAanvragen == null) {
+                <p>Geen medische aanvragen voor deze patiënt gevonden.</p>
             }
-        </table>
-        <br />
-    } else {
-        <br />
-        <p>Geen medische aanvragen voor deze patiënt gevonden.</p>
+
+            <!--TODO! Add Support om via link Nieuwe Aanvraag te maken voor geselecteerde patient -->
+            <button id="btnLoadAanvraagTypes">Nieuwe aanvraag</button>
+
+            <br />
+
+            <div>
+                <div id="dvLoadAT" class="ajax-loader"></div>
+                <div id="dvAanvraagTypes"></div>
+            </div>
+            
+        </div>
+
+        <script>
+            $("#btnLoadAanvraagTypes").click(function () {
+                var $ajaxLoader = $('dvLoadAT');
+                var $dvContent = $("#dvAanvraagTypes");
+                $.ajax({
+                    type: "GET",
+                    url: "GetAanvraagTypes",
+                    beforeSend: function () {
+                        $dvContent.html('');
+                        $ajaxLoader.show();
+                    },
+                    success: function (result) {
+                        $ajaxLoader.hide();
+                        $dvContent.html(result);
+                    }
+                    
+                });
+            });
+        </script>
     }
-
-    <!--TODO! Add Support om via link Nieuwe Aanvraag te maken voor geselecteerde patient -->
-    <button id="btnLoadAanvraagTypes">Nieuwe aanvraag</button>
-
-    <div id="dvAanvraagTypes"></div>
-</div>
-
-<script>
-    $("#btnLoadAanvraagTypes").click(function () {
-        $.ajax({
-            type: "GET",
-            url: "GetAanvraagTypes",
-            success: function (result) {
-                $("#dvAanvraagTypes").html(result);
-            }
-        });
-    });
-</script>
+}

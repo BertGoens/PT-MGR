@@ -8,43 +8,62 @@
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
 <div>
-    <h2>Verpleging Overzicht</h2>
     <div>
+        <h3>Patienten in orde</h3>
+        <div id="dvLoaderPatientenInOrde" class="ajax-loader"></div>
         <div id="dvPatientenInOrde"></div>
-        <br />
-        <div id="dvPatientenToDo"></div>
+    </div>
+    <br />
+    <div>
+        <h3>Wachtende patienten</h3>
+        <div id="dvLoaderPatientenWachtend" class="ajax-loader"></div>
+        <div id="dvPatientenWachtend"></div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         //disable caching of ajax requests
         $.ajaxSetup({ cache: false });
         //Load page manually once
         refreshPatientenInOrde();
-        refreshPatientenToDo();
+        refreshPatientenWachtend();
         //Refresh page every x time
         var interval = 300000; //300 Seconds = 5 minutes
         setInterval(refreshPatientenInOrde(), interval);
-        setInterval(refreshPatientenToDo(), interval);
-
+        setInterval(refreshPatientenWachtend(), interval);
     });
 
     function refreshPatientenInOrde() {
+        var $dvLoaderPIO = $('#dvLoaderPatientenInOrde');
+        var $dvContentPIO = $("#dvPatientenInOrde");
         $.ajax({
             type: "GET",
             url: "GetPatientenInOrde",
+            beforeSend: function () {
+                $dvContentPIO.html('');
+                $dvLoaderPIO.show();
+            },
             success: function (result) {
-                $("#dvPatientenInOrde").html(result);
+                $dvLoaderPIO.hide();
+                $dvContentPIO.html(result);
             }
         });
     }
 
-    function refreshPatientenToDo() {
+    function refreshPatientenWachtend() {
+        var $dvLoaderPW = $('#dvLoaderPatientenWachtend');
+        var $dvContentPW = $("#dvPatientenWachtend");
         $.ajax({
             type: "GET",
-            url: "GetPatientenToDo",
+            url: "GetPatientenWachtend",
+            beforeSend: function () {
+                $dvContentPW.html('');
+                $dvLoaderPW.show();
+            },
             success: function (result) {
-                $("#dvPatientenToDo").html(result);
+                $dvLoaderPW.hide();
+                $dvContentPW.html(result);
             }
         })
     }

@@ -6,7 +6,7 @@ using Patient_Transport_Migration.Models;
 using Patient_Transport_Migration.Models.VM;
 
 namespace Patient_Transport_Migration.Controllers {
-    [HandleError]
+
     public class HomeController : Controller {
 
         private MSSQLContext db = new MSSQLContext();
@@ -60,7 +60,6 @@ namespace Patient_Transport_Migration.Controllers {
             return View();
         }
 
-
         [HttpGet]
         public ActionResult PatientInfo() {
             var vm = PatientInfoVM.Create();
@@ -88,7 +87,18 @@ namespace Patient_Transport_Migration.Controllers {
             return PartialView("_PatientInfoAanvraagTypes", vm);
         }
 
-        // TODO PatientInfo_PatientAanvraagDetails(aanvraagId)
+        [HttpGet]
+        public PartialViewResult GetTemplateAanvraag(string aanvraagTypeId) {
+            // TODO! Afwerken
+        }
+
+        [HttpGet]
+        public PartialViewResult GetAanvraagDetails(string aanvraagId) {
+            // TODO! Afwerken
+            var vm = new PatientInfoVM();
+            vm.PatientAanvraagDetailsVM = PatientCreateAanvraagVM.Create(aanvraagId);
+            return PartialView("_PatientInfoAanvraagDetails", vm);
+        }
 
         [HttpGet]
         public ActionResult VerplegingOverzicht() {
@@ -99,15 +109,15 @@ namespace Patient_Transport_Migration.Controllers {
         [HttpGet]
         public PartialViewResult GetPatientenInOrde() {
             var vm = new VerplegingOverzichtVM();
-            // do database query
-            return PartialView("_PatientenInOrde", vm);
+            vm.PatientenInOrdeVM = VerplegingOverzichtPatientenInOrde.Create();
+            return PartialView("_VerplegingOverzichtPatientenInOrde", vm);
         }
 
         [HttpGet]
-        public PartialViewResult refreshPatientenToDo() {
+        public PartialViewResult GetPatientenWachtend() {
             var vm = new VerplegingOverzichtVM();
-            //db query
-            return PartialView("_PatientenToDo", vm);
+            vm.PatientenWachtendVM = VerplegingOverzichtPatientenWachtend.Create();
+            return PartialView("_VerplegingOverzichtPatientenWachtend", vm);
         }
     }
 }
