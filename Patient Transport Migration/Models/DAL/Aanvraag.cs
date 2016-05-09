@@ -21,8 +21,15 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("AanvraagStatusId, AanvraagStapNr")]
         public virtual AanvraagStatus AanvraagStatus { get; set; }
 
+        /// <summary>
+        /// De gebruikersnaam van de gebruiker die de vervoersaanvraag plaatste.
+        /// </summary>
+        [MaxLength(255)]
+        public string AanvraagDoor { get; set; }
+
         /* {N} Data-velden; allemaal nullable */
         // Gedeeld voor meerdere requests
+
         [MaxLength(10)]
         public string PatientId { get; set; }
 
@@ -32,9 +39,9 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("PatientId, PatientVisit")]
         public virtual Patient Patient { get; set; }
 
-        // Emerged Request: 'er' prefix
+        // Vervoer Aanvraag: 'va' prefix
         [MaxLength(1000)]
-        public string er_Omschrijving { get; set; }
+        public string va_Omschrijving { get; set; }
 
         // Aanvraag van Consult: 'avc' prefix
         [MaxLength(10)]

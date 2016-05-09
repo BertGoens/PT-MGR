@@ -1,13 +1,27 @@
-﻿@model Patient_Transport_Migration.Models.VM.PatientInfoVM
+﻿@model Patient_Transport_Migration.Models.VM.MaakVervoerAanvraagVM
 
-<div>
-    <label for="dllRequestTypes">Selecteer een aanvraag</label>
-    <br />
-    @Html.DropDownListFor(model => model.AanvraagTypesVM.AanvraagTypeSelected, Model.AanvraagTypesVM.AanvraagTypeLijst, "Aanvragen",
+@{
+    ViewBag.Title = "Maak Vervoer Aanvraag";
+}
+
+<div id="content-container">
+    <div id="content-left">
+        <div>
+            <label for="dllRequestTypes">Selecteer een aanvraag</label>
+            <br />
+            @Html.DropDownListFor(model => model.AanvraagTypeGeselecteerd, Model.AanvraagTypeLijst, "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
-    <br />
-    <button id="btnLoadSelectedAanvraagType">Maak aanvraag</button>
+            <br />
+            <button id="btnLoadSelectedAanvraagType">Maak aanvraag</button>
+        </div>
+    </div>
+
+    <div id="content-right">
+        <div id="dvLoaderAanvraagDetails" class="ajax-loader"></div>
+        <div id="dvAanvraagDetails"></div>
+    </div>
 </div>
+
 
 <script>
     function renderAanvraag(type) {

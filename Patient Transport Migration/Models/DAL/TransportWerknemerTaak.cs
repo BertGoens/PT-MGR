@@ -8,9 +8,9 @@ namespace Patient_Transport_Migration.Models.DAL {
         [Key]
         [Column(Order = 1)]
         [MaxLength(255)]
-        public string GebruikersnaamId { get; set; }
-        [ForeignKey("GebruikersnaamId")]
-        public virtual TransportWerknemer Gebruikersnaam { get; set; }
+        public string TransportWerknemerId { get; set; }
+        [ForeignKey("TransportWerknemerId")]
+        public virtual TransportWerknemer TransportWerknemer { get; set; }
 
         // 2 FK als PK
         [Key]
@@ -21,6 +21,17 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         public int TaakWachtrijNummer { get; set; }
 
-        public bool IsActieveTaak { get { return this.TaakWachtrijNummer == 0; } }
+        /// <summary>
+        /// Bekijkt of de taak is toegewezen, en of hij #1 is
+        /// </summary>
+        /// <returns></returns>
+        public bool IsActieveTaak() {
+            if (!string.IsNullOrEmpty(TransportWerknemerId)) {
+                if (TaakWachtrijNummer == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

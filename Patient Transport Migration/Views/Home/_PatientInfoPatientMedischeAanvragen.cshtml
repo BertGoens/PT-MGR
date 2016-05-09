@@ -14,8 +14,10 @@
                         <tr>
                             <td>@aanvraag.AanvraagType.Omschrijving</td>
                             <td>@if (@aanvraag.AanvraagStatus.IsLaatsteStap) { @Html.Raw("Ja") } else { @Html.Raw("Nee") }</td>
-                            <!--TODO! Add Controller Support (Read / Edit) & Edit this link -->
-                            <td>Html.ActionLink("Open", "GetaanvraagDetails", @aanvraag.Id)</td>
+                            <td><button class="btnLoadAanvraag" 
+                                        data-aanvraag-id="@aanvraag.Id" 
+                                        data-aanvraag-type="@aanvraag.AanvraagTypeId">
+                                Bekijk</button></td>
                         </tr>
                     }
                 }
@@ -26,13 +28,12 @@
                 <p>Geen medische aanvragen voor deze patiënt gevonden.</p>
             }
 
-            <!--TODO! Add Support om via link Nieuwe Aanvraag te maken voor geselecteerde patient -->
             <button id="btnLoadAanvraagTypes">Nieuwe aanvraag</button>
 
             <br />
 
             <div>
-                <div id="dvLoadAT" class="ajax-loader"></div>
+                <div id="dvLoadAanvraagTypes" class="ajax-loader"></div>
                 <div id="dvAanvraagTypes"></div>
             </div>
             
@@ -40,7 +41,7 @@
 
         <script>
             $("#btnLoadAanvraagTypes").click(function () {
-                var $ajaxLoader = $('dvLoadAT');
+                var $ajaxLoader = $('dvLoadAanvraagTypes');
                 var $dvContent = $("#dvAanvraagTypes");
                 $.ajax({
                     type: "GET",
@@ -54,6 +55,26 @@
                         $dvContent.html(result);
                     }
                     
+                });
+            });
+
+            $(".btnLoadAanvraag").click(function (event) {
+                var aanvraagId = $(this).data("aanvraag-id");
+                var aanvraagTypeId = $(this).data("aanvraag-type-id");
+                var $ajaxLoader = $('dvLoaderAanvraagDetails');
+                var $dvContent = $("#dvAanvraagDetails");
+                $.ajax({
+                    type: "GET",
+                    url: "GetCreateUpdateAanvraagDetails?aanvraagId=" + aanvraagId + "&aanvraagTypeId=" + aanvraagTypeId,
+                    beforeSend: function () {
+                        $dvContent.html('');
+                        $ajaxLoader.show();
+                    },
+                    success: function (result) {
+                        $ajaxLoader.hide();
+                        $dvContent.html(result);
+                    }
+
                 });
             });
         </script>

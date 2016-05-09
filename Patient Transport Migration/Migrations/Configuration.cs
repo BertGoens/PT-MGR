@@ -39,31 +39,50 @@ namespace Patient_Transport_Migration.Migrations {
 
             // AanvraagType
             context.tblAanvraagTypes.AddOrUpdate(at => at.Id,
-                new AanvraagType() { Id = 1, Omschrijving = "Emerged Request", Include_er_Omschrijving = true },
+                new AanvraagType() { Id = 1, Omschrijving = "Vervoer Aanvraag", Include_er_Omschrijving = true },
                 new AanvraagType() { Id = 2, Omschrijving = "Aanvraag van Consult", Include_Patient = true, Include_PatientVisit = true,
                     Include_avc_AanDokter = true, Include_avc_AanvragendeGeneesheer = true,
                     Include_avc_AndereNotas = true, Include_avc_BevindingenEnAdvies = true, Include_avc_DatumBevindingen = true,
-                    Include_avc_HuidigeKlachten = true, Include_avc_PatientWordtBehandeldVoor = true, Include_avc_UwAdviesGevraagdVoor = true},
+                    Include_avc_HuidigeKlachten = true, Include_avc_PatientWordtBehandeldVoor = true, Include_avc_UwAdviesGevraagdVoor = true },
                 new AanvraagType() { Id = 3, Omschrijving = "Aanvraag voor Radiologie", Include_Patient = true, Include_PatientVisit = true,
                     Include_avr_Allergieen = true, Include_avr_Andere = true,
                     Include_avr_AndereInlichtingen = true, Include_avr_CT = true, Include_avr_DiagnostischeVraagstelling = true,
                     Include_avr_Echografie = true, Include_avr_HeeftImplantaat = true, Include_avr_HeeftNierInsufficientie = true,
                     Include_avr_IsDiabeet = true, Include_avr_IsZwanger = true, Include_avr_NMR = true, Include_avr_Onbekend = true,
                     Include_avr_RelevanteKlinischeInlichtingen = true, Include_avr_RX = true, Include_avr_Transportwijze = true,
-                    Include_avr_VoorgesteldeOnderzoeken = true }
+                    Include_avr_VoorgesteldeOnderzoeken = true },
+                new AanvraagType() { Id = 4, Omschrijving = "Patient Vervoer Aanvraag",
+                    Include_er_Omschrijving = true, Include_Patient = true, Include_avr_Transportwijze = true }
                 );
 
             // AanvraagStatus
+            
 
-            // Werknemer
+            // TransportWerknemer
             context.tblTransportWerknemers.AddOrUpdate(w => w.Gebruikersnaam,
                 new TransportWerknemer() { Gebruikersnaam = "sta_it2", Achternaam = "Goens", Voornaam = "Bert", IsPresent = true },
                 new TransportWerknemer() { Gebruikersnaam = "PTTransport", Achternaam = "Test", Voornaam = "Transport", IsPresent = false }
                 );
 
             // Aanvraag
+            context.tblAanvragen.AddOrUpdate(aa => aa.Id,
+                new Aanvraag() { Id = 1, AanvraagTypeId = 1, va_Omschrijving = "Haal Baxters" },
+                new Aanvraag() { Id = 2, AanvraagTypeId = 1, va_Omschrijving = "Haal Naalden" },
+                new Aanvraag() { Id = 3, AanvraagTypeId = 2, PatientId = "pat001", avc_AanDokterId = "doc001"}
+                );
 
             // TransportTaak
+            int achtMinuten = 8 * 60;
+            context.tblTransportTaken.AddOrUpdate(t => t.Id,
+                new TransportTaak() {
+                    Id = 1, AanvraagId = 1, DatumGemaakt = DateTime.Now, GeschatteTijdNodigInSeconden = achtMinuten,
+                    IsPrioriteitHoog = false, LocatieStart = "101", LocatieEind = "300"
+                },
+                new TransportTaak() { Id = 4, AanvraagId = 2, DatumGemaakt = DateTime.Now, GeschatteTijdNodigInSeconden = achtMinuten,
+                    IsPrioriteitHoog = true, LocatieStart = "Kamer 200", LocatieEind = "Onthaal"}
+                );
+
+            //TransportWerknemerTaak
 
             base.Seed(context);
         }

@@ -139,6 +139,7 @@
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
     <Compile Include="Models\VM\DokterStatusVM.cs" />
+    <Compile Include="Models\VM\MaakVervoerAanvraagVM.cs" />
     <Compile Include="Models\VM\PatientInfoVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzichtVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,6 +164,7 @@
     <Content Include="Views\Home\_VerplegingOverzichtPatientenWachtend.cshtml" />
     <Content Include="Views\Home\_PatientInfoPatientMedischeAanvragen.cshtml" />
     <Content Include="Views\Home\_PatientInfoAanvraagDetails.cshtml" />
+    <Content Include="Views\Home\MaakVervoerAanvraag.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

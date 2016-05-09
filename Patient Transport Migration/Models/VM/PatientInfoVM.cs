@@ -21,6 +21,9 @@ namespace Patient_Transport_Migration.Models.VM {
             return vm;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string PatientenLijstSelected { get; set; }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace Patient_Transport_Migration.Models.VM {
 
         public AanvraagTypesVM AanvraagTypesVM { get; set; }
 
-        public PatientCreateAanvraagVM PatientAanvraagDetailsVM { get; set; }
+        public PatientAanvraagVM PatientAanvraagDetailsVM { get; set; }
     }
 
     public class PatientDetailsVM {
@@ -105,19 +108,34 @@ namespace Patient_Transport_Migration.Models.VM {
         
     }
 
-    public class PatientCreateAanvraagVM {
-        public PatientCreateAanvraagVM() { }
+    public class PatientAanvraagVM {
+        public PatientAanvraagVM() { }
 
-        public static PatientCreateAanvraagVM Create(string aanvraagTypeId = null) {
-            var vm = new PatientCreateAanvraagVM();
+        public static PatientAanvraagVM Create(string aanvraagId, string aanvraagTypeId) {
+            var vm = new PatientAanvraagVM();
+            var db = new MSSQLContext();
+
+            if (!string.IsNullOrEmpty(aanvraagId)) {
+                // Bestaande aanvraag om te updaten
+                int aId;
+                bool aanvraagIdIsInt = int.TryParse(aanvraagId, out aId);
+                if (aanvraagIdIsInt) {
+                    Aanvraag aanvraagEntry = db.tblAanvragen.First(a => a.Id == aId);
+                    vm.PatientAanvraag = aanvraagEntry;
+                    vm.PatientAanvraagType = aanvraagEntry.AanvraagType;
+                    return vm;
+                }
+            }
 
             if (!string.IsNullOrEmpty(aanvraagTypeId)) {
-                int aanvrType;
-                bool aanvraagTypeIsInt = int.TryParse(aanvraagTypeId, out aanvrType);
+                // Nieuwe aanvraag maken
+                int aTypeId;
+                bool aanvraagTypeIsInt = int.TryParse(aanvraagTypeId, out aTypeId);
                 if (aanvraagTypeIsInt) {
-                    var db = new MSSQLContext();
-                    var aanvraagEntry = db.tblAanvraagTypes.First(at => at.Id == aanvrType);
-                    vm.PatientCreateAanvraagType = aanvraagEntry;
+                    AanvraagType aTypeEntry = db.tblAanvraagTypes.First(at => at.Id == aTypeId);
+                    vm.PatientAanvraagType = aTypeEntry;
+                    // Zet lege aanvraag erbij die opgevuld wordt
+                    vm.PatientAanvraag = new Aanvraag();
                 }
             }
 
@@ -125,13 +143,13 @@ namespace Patient_Transport_Migration.Models.VM {
         }
 
         /// <summary>
-        /// Type aanvraag om te maken
+        /// Type aanvraag om visuaal aanvraag te bouwen, niet gebruikt in POST
         /// </summary>
-        public AanvraagType PatientCreateAanvraagType { get; set; }
+        public AanvraagType PatientAanvraagType { get; set; }
 
         /// <summary>
-        /// Bedoeld voor POST naar de server
+        /// Aanvraag Details opslaan, bedoeld voor POST
         /// </summary>
-        public Aanvraag PatientCreateAanvraag { get; set; }
+        public Aanvraag PatientAanvraag { get; set; }
     }
 }

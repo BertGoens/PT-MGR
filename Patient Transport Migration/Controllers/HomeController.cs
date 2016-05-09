@@ -24,7 +24,7 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpGet]
-        public ActionResult DokterStatus() {
+        public ViewResult DokterStatus() {
             HttpCookie doctorCookie = Request.Cookies["dokterId"];
             var vm = DokterStatusVM.Create(doctorCookie);
             return View(vm);
@@ -61,7 +61,7 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpGet]
-        public ActionResult PatientInfo() {
+        public ViewResult PatientInfo() {
             var vm = PatientInfoVM.Create();
             return View(vm);
         }
@@ -88,20 +88,14 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpGet]
-        public PartialViewResult GetTemplateAanvraag(string aanvraagTypeId) {
-            // TODO! Afwerken
-        }
-
-        [HttpGet]
-        public PartialViewResult GetAanvraagDetails(string aanvraagId) {
-            // TODO! Afwerken
+        public PartialViewResult GetCreateUpdateAanvraagDetails(string aanvraagId, string aanvraagTypeId) {
             var vm = new PatientInfoVM();
-            vm.PatientAanvraagDetailsVM = PatientCreateAanvraagVM.Create(aanvraagId);
+            vm.PatientAanvraagDetailsVM = PatientAanvraagVM.Create(aanvraagId, aanvraagTypeId);
             return PartialView("_PatientInfoAanvraagDetails", vm);
         }
 
         [HttpGet]
-        public ActionResult VerplegingOverzicht() {
+        public ViewResult VerplegingOverzicht() {
             var vm = new VerplegingOverzichtVM();
             return View(vm);
         }
