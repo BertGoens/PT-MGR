@@ -5,7 +5,7 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models {
     public class MSSQLContext : DbContext {
 
-        public MSSQLContext() 
+        public MSSQLContext()
             : base("MSSQLDB_V2") {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MSSQLContext, Migrations.Configuration >());
         }
@@ -27,15 +27,13 @@ namespace Patient_Transport_Migration.Models {
 
         public DbSet<TransportWerknemer> tblTransportWerknemers { get; set; }
 
-        public DbSet<TransportWerknemerTaak> tblTransportWerknemerTaken { get; set; }
-
         public DbSet<Aanvraag> tblAanvragen { get; set; }
 
         public DbSet<Transportwijze> tblTransportwijzes { get; set; }
 
         public DbSet<AanvraagType> tblAanvraagTypes { get; set; }
 
-        public DbSet<AanvraagStatus> tblAanvraagStatusen { get; set; }
+        //public DbSet<AanvraagStatus> tblAanvraagStatusen { get; set; }
 
     }
 }

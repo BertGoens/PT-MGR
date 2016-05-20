@@ -71,3 +71,8 @@ tr:nth-child(even) {
     background-repeat: no-repeat;
     display:none;
 }
+
+select {
+    margin-left: 4px;
+    margin-bottom: 4px;
+}

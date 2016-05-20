@@ -1,24 +1,10 @@
 ﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
 
-    @*
-    TODO Filteren data + Presenteren data
-    Gesorteerd : 
-    Hoe eerder een taak hoe hoger
-
-    Taak					Datum Afgewerkt --> dd:HH:mm
-    Taak.Aanvraag.Patient	Patient Naam
-    Aanvraag				Aanvragen ivm Patient (VisitId)
-    Taak.Aanvraag.Patient	Patient Kamer + Bednr
-
-    3 Joins
-    *@
-
 @if (Model != null) {
     if (Model.PatientenInOrdeVM != null) {
         <table class="table">
             <tr>
-                <th>Tijdstip</th>
-                <th>Aanvragen</th>
+                <th>Datum Vervoersaanvraag</th>
                 <th>Patient</th>
                 <th>Kamer</th>
                 <th>Bed</th>
@@ -26,14 +12,7 @@
 
             @foreach (var taak in Model.PatientenInOrdeVM.PatientInOrde) {
                 <tr>
-                    <td>
-                        @{  
-                            TimeSpan timeNeeded = new TimeSpan(@taak.TijdNodig.Ticks);
-                            DateTime completedTime = @taak.DatumGemaakt.Add(timeNeeded);
-                            Html.Raw(completedTime.ToString("HH:mm"));
-                        }
-                    </td>
-                    <td><!-- Taak.Aanvraag.PatientId > QRY Relevante Aanvragen voor patient --></td>
+                    <td>@taak.DatumGemaakt</td>
                     <td>@taak.Aanvraag.Patient.Naam</td>
                     <td>@taak.Aanvraag.Patient.Kamer</td>
                     <td>@taak.Aanvraag.Patient.BedNr</td>

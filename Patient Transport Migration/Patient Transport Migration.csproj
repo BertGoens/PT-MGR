@@ -134,10 +134,10 @@
     <Compile Include="Models\DAL\Patient.cs" />
     <Compile Include="Models\DAL\Geslacht.cs" />
     <Compile Include="Models\DAL\TransportTaak.cs" />
-    <Compile Include="Models\DAL\TransportWerknemerTaak.cs" />
     <Compile Include="Models\DAL\Transportwijze.cs" />
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
+    <Compile Include="Models\VM\AanvraagVM.cs" />
     <Compile Include="Models\VM\DokterStatusVM.cs" />
     <Compile Include="Models\VM\MaakVervoerAanvraagVM.cs" />
     <Compile Include="Models\VM\PatientInfoVM.cs" />
@@ -163,7 +163,7 @@
     <Content Include="Views\Home\_VerplegingOverzichtPatientenInOrde.cshtml" />
     <Content Include="Views\Home\_VerplegingOverzichtPatientenWachtend.cshtml" />
     <Content Include="Views\Home\_PatientInfoPatientMedischeAanvragen.cshtml" />
-    <Content Include="Views\Home\_PatientInfoAanvraagDetails.cshtml" />
+    <Content Include="Views\Home\_AanvraagDetails.cshtml" />
     <Content Include="Views\Home\MaakVervoerAanvraag.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

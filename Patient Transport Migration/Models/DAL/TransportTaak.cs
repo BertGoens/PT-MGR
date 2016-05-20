@@ -38,6 +38,10 @@ namespace Patient_Transport_Migration.Models.DAL {
         [Display(Name = "Datum gemaakt")]
         public DateTime DatumGemaakt { get; set; }
 
+        [DataType(DataType.DateTime)]
+        [Display(Name ="Datum compleet")]
+        public DateTime? DatumCompleet { get; set; }
+
         /// <summary>
         /// De absolute tijd, in seconden, die de taak nodig had om voltooid te worden.
         /// </summary>
@@ -52,21 +56,35 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("AanvraagId")]
         public virtual Aanvraag Aanvraag { get; set; }
 
+        /// <summary>
+        /// Het wachtrij-nummer van de taak.
+        /// </summary>
+        /// <value>
+        /// -1 = Gedaan
+        /// Null = Niet toegewezen
+        /// 0 = actieve taak
+        /// > 0 = volgende taken
+        /// </value>
+        public int? TaakWachtrijNummer { get; set; }
+
         [MaxLength(255)]
-        public string TransportWerknemerTaakId { get; set; }
-        [ForeignKey("TransportWerknemerTaakId")]
-        public TransportWerknemerTaak TransportWerknemerTaak { get; set; }
+        public string TransportWerknemerId { get; set; }
+        /// <summary>
+        /// De toegewezen werknemer voor de taak.
+        /// </summary>
+        [ForeignKey("TransportWerknemerId")]
+        public virtual TransportWerknemer TransportWerknemer { get; set; }
 
         /// <summary>
         /// De (berekende) status van de taak.
         /// </summary>
         public TransportTaakStatus GetTransportTaakStatus() {
-            if (this.TijdNodigInSeconden != null) {
+            if (this.DatumCompleet != null) {
                 return TransportTaakStatus.Voltooid;
             }
 
-            if (!string.IsNullOrEmpty(this.TransportWerknemerTaakId)) {
-                if (this.TransportWerknemerTaak.IsActieveTaak()) {
+            if (this.TaakWachtrijNummer != null) {
+                if (this.TaakWachtrijNummer == 0) {
                     return TransportTaakStatus.WerknemerToegewezen_HuidigeTaak;
                 }
 

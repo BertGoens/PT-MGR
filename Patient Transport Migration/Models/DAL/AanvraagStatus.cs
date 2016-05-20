@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Patient_Transport_Migration.Models.DAL {
+    /* TODO Remove AanvraagStatus
     public class AanvraagStatus {
         public AanvraagStatus() {
 
@@ -25,4 +26,5 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         public bool IsLaatsteStap { get; set; }
     }
+    */
 }

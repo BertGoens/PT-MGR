@@ -25,9 +25,8 @@ namespace Patient_Transport_Migration.Models.VM {
             // query de taken die eerst aan de wn gegeven zijn die nog niet uitgevoerd zijn die een patient bevatten
             var taakEntries = db.tblTransportTaken.Where(t => 
                 !string.IsNullOrEmpty(t.Aanvraag.PatientId) && 
-                !string.IsNullOrEmpty(t.TransportWerknemerTaak.TransportWerknemerId) &&
-                t.TijdNodigInSeconden == null
-                ).ToList();
+                t.DatumCompleet != null)
+                .ToList();
             vm.PatientInOrde = taakEntries;
 
             return vm;
@@ -50,8 +49,8 @@ namespace Patient_Transport_Migration.Models.VM {
             // query de recente uitgevoerde taken met een patient
             var taakEntries = db.tblTransportTaken.Where(t =>
                 !string.IsNullOrEmpty(t.Aanvraag.PatientId) &&
-                t.TijdNodigInSeconden != null 
-                // TODO && t.Date < 1 Dag
+                t.DatumCompleet == null
+                // TODO && t.DateComplete < 1 Dag
                 ).ToList();
             vm.PatientenWachtend = taakEntries;
 

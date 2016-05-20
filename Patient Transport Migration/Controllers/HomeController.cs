@@ -87,11 +87,15 @@ namespace Patient_Transport_Migration.Controllers {
             return PartialView("_PatientInfoAanvraagTypes", vm);
         }
 
+        /// <summary>
+        /// Het maken of updaten van een aanvraag
+        /// </summary>
+        /// <param name="aanvraagId">De (al dan niet bestaande) aanvraagId</param>
+        /// <param name="aanvraagTypeId">Welk type aanvraag het is</param>
         [HttpGet]
         public PartialViewResult GetCreateUpdateAanvraagDetails(string aanvraagId, string aanvraagTypeId) {
-            var vm = new PatientInfoVM();
-            vm.PatientAanvraagDetailsVM = PatientAanvraagVM.Create(aanvraagId, aanvraagTypeId);
-            return PartialView("_PatientInfoAanvraagDetails", vm);
+            var vm = AanvraagVM.Create(aanvraagId, aanvraagTypeId, User.Identity.Name);
+            return PartialView("_AanvraagDetails", vm);
         }
 
         [HttpGet]
@@ -112,6 +116,12 @@ namespace Patient_Transport_Migration.Controllers {
             var vm = new VerplegingOverzichtVM();
             vm.PatientenWachtendVM = VerplegingOverzichtPatientenWachtend.Create();
             return PartialView("_VerplegingOverzichtPatientenWachtend", vm);
+        }
+
+        [HttpGet]
+        public ViewResult MaakVervoerAanvraag() {
+            var vm = MaakVervoerAanvraagVM.Create();
+            return View(vm);
         }
     }
 }

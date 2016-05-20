@@ -1,26 +1,33 @@
 ﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
-<!-- TODO VerplegingOverzicht View --> 
+<!-- TODO VerplegingOverzicht View -->
 <table class="table">
     <tr>
-        <th>Verwacht ophaaltijdstip</th>
-        <th>Aanvragen</th>
+        <th>Datum Vervoersaanvraag @*TODO ?Verwacht ophaaltijdstip-->*@</th>
         <th>Patient</th>
         <th>Kamer</th>
         <th>Bed</th>
     </tr>
 
-@foreach (var taak in Model.PatientenWachtendVM.PatientenWachtend) {
-    <tr>
-        <td>
-            @{ 
-                //Werknemersnelheid * GeschatteTijdNodig + Geschatte tijd wanneer WN begint aan taak
-            }
-        </td>
-        <td>Aanvragenlijst</td>
-        <td>@taak.Aanvraag.Patient.Naam</td>
-        <td>@taak.Aanvraag.Patient.Kamer</td>
-        <td>@taak.Aanvraag.Patient.BedNr</td>
-    </tr>
-}
+    @foreach (var taak in Model.PatientenWachtendVM.PatientenWachtend) {
+        <tr>
+            <td>
+                @taak.DatumGemaakt
+
+                @*
+                    @{
+                        DateTime g = @taak.DatumGemaakt;
+                        if (@taak.GeschatteTijdNodigInSeconden.HasValue) {
+                            var tijdnodig = @taak.GeschatteTijdNodigInSeconden.Value;
+
+                            Html.Raw(g.AddSeconds(tijdnodig));
+                        }
+                    }
+                *@
+            </td>
+            <td>@taak.Aanvraag.Patient.Naam</td>
+            <td>@taak.Aanvraag.Patient.Kamer</td>
+            <td>@taak.Aanvraag.Patient.BedNr</td>
+        </tr>
+    }
 
 </table>

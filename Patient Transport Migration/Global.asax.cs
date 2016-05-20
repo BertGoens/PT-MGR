@@ -1,22 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Patient_Transport_Migration.Models;
-using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration {
-    public class MvcApplication : System.Web.HttpApplication
-    {
-        protected void Application_Start()
-        {
+    public class MvcApplication : System.Web.HttpApplication {
+        protected void Application_Start() {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            StartDatabase();
         }
 
         protected void Application_Error(object sender, EventArgs e) {
             Exception ex = Server.GetLastError();
-
+            /*
+            TODO Uncomment
             ExceptionLogger logger = new ExceptionLogger() {
                 ExceptionMessage = ex.Message,
                 ExceptionStackTrace = ex.StackTrace,
@@ -32,6 +31,13 @@ namespace Patient_Transport_Migration {
             //Server.ClearError();
 
             //Response.Redirect("/Home/Error");
+            */
+        }
+
+        private void StartDatabase() {
+            // Voor Migrations, geeft error als configuratie ergens niet klopt.
+            var db = new Models.MSSQLContext();
+            var doctorList = db.tblDokters.First();
         }
 
     }

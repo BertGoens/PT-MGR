@@ -16,10 +16,12 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("AanvraagTypeId")]
         public virtual AanvraagType AanvraagType { get; set; }
        
+        /* TODO Remove AanvraagStatus?
         public int AanvraagStatusId { get; set; }
         public int AanvraagStapNr { get; set; }
         [ForeignKey("AanvraagStatusId, AanvraagStapNr")]
         public virtual AanvraagStatus AanvraagStatus { get; set; }
+        */
 
         /// <summary>
         /// De gebruikersnaam van de gebruiker die de vervoersaanvraag plaatste.
@@ -61,7 +63,7 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(10)]
         public string avc_AanvragendeGeneesheerId { get; set; }
         [ForeignKey("avc_AanvragendeGeneesheerId")]
-        public Dokter avc_AanvragendeGeneesheer { get; set; }
+        public virtual Dokter avc_AanvragendeGeneesheer { get; set; }
 
         [MaxLength(1000)]
         public string avc_BevindingenEnAdvies { get; set; }
@@ -77,24 +79,24 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(1000)]
         public string avr_VoorgesteldeOnderzoeken { get; set; }
 
-        public bool avr_CT { get; set; }
-        public bool avr_NMR { get; set; }
-        public bool avr_RX { get; set; }
-        public bool avr_Echografie { get; set; }
+        public bool? avr_CT { get; set; }
+        public bool? avr_NMR { get; set; }
+        public bool? avr_RX { get; set; }
+        public bool? avr_Echografie { get; set; }
         [MaxLength(255)]
         public string avr_Andere { get; set; }
-        public bool avr_Onbekend { get; set; }
+        public bool? avr_Onbekend { get; set; }
 
-        public int avr_TransportwijzeId { get; set; }
+        public int? avr_TransportwijzeId { get; set; }
         [ForeignKey("avr_TransportwijzeId")]
         public Transportwijze avr_Transportwijze { get; set; }
 
         [MaxLength(1000)]
         public string avr_Allergieen { get; set; }
-        public bool avr_IsDiabeet { get; set; }
-        public bool avr_HeeftNierInsufficientie { get; set; }
-        public bool avr_IsZwanger { get; set; }
-        public bool avr_HeeftImplantaat { get; set; }
+        public bool? avr_IsDiabeet { get; set; }
+        public bool? avr_HeeftNierInsufficientie { get; set; }
+        public bool? avr_IsZwanger { get; set; }
+        public bool? avr_HeeftImplantaat { get; set; }
         [MaxLength(1000)]
         public string avr_AndereInlichtingen { get; set; }
     }

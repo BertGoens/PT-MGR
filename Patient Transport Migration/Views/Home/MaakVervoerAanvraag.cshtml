@@ -8,11 +8,10 @@
     <div id="content-left">
         <div>
             <label for="dllRequestTypes">Selecteer een aanvraag</label>
-            <br />
-            @Html.DropDownListFor(model => model.AanvraagTypeGeselecteerd, Model.AanvraagTypeLijst, "Aanvragen",
+            @Html.DropDownListFor(model => model.AanvraagTypesVM.AanvraagTypeSelected, Model.AanvraagTypesVM.AanvraagTypeLijst, "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
             <br />
-            <button id="btnLoadSelectedAanvraagType">Maak aanvraag</button>
+            <button id="btnLoadSelectedAanvraagType" style="margin-top:5px;">Maak aanvraag</button>
         </div>
     </div>
 
@@ -25,22 +24,27 @@
 
 <script>
     function renderAanvraag(type) {
-        $("#btnLoadSelectedAanvraagType").click(function () {
-            //bestaan op de PatientInfo pagina
-            var $ajaxLoader = $('dvLoaderAanvraagDetails');
-            var $dvContent = $("#dvAanvraagDetails");
-            $.ajax({
-                type: "GET",
-                url: "GetCreateUpdateAanvraagDetails?aanvraagId=&aanvraagTypeId=" + type,
-                beforeSend: function () {
-                    $dvContent.html('');
-                    $ajaxLoader.show();
-                },
-                success: function (result) {
-                    $ajaxLoader.hide();
-                    $dvContent.html(result);
-                }
+        var $dvContent = $("#dvAanvraagDetails");
+        if (type == "") {
+            $dvContent.html('');
+        } else {
+            $("#btnLoadSelectedAanvraagType").click(function () {
+                //bestaan op de PatientInfo pagina
+                var $ajaxLoader = $('dvLoaderAanvraagDetails');
+                
+                $.ajax({
+                    type: "GET",
+                    url: "GetCreateUpdateAanvraagDetails?aanvraagId=&aanvraagTypeId=" + type,
+                    beforeSend: function () {
+                        $dvContent.html('');
+                        $ajaxLoader.show();
+                    },
+                    success: function (result) {
+                        $ajaxLoader.hide();
+                        $dvContent.html(result);
+                    }
+                });
             });
-        });
+        }
     }
 </script>

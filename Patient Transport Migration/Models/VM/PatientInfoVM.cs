@@ -65,15 +65,16 @@ namespace Patient_Transport_Migration.Models.VM {
     public class PatientMedischeAanvragenVM {
         public PatientMedischeAanvragenVM() { }
 
-        public static PatientMedischeAanvragenVM Create(string visitId = null) {
+        public static PatientMedischeAanvragenVM Create(string patientVisitId = null) {
             var vm = new PatientMedischeAanvragenVM();
 
-            vm.PatientVisitId = visitId;
+            vm.PatientVisitId = patientVisitId;
 
-            if (!string.IsNullOrEmpty(visitId)) {
+            if (!string.IsNullOrEmpty(patientVisitId)) {
                 var db = new MSSQLContext();
                 // Zoek alle medische aanvragen voor de patient
-                vm.PatientAanvragen = db.tblAanvragen.Where(a => a.PatientVisit.Equals(visitId) && a.AanvraagType.Include_Patient == true).ToList();
+                vm.PatientAanvragen = db.tblTransportTaken.Where(a => a.Aanvraag.PatientVisit.Equals(patientVisitId)).ToList();
+                // TODO SORT ON TIME
             }
 
             return vm;
@@ -84,7 +85,7 @@ namespace Patient_Transport_Migration.Models.VM {
         /// <summary>
         /// Lijst van medische <c>Aanvraag</c> van ... voor deze patient
         /// </summary>
-        public List<Aanvraag> PatientAanvragen { get; set; }
+        public List<TransportTaak> PatientAanvragen { get; set; }
     }
 
     public class AanvraagTypesVM {

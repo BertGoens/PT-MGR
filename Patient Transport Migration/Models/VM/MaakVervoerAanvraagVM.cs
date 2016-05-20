@@ -8,11 +8,11 @@ namespace Patient_Transport_Migration.Models.VM {
     public class MaakVervoerAanvraagVM {
         public MaakVervoerAanvraagVM() { }
         public static MaakVervoerAanvraagVM Create() {
-
+            var vm = new MaakVervoerAanvraagVM();
+            vm.AanvraagTypesVM = AanvraagTypesVM.Create();
+            return vm;
         }
 
-        public string AanvraagTypeGeselecteerd { get; set; }
-
-        public SelectList AanvraagTypeLijst { get; set; }
+        public AanvraagTypesVM AanvraagTypesVM { get; set; }
     }
 }
