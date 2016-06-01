@@ -1,21 +1,19 @@
-﻿@model Patient_Transport_Migration.Models.VM.MaakVervoerAanvraagVM
+﻿@model Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag.AanvraagTypesVM
 
 @{
     ViewBag.Title = "Maak Vervoer Aanvraag";
 }
 
-<div id="content-container">
-    <div id="content-left">
+<div class="content-container">
+    <div class="content-left">
         <div>
             <label for="dllRequestTypes">Selecteer een aanvraag</label>
-            @Html.DropDownListFor(model => model.AanvraagTypesVM.AanvraagTypeSelected, Model.AanvraagTypesVM.AanvraagTypeLijst, "Aanvragen",
+            @Html.DropDownListFor(m => m.SelectedAanvraagTypeId, new SelectList(Model.AanvraagTypeLijst, "Value", "Text"), "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
-            <br />
-            <button id="btnLoadSelectedAanvraagType" style="margin-top:5px;">Maak aanvraag</button>
         </div>
     </div>
 
-    <div id="content-right">
+    <div class="content-right">
         <div id="dvLoaderAanvraagDetails" class="ajax-loader"></div>
         <div id="dvAanvraagDetails"></div>
     </div>
@@ -23,27 +21,35 @@
 
 
 <script>
+    $(new function () {
+        $dvContent = $("#dvAanvraagDetails");
+        $dvContentRight = $(".content-right");
+        $dvContentRight.hide();
+    });
+
     function renderAanvraag(type) {
-        var $dvContent = $("#dvAanvraagDetails");
         if (type == "") {
             $dvContent.html('');
+            $dvContentRight.hide();
         } else {
-            $("#btnLoadSelectedAanvraagType").click(function () {
-                //bestaan op de PatientInfo pagina
-                var $ajaxLoader = $('dvLoaderAanvraagDetails');
-                
-                $.ajax({
-                    type: "GET",
-                    url: "GetCreateUpdateAanvraagDetails?aanvraagId=&aanvraagTypeId=" + type,
-                    beforeSend: function () {
-                        $dvContent.html('');
-                        $ajaxLoader.show();
-                    },
-                    success: function (result) {
-                        $ajaxLoader.hide();
-                        $dvContent.html(result);
-                    }
-                });
+            var $ajaxLoader = $('#dvLoaderAanvraagDetails');
+            $ajaxLoader.show();
+            $.ajax({
+                type: "GET",
+                url: "GetMaakVervoerAanvraag_AanvraagDetails?aanvraagTypeId=" + type,
+                beforeSend: function () {
+                    $dvContent.html('');
+                },
+                success: function (result) {                 
+                    $dvContent.html(result);
+                },
+                error: function (error) {
+                    $dvContent.html("<p>Probleem met laden! <br />" + error + "</p>");
+                },
+                complete: function () {
+                    $ajaxLoader.hide();
+                    $dvContentRight.show();
+                }
             });
         }
     }

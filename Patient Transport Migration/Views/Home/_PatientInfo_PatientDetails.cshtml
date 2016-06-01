@@ -1,0 +1,22 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.PatientDetailsVM
+
+<br />
+@if (!string.IsNullOrEmpty(Model.PatientVisitId)) {
+    <div>
+        <dl class="dl-horizontal">
+            <dt>@Html.DisplayNameFor(p => p.PatientDetails.Geslacht)</dt>
+            <dd>@Html.DisplayFor(p => p.PatientDetails.Geslacht)</dd>
+
+            <dt>@Html.DisplayNameFor(p => p.PatientDetails.Geboortedatum)</dt>
+            <dd>@Html.DisplayFor(p => p.PatientDetails.Geboortedatum)</dd>
+
+            <dt>@Html.DisplayNameFor(p => p.PatientDetails.Kamer)</dt>
+            <dd>@Html.DisplayFor(p => p.PatientDetails.Kamer)</dd>
+
+            <dt>@Html.DisplayNameFor(p => p.PatientDetails.BedNr)</dt>
+            <dd>@Html.DisplayFor(p => p.PatientDetails.BedNr)</dd>
+        </dl>
+    </div>
+} else {
+    <div>Geen patiënt-details gevonden.</div>
+}

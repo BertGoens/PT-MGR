@@ -1,29 +1,16 @@
-﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
-<!-- TODO VerplegingOverzicht View -->
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM
+
 <table class="table">
     <tr>
-        <th>Datum Vervoersaanvraag @*TODO ?Verwacht ophaaltijdstip-->*@</th>
+        <th>Datum Vervoersaanvraag</th>
         <th>Patient</th>
         <th>Kamer</th>
         <th>Bed</th>
     </tr>
 
-    @foreach (var taak in Model.PatientenWachtendVM.PatientenWachtend) {
+    @foreach (var taak in Model.PatientenWachtend) {
         <tr>
-            <td>
-                @taak.DatumGemaakt
-
-                @*
-                    @{
-                        DateTime g = @taak.DatumGemaakt;
-                        if (@taak.GeschatteTijdNodigInSeconden.HasValue) {
-                            var tijdnodig = @taak.GeschatteTijdNodigInSeconden.Value;
-
-                            Html.Raw(g.AddSeconds(tijdnodig));
-                        }
-                    }
-                *@
-            </td>
+            <td>@taak.DatumGemaakt</td>
             <td>@taak.Aanvraag.Patient.Naam</td>
             <td>@taak.Aanvraag.Patient.Kamer</td>
             <td>@taak.Aanvraag.Patient.BedNr</td>

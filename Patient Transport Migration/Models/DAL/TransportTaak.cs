@@ -14,7 +14,7 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Display(Name = "Van")]
         [MaxLength(255)]
@@ -36,7 +36,7 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Datum gemaakt")]
-        public DateTime DatumGemaakt { get; set; }
+        public DateTime? DatumGemaakt { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name ="Datum compleet")]

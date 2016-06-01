@@ -1,0 +1,55 @@
+﻿@model Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag.MaakAanvraag
+
+@if (Model.DisplayAanvraagTypeData != null) {
+    using (Html.BeginForm("MaakVervoerAanvraag", "Home", FormMethod.Post)) {
+        @Html.HiddenFor(m => m.AanvraagTypeId)
+
+        if (Model.DisplayAanvraagTypeData.Include_Patient) {
+            <div class="form-group">
+                @Html.LabelFor(m => m.SelectedPatient)
+                <div>
+                    @Html.DropDownListFor(m => m.SelectedPatient, Model.PatientenLijst)
+                </div>
+            </div>
+        }
+
+        if (Model.DisplayAanvraagTypeData.Include_avr_Transportwijze) {
+            <div class="form-group">
+                @Html.LabelFor(m => m.SelectedTransportwijze)
+                <div>
+                    @Html.DropDownListFor(m => m.SelectedTransportwijze, Model.TransportwijzeLijst)
+                </div>
+            </div>
+        }
+
+        if (Model.DisplayAanvraagTypeData.Include_va_Omschrijving) {
+            <div class="form-group">
+                @Html.LabelFor(m => m.va_Omschrijving)
+                <div>
+                    @Html.EditorFor(m => m.va_Omschrijving)
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div>
+                @Html.LabelFor(m => m.Van)
+                <div>
+                    @Html.EditorFor(m => m.Van)
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Naar)
+                <div>
+                    @Html.EditorFor(m => m.Naar)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Opslaan" class="btn btn-default" />
+        </div>
+    }
+} else {
+    <p>Problemen bij het laden van de aanvraag.</p>
+}

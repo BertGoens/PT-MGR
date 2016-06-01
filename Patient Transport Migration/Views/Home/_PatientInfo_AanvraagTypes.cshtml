@@ -1,9 +1,9 @@
-﻿@model Patient_Transport_Migration.Models.VM.PatientInfoVM
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.AanvraagTypesVM
 
 <div>
     <label for="dllRequestTypes">Selecteer een aanvraag</label>
     <br />
-    @Html.DropDownListFor(model => model.AanvraagTypesVM.AanvraagTypeSelected, Model.AanvraagTypesVM.AanvraagTypeLijst, "Aanvragen",
+    @Html.DropDownListFor(m => m.AanvraagTypeSelected, new SelectList(Model.AanvraagTypeLijst, "Value", "Text"), "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
     <br />
     <button id="btnLoadSelectedAanvraagType">Maak aanvraag</button>

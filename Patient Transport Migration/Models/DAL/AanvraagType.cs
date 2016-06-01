@@ -13,6 +13,7 @@ namespace Patient_Transport_Migration.Models.DAL {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Display(Name = "Aanvraag Type")]
         [MaxLength(255)]
         public string Omschrijving { get; set; }
 
@@ -26,9 +27,9 @@ namespace Patient_Transport_Migration.Models.DAL {
         [DefaultValue(false)]
         public bool Include_PatientVisit { get; set; }
 
-        // Emerged Request: 'er' prefix
+        // Vervoer Aanvraag: 'va' prefix
         [DefaultValue(false)]
-        public bool Include_er_Omschrijving { get; set; }
+        public bool Include_va_Omschrijving { get; set; }
 
         // Aanvraag van Consult: 'avc' prefix
         [DefaultValue(false)]

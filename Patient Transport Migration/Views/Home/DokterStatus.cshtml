@@ -1,39 +1,64 @@
-﻿@model Patient_Transport_Migration.Models.VM.DokterStatusVM
+﻿@model Patient_Transport_Migration.Models.VM.DokterStatus.DokterLijstVM
 
 @{
     ViewBag.Title = "Dokter Status";
 }
 
-
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
-@using (Html.BeginForm()) {
-    @Html.AntiForgeryToken()
+<div id="content-container">
+    @if (ViewBag.ErrorMessage != null) {
+        <div class="error">
+            @ViewBag.ErrorMessage;
+        </div>
+    }
 
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div style="padding-left:1em">
-            <label for="ddlDokters">Selecteer een dokter om zijn status te veranderen</label>
-            <div>
-                @Html.DropDownListFor(model => model.DokterLijstSelected, Model.DokterLijst, "Dokters",
-               new { @onchange = "loadEditDokter(this.value)", @id = "ddlDokters" })
-            </div>
-
-
-            <div>
-                <!--Container-->
-                <div id="dvEditDokterStatus">
-                    @{Html.RenderPartial("_DokterStatusEditDokter", Model); }
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        <div>
+            <div class="form-group">
+                <label for="ddlDokters">Selecteer een dokter om zijn status te veranderen</label>
+                <div>
+                    @Html.DropDownListFor(m => m.DokterLijstSelected, Model.DokterLijst, "Dokters",
+        new { @onchange = "ddlDoktersOnChange(this.value)", @id = "ddlDokters" })
                 </div>
             </div>
+            <div>
+                <div id="dvDokterStatus"></div>
+                <div id="dvLoaderDokterStatus" class="ajax-loader"></div>
+            </div>
         </div>
-    </div>
-                    }
+    }
+</div>
 
 <script>
-    function loadEditDokter(docId) {
-        $("#dvEditDokterStatus").load('GetDokterDetails?docterId=' + docId);
-    }
+    //ONLOAD
+    $(new function () {
+        //Select dokter from url
+    });
+
+    function ddlDoktersOnChange(docId) {
+        $("#dvDokterStatus").load('GetDokterStatus_DokterDetails?docterId=' + docId);
+
+        var $dvLoader = $('#dvLoaderDokterStatus');
+        var $dvContent = $("#dvDokterStatus");
+        $dvContent.html('');
+
+        if (docId != "") {
+            //Laad Content
+            $.ajax({
+                type: "GET",
+                url: "GetDokterStatus_DokterDetails?docterId=" + docId,
+                beforeSend: function () {
+                    $dvLoader.show();
+                },
+                success: function (result) {
+                    $dvLoader.hide();
+                    $dvContent.html(result);
+                }
+
+            });
+        }
+    };
 </script>

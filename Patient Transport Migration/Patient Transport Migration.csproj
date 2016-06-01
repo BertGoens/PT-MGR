@@ -137,11 +137,18 @@
     <Compile Include="Models\DAL\Transportwijze.cs" />
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
-    <Compile Include="Models\VM\AanvraagVM.cs" />
-    <Compile Include="Models\VM\DokterStatusVM.cs" />
-    <Compile Include="Models\VM\MaakVervoerAanvraagVM.cs" />
-    <Compile Include="Models\VM\PatientInfoVM.cs" />
-    <Compile Include="Models\VM\VerplegingOverzichtVM.cs" />
+    <Compile Include="Models\VM\DokterStatus\DokterDetailsVM.cs" />
+    <Compile Include="Models\VM\DokterStatus\DokterLijstVM.cs" />
+    <Compile Include="Models\VM\MaakVervoerAanvraag\AanvraagTypesVM.cs" />
+    <Compile Include="Models\VM\MaakVervoerAanvraag\MaakAanvraag.cs" />
+    <Compile Include="Models\VM\PatientInfo\AanvraagDetailsVM.cs" />
+    <Compile Include="Models\VM\PatientInfo\AanvraagTypesVM.cs" />
+    <Compile Include="Models\VM\PatientInfo\PatientDetailsVM.cs" />
+    <Compile Include="Models\VM\PatientInfo\PatientLijstVM.cs" />
+    <Compile Include="Models\VM\PatientInfo\PatientTransportAanvragenVM.cs" />
+    <Compile Include="Models\VM\VerplegingOverzicht\PatientenInOrdeVM.cs" />
+    <Compile Include="Models\VM\VerplegingOverzicht\PatientenTeVerplaatsenVM.cs" />
+    <Compile Include="Models\VM\VerplegingOverzicht\VerplegingDienstenLijstVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -156,15 +163,17 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\DokterStatus.cshtml" />
     <Content Include="Views\Home\PatientInfo.cshtml" />
-    <Content Include="Views\Home\_PatientInfoPatientDetails.cshtml" />
-    <Content Include="Views\Home\_DokterStatusEditDokter.cshtml" />
-    <Content Include="Views\Home\_PatientInfoAanvraagTypes.cshtml" />
+    <Content Include="Views\Home\_PatientInfo_PatientDetails.cshtml" />
+    <Content Include="Views\Home\_DokterStatus_EditDokter.cshtml" />
+    <Content Include="Views\Home\_PatientInfo_AanvraagTypes.cshtml" />
     <Content Include="Views\Home\VerplegingOverzicht.cshtml" />
     <Content Include="Views\Home\_VerplegingOverzichtPatientenInOrde.cshtml" />
     <Content Include="Views\Home\_VerplegingOverzichtPatientenWachtend.cshtml" />
-    <Content Include="Views\Home\_PatientInfoPatientMedischeAanvragen.cshtml" />
-    <Content Include="Views\Home\_AanvraagDetails.cshtml" />
+    <Content Include="Views\Home\_PatientInfo_PatientMedischeAanvragen.cshtml" />
+    <Content Include="Views\Home\_MaakVervoerAanvraag_AanvraagDetails.cshtml" />
     <Content Include="Views\Home\MaakVervoerAanvraag.cshtml" />
+    <Content Include="Views\Home\_PatientInfo_AanvraagDetails.cshtml" />
+    <Content Include="Views\Home\DispatchOverzicht.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -175,6 +184,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="HtmlExtensions\" />
+    <Folder Include="Models\VM\DispatchOverzicht\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>

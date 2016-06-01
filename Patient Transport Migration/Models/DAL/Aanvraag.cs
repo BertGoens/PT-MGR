@@ -10,22 +10,16 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         public int AanvraagTypeId { get; set; }
         [ForeignKey("AanvraagTypeId")]
         public virtual AanvraagType AanvraagType { get; set; }
-       
-        /* TODO Remove AanvraagStatus?
-        public int AanvraagStatusId { get; set; }
-        public int AanvraagStapNr { get; set; }
-        [ForeignKey("AanvraagStatusId, AanvraagStapNr")]
-        public virtual AanvraagStatus AanvraagStatus { get; set; }
-        */
 
         /// <summary>
         /// De gebruikersnaam van de gebruiker die de vervoersaanvraag plaatste.
         /// </summary>
+        [Display(Name = "Aanvraag opgemaakt door")]
         [MaxLength(255)]
         public string AanvraagDoor { get; set; }
 
@@ -42,7 +36,9 @@ namespace Patient_Transport_Migration.Models.DAL {
         public virtual Patient Patient { get; set; }
 
         // Vervoer Aanvraag: 'va' prefix
+        [Display(Name = "Omschrijving")]
         [MaxLength(1000)]
+        [DataType(DataType.MultilineText)]
         public string va_Omschrijving { get; set; }
 
         // Aanvraag van Consult: 'avc' prefix

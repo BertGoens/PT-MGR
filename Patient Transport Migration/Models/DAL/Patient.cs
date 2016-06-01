@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Patient_Transport_Migration.Models.DAL {
-    // Al deze data komt uit een view
+    // Al deze data komt uit een ms-sql view
     public partial class Patient {
         public Patient() {
 

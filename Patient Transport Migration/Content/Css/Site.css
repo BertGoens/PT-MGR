@@ -16,11 +16,28 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
+/* Set width on the form input elements since they're 100% wide by default 
 input,
 select,
 textarea {
     max-width: 280px;
+}
+    */
+
+textarea,
+input {
+    margin: 4px;
+    width: 100%;
+}
+
+input {
+    border-radius: 5px;
+}
+
+input[type=submit],
+input[type=checkbox] {
+    max-width: none;
+    width:auto;
 }
 
 table {
@@ -45,18 +62,25 @@ tr:nth-child(even) {
 
 }
 
-#content-container {
+.content-container {
     margin:20px auto;
+    display: block;
 }
 
-#content-left {
+.content-left {
+    box-sizing:border-box;
     float:left;
     width:50%;
+    padding-right: 1em;
+    overflow:hidden;
 }
 
-#content-right {
+.content-right {
+    padding: 0.5em;
+    box-sizing:border-box;
     float:left;
     width:50%;
+    border: 1px dotted #000000;
 }
 
 #footer {

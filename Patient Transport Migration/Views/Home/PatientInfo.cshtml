@@ -1,4 +1,4 @@
-﻿@model Patient_Transport_Migration.Models.VM.PatientInfoVM
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.PatientLijstVM
 
 @{
     ViewBag.Title = "Patiënt Info";
@@ -12,20 +12,19 @@
         <div>
             <label for="ddlPatienten">Selecteer een patiënt</label>
             <br />
-            @Html.DropDownListFor(model => model.PatientenLijstSelected, Model.PatientenLijst, "Patienten",
+            @Html.DropDownListFor(m => m.SelectedPatient, new SelectList(Model.Patienten, "Value", "Text", Model.SelectedPatient), "Patienten",
     htmlAttributes: new { @id = "ddlPatienten", @onchange = "ddlPatienten_OnChange(this.value)" })
         </div>
 
-        <div id="dvLoadPatientDetails">
-            @{Html.RenderPartial("_PatientInfoPatientDetails", Model);}
+        <div>
+            <div id="dvLoaderPatientDetails" class="ajax-loader"></div>
+            <div id="dvPatientDetails"></div>
         </div>
 
         <div>
             <div id="dvPatientMedischeAanvragen"></div>
             <div id="dvLoaderPatientMedischeAanvragen" class="ajax-loader"></div>
         </div>
-
-
     </div>
     <div id="content-right">
         <div id="dvLoaderAanvraagDetails" class="ajax-loader"></div>
@@ -34,25 +33,47 @@
 </div>
 
 <script>
-    function ddlPatienten_OnChange(visitId) {
-        $("#dvLoadPatientDetails").load('GetPatientDetails?visitId=' + visitId);
+    $(function () {
+        $dvLoaderPatientDetails = $("#dvLoadPatientDetails");
+        $dvPatientDetails = $("#dvPatientDetails")
+        $dvLoaderMedischeAanvragen = $('#dvLoaderPatientMedischeAanvragen');
+        $dvMedischeAanvragen = $("#dvPatientMedischeAanvragen");
 
-        var $dvLoaderPMA = $('#dvLoaderPatientMedischeAanvragen');
-        var $dvContentPMA = $("#dvPatientMedischeAanvragen");
-        $dvContentPMA.html('');
+        var ddlValue = $("#ddlPatienten").val();
+        if (ddlValue != "") {
+            ddlPatienten_OnChange(ddlValue);
+        }
+    });
+
+    function ddlPatienten_OnChange(visitId) {
+        $("#dvAanvraagDetails").html('');
+
+        $dvPatientDetails.html('');
+        $dvMedischeAanvragen.html('');
 
         if (visitId != "") {
             $.ajax({
                 type: "GET",
-                url: "GetPatientMedischeAanvragen?visitId=" + visitId,
+                url: "GetPatientInfo_PatientDetails?visitId=" + visitId,
                 beforeSend: function () {
-                    $dvLoaderPMA.show();
+                    $dvLoaderPatientDetails.show();
                 },
                 success: function (result) {
-                    $dvLoaderPMA.hide();
-                    $dvContentPMA.html(result);
+                    $dvLoaderPatientDetails.hide();
+                    $dvPatientDetails.html(result);
                 }
+            });
 
+            $.ajax({
+                type: "GET",
+                url: "GetPatientInfo_MedischeAanvragen?visitId=" + visitId,
+                beforeSend: function () {
+                    $dvLoaderMedischeAanvragen.show();
+                },
+                success: function (result) {
+                    $dvLoaderMedischeAanvragen.hide();
+                    $dvMedischeAanvragen.html(result);
+                }
             });
         }
     }

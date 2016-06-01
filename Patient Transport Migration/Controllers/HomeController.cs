@@ -1,8 +1,11 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models;
+using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.VM;
 
 namespace Patient_Transport_Migration.Controllers {
@@ -23,33 +26,34 @@ namespace Patient_Transport_Migration.Controllers {
             return View();
         }
 
+        #region DokterStatus
         [HttpGet]
         public ViewResult DokterStatus() {
-            HttpCookie doctorCookie = Request.Cookies["dokterId"];
-            var vm = DokterStatusVM.Create(doctorCookie);
+            var vm = new Models.VM.DokterStatus.DokterLijstVM();
             return View(vm);
         }
 
         [HttpGet]
-        public PartialViewResult GetDokterDetails(string docterId) {
-            var vm = new DokterStatusVM();
-            vm.DokterDetailsVM = DokterDetailsVM.Create(docterId);
-            return PartialView("_DokterStatusEditDokter", vm);
+        public PartialViewResult GetDokterStatus_DokterDetails(string docterId) {
+            var vm = new Models.VM.DokterStatus.DokterDetailsVM(docterId);
+            return PartialView("_DokterStatus_EditDokter", vm);
         }
 
         [HttpPost]
-        public ActionResult DokterStatus(DokterStatusVM viewModel) {
+        public ActionResult DokterStatus(Models.VM.DokterStatus.DokterDetailsVM vm) {
             if (ModelState.IsValid) {
-                //Save chosen doctor to cookie
-                var docId = viewModel.DokterLijstSelected;
-                var dokterIdCookie = new HttpCookie("dokterId", docId.ToString());
-                dokterIdCookie.Expires.AddDays(365);
-                Response.SetCookie(dokterIdCookie);
-
-                //Save doctor consult status
-                db.Entry(viewModel.DokterDetailsVM.Dokter).State = EntityState.Modified;
-                db.SaveChanges();
-
+                // Haal dokter op & bewerk zijn instellingen
+                try {
+                Dokter dr = db.tblDokters.First(d => d.Id == vm.Id);
+                if (dr.IsConsultVerwachtend != vm.IsConsultVerwachtend) {
+                    dr.IsConsultVerwachtend = vm.IsConsultVerwachtend;
+                    //Save doctor consult status
+                    db.Entry(dr).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                } catch (Exception ex) {
+                    ViewBag.ErrorMessage = ex.Message;
+                }
                 return RedirectToAction("DokterStatus");
             } else 
            {
@@ -59,69 +63,138 @@ namespace Patient_Transport_Migration.Controllers {
 
             return View();
         }
+        #endregion DokterStatus
 
+        #region PatientInfo
         [HttpGet]
-        public ViewResult PatientInfo() {
-            var vm = PatientInfoVM.Create();
-            return View(vm);
+        public ViewResult PatientInfo(string patient) {
+            return View(new Models.VM.PatientInfo.PatientLijstVM(patient));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientDetails(string visitId) {
-            var vm = new PatientInfoVM();
-            vm.PatientDetailsVM = PatientDetailsVM.Create(visitId);
-            return PartialView("_PatientInfoPatientDetails", vm);
+        public PartialViewResult GetPatientInfo_PatientDetails(string visitId) {
+            return PartialView("_PatientInfo_PatientDetails", new Models.VM.PatientInfo.PatientDetailsVM(visitId));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientMedischeAanvragen(string visitId) {
-            var vm = new PatientInfoVM();
-            vm.PatientMedischeAanvragenVM = PatientMedischeAanvragenVM.Create(visitId);
-            return PartialView("_PatientInfoPatientMedischeAanvragen", vm);
+        public PartialViewResult GetPatientInfo_MedischeAanvragen(string visitId) {
+            return PartialView("_PatientInfo_PatientMedischeAanvragen", new Models.VM.PatientInfo.PatientTransportAanvragenVM(visitId));
         }
 
         [HttpGet]
-        public PartialViewResult GetAanvraagTypes() {
-            var vm = new PatientInfoVM();
-            vm.AanvraagTypesVM = AanvraagTypesVM.Create();
-            return PartialView("_PatientInfoAanvraagTypes", vm);
+        public PartialViewResult GetPatientInfo_AanvraagTypes() {
+            return PartialView("_PatientInfo_AanvraagTypes", new Models.VM.PatientInfo.AanvraagTypesVM());
         }
 
         /// <summary>
-        /// Het maken of updaten van een aanvraag
+        /// Het updaten van een aanvraag
         /// </summary>
-        /// <param name="aanvraagId">De (al dan niet bestaande) aanvraagId</param>
-        /// <param name="aanvraagTypeId">Welk type aanvraag het is</param>
         [HttpGet]
-        public PartialViewResult GetCreateUpdateAanvraagDetails(string aanvraagId, string aanvraagTypeId) {
-            var vm = AanvraagVM.Create(aanvraagId, aanvraagTypeId, User.Identity.Name);
-            return PartialView("_AanvraagDetails", vm);
+        public PartialViewResult GetPatientInfo_AanvraagDetails(string aanvraagId) {
+            var vm = new Models.VM.PatientInfo.AanvraagDetailsVM(aanvraagId);
+            return PartialView("_PatientInfo_AanvraagDetails", vm);
         }
 
+        /// <summary>
+        /// POST van _PatientInfo_MedischeAanvragen
+        /// </summary>
+        [HttpPost]
+        public ActionResult PatientInfo(Models.VM.PatientInfo.AanvraagDetailsVM vm) {
+            if (ModelState.IsValid) {
+                try {
+                    long anvId = long.Parse(vm.AanvraagId);
+                    Aanvraag aanvraag = db.tblAanvragen.First(a => a.Id == anvId);
+
+                    if (aanvraag.AanvraagType.Include_avr_Transportwijze) {
+                        int twId = int.Parse(vm.SelectedTransportwijze);
+                        Transportwijze aanvrTw = db.tblTransportwijzes.First(tw => tw.Id == twId);
+                        aanvraag.avr_Transportwijze = aanvrTw;
+                    }
+
+                    if (aanvraag.AanvraagType.Include_va_Omschrijving) {
+                        aanvraag.va_Omschrijving = vm.va_Omschrijving;
+                    }
+
+                    db.Entry(aanvraag).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return View("PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                    ViewBag.ErrorMessage = ex.Message;
+                    throw;
+                }
+            } else {
+                ViewBag.ErrorMessage = getViewModelErrors();
+            }
+            return RedirectToAction("PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
+        }
+
+        #endregion PatientInfo
+
+        #region VerplegingOverzicht
         [HttpGet]
-        public ViewResult VerplegingOverzicht() {
-            var vm = new VerplegingOverzichtVM();
-            return View(vm);
+        public ViewResult VerplegingOverzicht(string dienst) {
+            return View(new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(dienst));
         }
 
         [HttpGet]
         public PartialViewResult GetPatientenInOrde() {
-            var vm = new VerplegingOverzichtVM();
-            vm.PatientenInOrdeVM = VerplegingOverzichtPatientenInOrde.Create();
-            return PartialView("_VerplegingOverzichtPatientenInOrde", vm);
+            return PartialView("_VerplegingOverzichtPatientenInOrde", new Models.VM.VerplegingOverzicht.PatientenInOrdeVM());
         }
 
         [HttpGet]
         public PartialViewResult GetPatientenWachtend() {
-            var vm = new VerplegingOverzichtVM();
-            vm.PatientenWachtendVM = VerplegingOverzichtPatientenWachtend.Create();
-            return PartialView("_VerplegingOverzichtPatientenWachtend", vm);
+            return PartialView("_VerplegingOverzichtPatientenWachtend", new Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM());
         }
+        #endregion VerplegingOverzicht
 
+        #region MaakVervoerAanvraag
         [HttpGet]
         public ViewResult MaakVervoerAanvraag() {
-            var vm = MaakVervoerAanvraagVM.Create();
-            return View(vm);
+            return View(new Models.VM.MaakVervoerAanvraag.AanvraagTypesVM());
         }
+
+        /// <summary>
+        /// Het maken van een Aanvraag
+        /// </summary>
+        [HttpGet]
+        public PartialViewResult GetMaakVervoerAanvraag_AanvraagDetails(string aanvraagTypeId) {
+            return PartialView("_MaakVervoerAanvraag_AanvraagDetails", new Models.VM.MaakVervoerAanvraag.MaakAanvraag(aanvraagTypeId));
+        }
+
+        [HttpPost]
+        public ActionResult MaakVervoerAanvraag(Models.VM.MaakVervoerAanvraag.MaakAanvraag vm) {
+            if (ModelState.IsValid) {
+                //Maak Aanvraag
+                var saveAanvraag = new Aanvraag();
+                saveAanvraag.AanvraagDoor = User.Identity.Name;
+                saveAanvraag.AanvraagType = db.tblAanvraagTypes.First(at => at.Id == vm.AanvraagTypeId);
+
+                if (saveAanvraag.AanvraagType.Include_va_Omschrijving) {
+                    saveAanvraag.va_Omschrijving = vm.va_Omschrijving;
+                }
+
+                if (saveAanvraag.AanvraagType.Include_Patient || saveAanvraag.AanvraagType.Include_PatientVisit) {
+                    saveAanvraag.Patient = db.tblPatienten.First(p => p.PatientVisit == vm.SelectedPatient);
+                }
+
+                db.tblAanvragen.Add(saveAanvraag);
+
+                //Maak TransportTaak
+                var aanvraagTaak = new TransportTaak();
+                aanvraagTaak.Aanvraag = saveAanvraag;
+                aanvraagTaak.LocatieStart = vm.Van;
+                aanvraagTaak.LocatieEind = vm.Naar;
+                //aanvraagTaak.DatumGemaakt = new System.DateTime();
+                db.tblTransportTaken.Add(aanvraagTaak);
+                // SAVE
+                db.SaveChanges();
+            } else {
+                Debug.Print(getViewModelErrors());
+                return View();
+            }
+            return RedirectToAction("MaakVervoerAanvraag");
+        }
+        #endregion MaakVervoerAanvraag
     }
 }

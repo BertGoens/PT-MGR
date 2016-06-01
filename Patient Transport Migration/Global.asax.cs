@@ -12,9 +12,11 @@ namespace Patient_Transport_Migration {
             StartDatabase();
         }
 
+        /*
         protected void Application_Error(object sender, EventArgs e) {
             Exception ex = Server.GetLastError();
-            /*
+            System.Diagnostics.Debug.Print(ex.ToString());
+            
             TODO Uncomment
             ExceptionLogger logger = new ExceptionLogger() {
                 ExceptionMessage = ex.Message,
@@ -31,8 +33,8 @@ namespace Patient_Transport_Migration {
             //Server.ClearError();
 
             //Response.Redirect("/Home/Error");
-            */
-        }
+            
+    }*/
 
         private void StartDatabase() {
             // Voor Migrations, geeft error als configuratie ergens niet klopt.

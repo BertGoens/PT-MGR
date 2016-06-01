@@ -1,0 +1,44 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.AanvraagDetailsVM
+
+@if (Model.Aanvraag != null) {
+    using (Html.BeginForm("PatientInfo", "Home")) {
+        @Html.HiddenFor(m => m.AanvraagId, new { id = "AanvraagId", Value = @Model.Aanvraag.Id })
+        @Html.HiddenFor(m => Model.PatientVisitId, new { id = "PatientVisitId", Value = @Model.Aanvraag.PatientVisit })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Aanvraag.AanvraagType.Omschrijving)
+            <div>
+                @Html.ValueFor(m => m.Aanvraag.AanvraagType.Omschrijving)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Aanvraag.AanvraagDoor)
+            <div>
+                @Html.ValueFor(m => m.Aanvraag.AanvraagDoor)
+            </div>
+        </div>
+
+        if (Model.Aanvraag.AanvraagType.Include_avr_Transportwijze) {
+            <div class="form-group">
+                @Html.LabelFor(m => m.SelectedTransportwijze)
+                <div>
+                    @Html.DropDownListFor(m => m.SelectedTransportwijze, new SelectList(Model.TransportwijzeLijst, "Value", "Text", Model.Aanvraag.avr_TransportwijzeId))
+                </div>
+            </div>
+        }
+
+        if (Model.Aanvraag.AanvraagType.Include_va_Omschrijving) {
+            <div class="form-group">
+                @Html.LabelFor(m => m.va_Omschrijving)
+                <div>
+                    @Html.EditorFor(m => m.va_Omschrijving)
+                </div>
+            </div>
+        }
+
+        <input type="submit" value="Opslaan" class="btn btn-default" />
+    }
+} else {
+    <p>Problemen bij het laden van de aanvraag.</p>
+}

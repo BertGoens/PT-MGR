@@ -1,23 +1,21 @@
-﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzichtVM
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzicht.PatientenInOrdeVM
 
-@if (Model != null) {
-    if (Model.PatientenInOrdeVM != null) {
-        <table class="table">
-            <tr>
-                <th>Datum Vervoersaanvraag</th>
-                <th>Patient</th>
-                <th>Kamer</th>
-                <th>Bed</th>
-            </tr>
+<table class="table">
+    <tr>
+        <th>Datum Vervoersaanvraag</th>
+        <th>Patient</th>
+        <th>Kamer</th>
+        <th>Bed</th>
+    </tr>
 
-            @foreach (var taak in Model.PatientenInOrdeVM.PatientInOrde) {
-                <tr>
-                    <td>@taak.DatumGemaakt</td>
-                    <td>@taak.Aanvraag.Patient.Naam</td>
-                    <td>@taak.Aanvraag.Patient.Kamer</td>
-                    <td>@taak.Aanvraag.Patient.BedNr</td>
-                </tr>
-           }
-        </table>
+@if (Model.PatientVervoerTakenInOrde != null) {
+    foreach (var taak in Model.PatientVervoerTakenInOrde) {
+        <tr>
+            <td>@taak.DatumGemaakt</td>
+            <td>@taak.Aanvraag.Patient.Naam</td>
+            <td>@taak.Aanvraag.Patient.Kamer</td>
+            <td>@taak.Aanvraag.Patient.BedNr</td>
+        </tr>
     }
 }
+</table>
