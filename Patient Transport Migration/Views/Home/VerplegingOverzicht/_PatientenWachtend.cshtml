@@ -1,0 +1,31 @@
+﻿@model Patient_Transport_Migration.Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM
+
+<table class="table table-bordered table-hover table-responsive table-striped">
+    <caption><big><span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LoadPatientenWachtend()"> </span>
+        Patienten wachtend op vervoer</big>
+    </caption>
+    <tr>
+        <th>Datum Vervoersaanvraag</th>
+        <th>Patient</th>
+        <th>Kamer</th>
+        <th>Bed</th>
+    </tr>
+
+    @foreach (var taak in Model.PatientenWachtend) {
+        <tr>
+            <td>@taak.DatumGemaakt</td>
+            <td>@taak.Aanvraag.Patient.Naam</td>
+            <td>@taak.Aanvraag.Patient.Kamer</td>
+            <td>@taak.Aanvraag.Patient.BedNr</td>
+        </tr>
+    }
+
+</table>
+
+<ul class="pagination">
+    @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
+        <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+            <a href="/Home/VerplegingOverzicht?PatientenWachtendPage=@page">@page</a>
+        </li>
+    }
+</ul>

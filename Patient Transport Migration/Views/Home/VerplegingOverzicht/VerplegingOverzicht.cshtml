@@ -9,13 +9,11 @@
 
 <div>
     <div>
-        <h3>Recent vervoerde patienten</h3>
         <div id="dvLoaderPatientenInOrde" class="ajax-loader"></div>
         <div id="dvPatientenInOrde"></div>
     </div>
     <br />
     <div>
-        <h3>Patienten wachtend op vervoer</h3>
         <div id="dvLoaderPatientenWachtend" class="ajax-loader"></div>
         <div id="dvPatientenWachtend"></div>
     </div>
@@ -23,48 +21,56 @@
 
 <script>
     $(document).ready(function () {
-        //disable caching of ajax requests
-        $.ajaxSetup({ cache: false });
         //Load page manually once
-        refreshPatientenInOrde();
-        refreshPatientenWachtend();
+        LoadPatientenInOrde();
+        LoadPatientenWachtend();
         //Refresh page every x time
         var interval = 300000; //300 Seconds = 5 minutes
-        setInterval(refreshPatientenInOrde(), interval);
-        setInterval(refreshPatientenWachtend(), interval);
+        setInterval(LoadPatientenInOrde(), interval);
+        setInterval(LoadPatientenWachtend(), interval);
     });
 
-    function refreshPatientenInOrde() {
+    function LoadPatientenInOrde() {
         var $dvLoaderPIO = $('#dvLoaderPatientenInOrde');
         var $dvContentPIO = $("#dvPatientenInOrde");
         $.ajax({
             type: "GET",
+            cache: false,
+            async: true,
             url: "GetPatientenInOrde",
             beforeSend: function () {
                 $dvContentPIO.html('');
                 $dvLoaderPIO.show();
-            },
-            success: function (result) {
-                $dvLoaderPIO.hide();
+            }, success: function (result) {
                 $dvContentPIO.html(result);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                $dvPatientDetails.html(
+                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+            }, complete: function () {
+                $dvLoaderPIO.hide();
             }
         });
-    }
+    };
 
-    function refreshPatientenWachtend() {
+    function LoadPatientenWachtend() {
         var $dvLoaderPW = $('#dvLoaderPatientenWachtend');
         var $dvContentPW = $("#dvPatientenWachtend");
         $.ajax({
             type: "GET",
+            async: true,
+            cache: false,
             url: "GetPatientenWachtend",
             beforeSend: function () {
                 $dvContentPW.html('');
                 $dvLoaderPW.show();
-            },
-            success: function (result) {
-                $dvLoaderPW.hide();
+            }, success: function (result) {
                 $dvContentPW.html(result);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                $dvPatientDetails.html(
+                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+            }, complete: function () {
+                $dvLoaderPW.hide();
             }
         })
-    }
+    };
 </script>

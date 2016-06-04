@@ -9,21 +9,6 @@
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
-}
-
-/* Set width on the form input elements since they're 100% wide by default 
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-    */
-
 textarea,
 input {
     margin: 4px;
@@ -40,28 +25,6 @@ input[type=checkbox] {
     width:auto;
 }
 
-table {
-    border-collapse: collapse;
-    width: auto;
-}
-
-th, td {
-    text-align: left;
-    padding: 8px;
-}
-
-th {
-    background-color: cornflowerblue;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-#header{
-
-}
-
 .content-container {
     margin:20px auto;
     display: block;
@@ -76,15 +39,14 @@ tr:nth-child(even) {
 }
 
 .content-right {
-    padding: 0.5em;
     box-sizing:border-box;
     float:left;
     width:50%;
-    border: 1px dotted #000000;
 }
 
 #footer {
     clear:both;
+    padding-top: 1em;
 }
 
 .ajax-loader {
@@ -99,4 +61,53 @@ tr:nth-child(even) {
 select {
     margin-left: 4px;
     margin-bottom: 4px;
+}
+
+table.table > caption {
+    font-weight: bold;
+    padding-bottom: 0.4em;
+}
+
+ul.pagination {
+    margin-top: 0.8em;
+}
+
+table.table-spacify th {
+    text-align:center;
+    padding: 0.5em;
+}
+
+table.table-spacify td {
+    padding: 0.4em;
+}
+
+@media (min-width: 1600px) {
+    .container {
+        min-width: 1300px;
+    }
+}
+
+@media (min-width: 768px) {
+    .dl-horizontal dt {
+        width: inherit !important;
+    }
+    .dl-horizontal dd {
+        margin-left: 200px !important;
+    }
+}
+
+.alert {
+    margin: 0.4em 0 0.4em 0;
+}
+
+.glyphicon-clickable {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+}
+
+.HogePrioriteit {
+    color: darkred;
 }

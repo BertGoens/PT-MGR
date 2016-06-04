@@ -13,6 +13,8 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(255)]
         public string Achternaam { get; set; }
 
+        public string Naam { get { return Voornaam + " " + Achternaam; } }
+
         public bool IsPresent { get; set; }
 
     }

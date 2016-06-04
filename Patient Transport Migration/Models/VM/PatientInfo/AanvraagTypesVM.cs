@@ -10,13 +10,11 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
     /// Zoekt in de database naar AanvraagTypes die een patient bevatten
     /// </summary>
     public class AanvraagTypesVM {
-        public AanvraagTypesVM() {
+        public AanvraagTypesVM(string patientId) {
             var db = new MSSQLContext();
-            _AanvraagTypes = db.tblAanvraagTypes.Where(a => a.Include_Patient || a.Include_PatientVisit).ToList();
+            _AanvraagTypes = db.tblAanvraagTypes.Where(a => a.Include_Patient).ToList();
+            PatientId = patientId;
         }
-
-        //Wordt momenteel niet gebruikt voor POST parameters maar ik laat hem er bij staan indien we uitbreiden.
-        public string AanvraagTypeSelected { get; set; }
 
         private List<AanvraagType> _AanvraagTypes { get; set; }
         public IEnumerable<SelectListItem> AanvraagTypeLijst {
@@ -27,5 +25,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
                 });
             }
         }
+
+        public string PatientId { get; private set; }
     }
 }

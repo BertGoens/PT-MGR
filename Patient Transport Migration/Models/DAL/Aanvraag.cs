@@ -26,9 +26,15 @@ namespace Patient_Transport_Migration.Models.DAL {
         /* {N} Data-velden; allemaal nullable */
         // Gedeeld voor meerdere requests
 
+        /// <summary>
+        /// Gebruikt om alle persoonlijke patientdata op te zoeken.
+        /// </summary>
         [MaxLength(10)]
         public string PatientId { get; set; }
 
+        /// <summary>
+        /// Gebruikt om de huidige patient zijn bezoekdata bij te houden.
+        /// </summary>
         [MaxLength(10)]
         public string PatientVisit { get; set; }
 

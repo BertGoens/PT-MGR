@@ -1,23 +1,20 @@
 ﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.AanvraagDetailsVM
 
 @if (Model.Aanvraag != null) {
-    using (Html.BeginForm("PatientInfo", "Home")) {
+    using (Html.BeginForm("PatientInfo", "Home", FormMethod.Post)) {
         @Html.HiddenFor(m => m.AanvraagId, new { id = "AanvraagId", Value = @Model.Aanvraag.Id })
-        @Html.HiddenFor(m => Model.PatientVisitId, new { id = "PatientVisitId", Value = @Model.Aanvraag.PatientVisit })
+        @Html.HiddenFor(m => Model.PatientVisitId, new { id = "PatientVisitId", Value = @Model.Aanvraag.Patient.PatientVisit })
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Aanvraag.AanvraagType.Omschrijving)
-            <div>
-                @Html.ValueFor(m => m.Aanvraag.AanvraagType.Omschrijving)
-            </div>
-        </div>
+        <dl class="dl-horizontal">
+            <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dd>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Aanvraag.AanvraagDoor)
-            <div>
-                @Html.ValueFor(m => m.Aanvraag.AanvraagDoor)
-            </div>
-        </div>
+            <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagDoor)</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagDoor)</dd>
+
+            <dt>@Html.LabelFor(m => m.Aanvraag.Patient.Naam)</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.Patient.Naam)</dd>
+        </dl>
 
         if (Model.Aanvraag.AanvraagType.Include_avr_Transportwijze) {
             <div class="form-group">
@@ -42,3 +39,9 @@
 } else {
     <p>Problemen bij het laden van de aanvraag.</p>
 }
+
+<script>
+    $(new function() {
+        $("#dvAanvraagDetails").show();
+    })
+</script>

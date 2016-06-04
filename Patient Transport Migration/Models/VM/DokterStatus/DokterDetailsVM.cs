@@ -7,7 +7,10 @@ using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models.VM.DokterStatus {
     public class DokterDetailsVM {
-        public DokterDetailsVM() { }
+        public DokterDetailsVM() {
+            //REQUIRED FOR POST
+        }
+
         public DokterDetailsVM(string dokterDetailsId) {
             var db = new MSSQLContext();
             try {

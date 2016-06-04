@@ -20,7 +20,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
                     long aId = long.Parse(aanvraagId.ToString());
                     Aanvraag = db.tblAanvragen.First(a => a.Id == aId);
                     _transportwijzeValues = db.tblTransportwijzes.ToList();
-                    
+                    va_Omschrijving = Aanvraag.va_Omschrijving; // Moet omdat dit een edit veld is
                 } catch (Exception ex) {
                     ex.ToString();
                 }
@@ -29,8 +29,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
         }
 
         public Aanvraag Aanvraag { get; private set; }
-        public string AanvraagId { get; set; }
-        public Patient Patient { get; private set; }
+        public string AanvraagId { get; set; }        
         public string PatientVisitId { get; set; }
 
         [Display(Name = "Transportwijze")]

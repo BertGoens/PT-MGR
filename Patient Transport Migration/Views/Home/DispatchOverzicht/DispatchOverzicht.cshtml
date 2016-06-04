@@ -1,0 +1,86 @@
+﻿@model Patient_Transport_Migration.Models.VM.DispatchOverzicht.WerknemersVM
+
+@{
+    ViewBag.Title = "Dispatch Overzicht";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div class="content-container">
+    <div>
+        <div id="dvLoaderWerknemers" class="ajax-loader"></div>
+        <div id="dvWerknemers">
+            <table class="table table-bordered table-hover table-responsive table-striped">
+                <caption>
+                    <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="loadWerknemersSchemas"> </span>
+                    <big>Werknemersschema</big>
+                </caption>
+                <tr>
+                    <th>Werknemer</th>
+                    <th>Schema</th>
+                </tr>
+                @foreach (var wn in Model.TransportWerknemers) {
+                    <tr>
+                        <td><span class="glyphicon glyphicon-refresh glyphicon-clickable"> </span>@wn.Naam</td>
+                        <td>SCHEMA HIER</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <div>
+        <div id="dvLoaderTaken" class="ajax-loader"></div>
+        <div id="dvTaken"></div>
+    </div>
+</div>
+
+<script>
+    function LaadWerknemersSchema(Werknemer) {
+        var $ajaxLoaderWerknemers = $('#dvLoaderWerknemers');
+        var $dvWerknemers = $("#dvWerknemers");
+        $ajaxLoaderWerknemers.show();
+        $.ajax({
+            type: "GET",
+            async: true,
+            url: "GetDispatchOverzicht_WerknemerSchema?wnId="+Werknemer,
+            beforeSend: function () {
+                $dvWerknemers.css({ opacity: 0.5 });
+            }, success: function (result) {
+                $dvWerknemers.html(result);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                $dvWerknemers.html(
+                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+            }, complete: function () {
+                $ajaxLoaderWerknemers.hide();
+                $dvWerknemers.css({ opacity: 1.0 }).show();
+            }
+        })
+    };
+
+    function LoadTaken() {
+        var $ajaxLoaderTaken = $('#dvLoaderTaken');
+        var $dvTaken = $("#dvTaken");
+        $ajaxLoaderTaken.show();
+        $.ajax({
+            type: "GET",
+            async: true,
+            url: "GetDispatchOverzicht_WachtendeTransportTaken",
+            beforeSend: function () {
+                $dvTaken.css({ opacity: 0.5 });
+            }, success: function (result) {
+                $dvTaken.html(result);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                $dvTaken.html(
+                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+            }, complete: function () {
+                $ajaxLoaderTaken.hide();
+                $dvTaken.css({ opacity: 1.0 }).show();
+            }
+        })
+    };
+
+    $(new function () {
+        LoadTaken();
+    });
+</script>

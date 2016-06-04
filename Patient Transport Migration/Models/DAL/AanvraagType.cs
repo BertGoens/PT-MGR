@@ -24,8 +24,6 @@ namespace Patient_Transport_Migration.Models.DAL {
         // Gedeelde velden
         [DefaultValue(false)]
         public bool Include_Patient { get; set; }
-        [DefaultValue(false)]
-        public bool Include_PatientVisit { get; set; }
 
         // Vervoer Aanvraag: 'va' prefix
         [DefaultValue(false)]

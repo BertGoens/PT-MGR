@@ -29,14 +29,13 @@ namespace Patient_Transport_Migration.Controllers {
         #region DokterStatus
         [HttpGet]
         public ViewResult DokterStatus() {
-            var vm = new Models.VM.DokterStatus.DokterLijstVM();
-            return View(vm);
+            return View("./DokterStatus/DokterStatus", new Models.VM.DokterStatus.DokterLijstVM());
         }
 
         [HttpGet]
         public PartialViewResult GetDokterStatus_DokterDetails(string docterId) {
             var vm = new Models.VM.DokterStatus.DokterDetailsVM(docterId);
-            return PartialView("_DokterStatus_EditDokter", vm);
+            return PartialView("./DokterStatus/_EditDokter", vm);
         }
 
         [HttpPost]
@@ -53,6 +52,7 @@ namespace Patient_Transport_Migration.Controllers {
                 }
                 } catch (Exception ex) {
                     ViewBag.ErrorMessage = ex.Message;
+                    return DokterStatus();
                 }
                 return RedirectToAction("DokterStatus");
             } else 
@@ -61,43 +61,37 @@ namespace Patient_Transport_Migration.Controllers {
                 ViewBag.ErrorMessage = errors;
             }
 
-            return View();
+            return DokterStatus();
         }
         #endregion DokterStatus
 
         #region PatientInfo
         [HttpGet]
-        public ViewResult PatientInfo(string patient) {
-            return View(new Models.VM.PatientInfo.PatientLijstVM(patient));
+        public ViewResult PatientInfo(string visitId) {
+            return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(visitId));
         }
 
         [HttpGet]
         public PartialViewResult GetPatientInfo_PatientDetails(string visitId) {
-            return PartialView("_PatientInfo_PatientDetails", new Models.VM.PatientInfo.PatientDetailsVM(visitId));
+            return PartialView("./PatientInfo/_PatientDetails", new Models.VM.PatientInfo.PatientDetailsVM(visitId));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientInfo_MedischeAanvragen(string visitId) {
-            return PartialView("_PatientInfo_PatientMedischeAanvragen", new Models.VM.PatientInfo.PatientTransportAanvragenVM(visitId));
+        public PartialViewResult GetPatientInfo_MedischeAanvragen(string visitId, string page) {
+            return PartialView("./PatientInfo/_PatientMedischeAanvragen", new Models.VM.PatientInfo.PatientTransportAanvragenVM(visitId, page));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientInfo_AanvraagTypes() {
-            return PartialView("_PatientInfo_AanvraagTypes", new Models.VM.PatientInfo.AanvraagTypesVM());
+        public PartialViewResult GetPatientInfo_AanvraagTypes(string visitId) {
+            return PartialView("./PatientInfo/_AanvraagTypes", new Models.VM.PatientInfo.AanvraagTypesVM(visitId));
         }
 
-        /// <summary>
-        /// Het updaten van een aanvraag
-        /// </summary>
         [HttpGet]
         public PartialViewResult GetPatientInfo_AanvraagDetails(string aanvraagId) {
             var vm = new Models.VM.PatientInfo.AanvraagDetailsVM(aanvraagId);
-            return PartialView("_PatientInfo_AanvraagDetails", vm);
+            return PartialView("./PatientInfo/_AanvraagDetails", vm);
         }
 
-        /// <summary>
-        /// POST van _PatientInfo_MedischeAanvragen
-        /// </summary>
         [HttpPost]
         public ActionResult PatientInfo(Models.VM.PatientInfo.AanvraagDetailsVM vm) {
             if (ModelState.IsValid) {
@@ -117,49 +111,47 @@ namespace Patient_Transport_Migration.Controllers {
 
                     db.Entry(aanvraag).State = EntityState.Modified;
                     db.SaveChanges();
-                    return View("PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
+                    return RedirectToAction("PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
                 } catch (Exception ex) {
                     Debug.Print(ex.Message);
                     ViewBag.ErrorMessage = ex.Message;
-                    throw;
+                    return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
                 }
             } else {
                 ViewBag.ErrorMessage = getViewModelErrors();
-            }
-            return RedirectToAction("PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
+                return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
+            }   
         }
 
         #endregion PatientInfo
 
         #region VerplegingOverzicht
         [HttpGet]
-        public ViewResult VerplegingOverzicht(string dienst) {
-            return View(new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(dienst));
+        public ViewResult VerplegingOverzicht(string dienst, string PatientenOkPage, string PatientenWachtendPage) {
+            return View("./VerplegingOverzicht/VerplegingOverzicht", 
+                new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(dienst, PatientenOkPage, PatientenWachtendPage ));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientenInOrde() {
-            return PartialView("_VerplegingOverzichtPatientenInOrde", new Models.VM.VerplegingOverzicht.PatientenInOrdeVM());
+        public PartialViewResult GetPatientenInOrde(string page) {
+            return PartialView("./VerplegingOverzicht/_PatientenInOrde", new Models.VM.VerplegingOverzicht.RecentVervoerdePatienten(page));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientenWachtend() {
-            return PartialView("_VerplegingOverzichtPatientenWachtend", new Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM());
+        public PartialViewResult GetPatientenWachtend(string page) {
+            return PartialView("./VerplegingOverzicht/_PatientenWachtend", new Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM(page));
         }
         #endregion VerplegingOverzicht
 
         #region MaakVervoerAanvraag
         [HttpGet]
-        public ViewResult MaakVervoerAanvraag() {
-            return View(new Models.VM.MaakVervoerAanvraag.AanvraagTypesVM());
+        public ViewResult MaakVervoerAanvraag(string patient, string type) {
+            return View("./MaakVervoerAanvraag/MaakVervoerAanvraag", new Models.VM.MaakVervoerAanvraag.AanvraagTypesVM(patient, type));
         }
 
-        /// <summary>
-        /// Het maken van een Aanvraag
-        /// </summary>
         [HttpGet]
-        public PartialViewResult GetMaakVervoerAanvraag_AanvraagDetails(string aanvraagTypeId) {
-            return PartialView("_MaakVervoerAanvraag_AanvraagDetails", new Models.VM.MaakVervoerAanvraag.MaakAanvraag(aanvraagTypeId));
+        public PartialViewResult GetMaakVervoerAanvraag_AanvraagDetails(string aanvraagTypeId, string patient) {
+            return PartialView("./MaakVervoerAanvraag/_AanvraagDetails", new Models.VM.MaakVervoerAanvraag.MaakAanvraag(aanvraagTypeId, patient));
         }
 
         [HttpPost]
@@ -174,7 +166,7 @@ namespace Patient_Transport_Migration.Controllers {
                     saveAanvraag.va_Omschrijving = vm.va_Omschrijving;
                 }
 
-                if (saveAanvraag.AanvraagType.Include_Patient || saveAanvraag.AanvraagType.Include_PatientVisit) {
+                if (saveAanvraag.AanvraagType.Include_Patient) {
                     saveAanvraag.Patient = db.tblPatienten.First(p => p.PatientVisit == vm.SelectedPatient);
                 }
 
@@ -191,10 +183,30 @@ namespace Patient_Transport_Migration.Controllers {
                 db.SaveChanges();
             } else {
                 Debug.Print(getViewModelErrors());
-                return View();
+                return View("./MaakVervoerAanvraag/MaakVervoerAanvraag");
             }
             return RedirectToAction("MaakVervoerAanvraag");
         }
         #endregion MaakVervoerAanvraag
+
+        #region DispatchOverzicht
+        [HttpGet]
+        public ActionResult DispatchOverzicht(string TakenPage) {
+            return View("./DispatchOverzicht/DispatchOverzicht", new Models.VM.DispatchOverzicht.WerknemersVM(TakenPage));
+        }
+
+        [HttpGet]
+        public PartialViewResult GetDispatchOverzicht_WachtendeTransportTaken(string page) {
+            int pageNr;
+            int.TryParse(page, out pageNr);
+            return PartialView("./DispatchOverzicht/_WachtendeTransportTaken", new Models.VM.DispatchOverzicht.WachtendeTransportTakenVM(pageNr));
+        }
+
+        [HttpPost]
+        public ActionResult DispatchOverzicht(Models.VM.DispatchOverzicht.WachtendeTransportTakenVM vm) {
+            Debug.Print("DispatchOverzicht POST");
+            return View();
+        }
+        #endregion DispatchOverzicht
     }
 }

@@ -1,0 +1,110 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.PatientTransportAanvragenVM
+
+@if (!string.IsNullOrEmpty(Model.PatientVisitId)) {
+      @:<div style="overflow-x:auto">
+        @:<table class="table-striped table-bordered table-hover table-responsive table-spacify">
+            @:<tr>
+                @:<th>Vervoersaanvragen</th>
+                @:<th>Van</th>
+                @:<th>Naar</th>
+                @:<th>Status</th>
+                @:<th>Link</th>
+            @:</tr>
+
+    foreach (var vervoersaanvraag in Model.PatientAanvragen) {
+                @:<tr>
+                    @:<td>@vervoersaanvraag.DatumGemaakt</td>
+                    @:<td>@vervoersaanvraag.LocatieStart</td>
+                    @:<td>@vervoersaanvraag.LocatieEind</td>
+                    @:<td>
+                        switch (vervoersaanvraag.GetTransportTaakStatus()) {
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.TransportTaakGemaakt:
+                                @Html.Raw("Wachtend");
+                                break;
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.TransportTaakTijdNodigGeschat:
+                                @Html.Raw("Wachtend");
+                                break;
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.WerknemerToegewezen_Wachtend:
+                                @Html.Raw("Wachtend, werknemer toegewezen");
+                                break;
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.WerknemerToegewezen_HuidigeTaak:
+                                @Html.Raw("Wordt verplaatst");
+                                break;
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.Voltooid:
+                                @Html.Raw("Voltooid");
+                                break;
+                            default:
+                                @Html.Raw("Onbekend");
+                                break;
+                        }
+                    @:</td>
+                    @:<td>
+                        @:<button onclick="btnLoadAanvraagDetails(@vervoersaanvraag.Aanvraag.Id)">Toon Aanvraag</button>
+                    @:</td>
+                @:</tr>
+            }
+        @:</table>
+        @:</div>
+
+        @:<ul class="pagination">
+            for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
+                @:<li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                    @:<a href="/Home/PatientInfo?visitId=@Model.PatientVisitId&page=@page">@page</a>
+                @:</li>
+            }
+        @:</ul>
+} else {
+    @:<p>Geen medische aanvragen voor deze patiënt gevonden.</p>
+}
+
+<button onclick="btnLoadAanvraagTypes()" style="margin:0.5em 0 0.5em 0;display:block">Maak nieuwe vervoers-aanvraag</button>
+<div>
+    <div id="dvLoadAanvraagTypes" class="ajax-loader"></div>
+    <div id="dvAanvraagTypes"></div>
+</div>
+
+<script>
+    function btnLoadAanvraagDetails(aanvraagId) {
+        var $ajaxLoaderDetails = $('dvLoaderAanvraagDetails');
+        var $dvContentDetails = $("#dvAanvraagDetails");
+        $.ajax({
+            type: "GET",
+            url: "GetPatientInfo_AanvraagDetails?aanvraagId=" + aanvraagId,
+            beforeSend: function() {
+                $dvContentDetails.html('');
+                $ajaxLoaderDetails.show();
+            },
+            success: function(result) {
+                $dvContentDetails.html(result);
+            },
+            error: function() {
+                $dvContentDetails.html("Probleem met het laden van de data.")
+            },
+            complete: function() {
+                $ajaxLoaderDetails.hide();
+            }
+        });
+    };
+
+    function btnLoadAanvraagTypes() {
+        var $ajaxLoaderTypes = $('dvLoadAanvraagTypes');
+        var $dvContentTypes = $("#dvAanvraagTypes");
+        $.ajax({
+            type: "GET",
+            url: "GetPatientInfo_AanvraagTypes?visitId=@Model.PatientVisitId",
+            beforeSend: function() {
+                $dvContentTypes.html('');
+                $ajaxLoaderTypes.show();
+            },
+            success: function(result) {
+                $dvContentTypes.html(result);
+            },
+            error: function() {
+                $dvContentTypes.html("Probleem met het laden van de data.")
+            },
+            complete: function() {
+                $ajaxLoaderTypes.hide();
+            }
+        });
+    };
+</script>

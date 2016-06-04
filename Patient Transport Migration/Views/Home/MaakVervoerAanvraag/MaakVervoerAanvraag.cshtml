@@ -19,12 +19,18 @@
     </div>
 </div>
 
-
 <script>
     $(new function () {
         $dvContent = $("#dvAanvraagDetails");
         $dvContentRight = $(".content-right");
         $dvContentRight.hide();
+
+        var requestType = $('#dllRequestTypes').val();    
+        patient = "@Model.SelectedPatient";
+        if (requestType != "") {
+            renderAanvraag(requestType);
+            patient = "";
+        };
     });
 
     function renderAanvraag(type) {
@@ -36,17 +42,16 @@
             $ajaxLoader.show();
             $.ajax({
                 type: "GET",
-                url: "GetMaakVervoerAanvraag_AanvraagDetails?aanvraagTypeId=" + type,
+                async: true,
+                url: "GetMaakVervoerAanvraag_AanvraagDetails?aanvraagTypeId="+type+"&patient="+patient,
                 beforeSend: function () {
                     $dvContent.html('');
-                },
-                success: function (result) {                 
+                }, success: function (result) {                 
                     $dvContent.html(result);
-                },
-                error: function (error) {
-                    $dvContent.html("<p>Probleem met laden! <br />" + error + "</p>");
-                },
-                complete: function () {
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    $dvContent.html(
+                        "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                }, complete: function () {
                     $ajaxLoader.hide();
                     $dvContentRight.show();
                 }

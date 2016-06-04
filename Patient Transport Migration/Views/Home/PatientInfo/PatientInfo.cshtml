@@ -7,8 +7,8 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
-<div id="content-container">
-    <div id="content-left">
+<div class="content-container">
+    <div class="content-left">
         <div>
             <label for="ddlPatienten">Selecteer een patiënt</label>
             <br />
@@ -26,18 +26,16 @@
             <div id="dvLoaderPatientMedischeAanvragen" class="ajax-loader"></div>
         </div>
     </div>
-    <div id="content-right">
+    <div class="content-right">
         <div id="dvLoaderAanvraagDetails" class="ajax-loader"></div>
-        <div id="dvAanvraagDetails"></div>
+        <div id="dvAanvraagDetails" style="border:1px dotted #000000;padding:0.7em;border-radius:3px"></div>
     </div>
 </div>
 
 <script>
     $(function () {
-        $dvLoaderPatientDetails = $("#dvLoadPatientDetails");
-        $dvPatientDetails = $("#dvPatientDetails")
-        $dvLoaderMedischeAanvragen = $('#dvLoaderPatientMedischeAanvragen');
-        $dvMedischeAanvragen = $("#dvPatientMedischeAanvragen");
+        $dvAanvraagDetails = $("#dvAanvraagDetails");
+        $dvAanvraagDetails.hide();
 
         var ddlValue = $("#ddlPatienten").val();
         if (ddlValue != "") {
@@ -46,6 +44,12 @@
     });
 
     function ddlPatienten_OnChange(visitId) {
+        $dvAanvraagDetails.hide();
+        $dvLoaderPatientDetails = $("#dvLoadPatientDetails");
+        $dvPatientDetails = $("#dvPatientDetails")
+        $dvLoaderMedischeAanvragen = $('#dvLoaderPatientMedischeAanvragen');
+        $dvMedischeAanvragen = $("#dvPatientMedischeAanvragen");
+
         $("#dvAanvraagDetails").html('');
 
         $dvPatientDetails.html('');
@@ -54,27 +58,37 @@
         if (visitId != "") {
             $.ajax({
                 type: "GET",
+                async: true,
                 url: "GetPatientInfo_PatientDetails?visitId=" + visitId,
                 beforeSend: function () {
                     $dvLoaderPatientDetails.show();
-                },
-                success: function (result) {
-                    $dvLoaderPatientDetails.hide();
+                }, success: function (result) {                    
                     $dvPatientDetails.html(result);
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    $dvPatientDetails.html(
+                        "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                }, complete: function () {
+                    $dvLoaderPatientDetails.hide();
                 }
             });
 
             $.ajax({
                 type: "GET",
+                async: true,
                 url: "GetPatientInfo_MedischeAanvragen?visitId=" + visitId,
                 beforeSend: function () {
                     $dvLoaderMedischeAanvragen.show();
-                },
-                success: function (result) {
-                    $dvLoaderMedischeAanvragen.hide();
+                }, success: function (result) {                   
                     $dvMedischeAanvragen.html(result);
-                }
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    $dvPatientDetails.html(
+                        "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                }, complete: function () {
+                    $dvLoaderMedischeAanvragen.hide();
+            }
             });
+        } else {
+
         }
     }
 </script>

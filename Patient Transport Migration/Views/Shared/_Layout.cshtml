@@ -23,12 +23,19 @@
         <h2>@ViewBag.Title</h2>
         <hr />
 
+        @if (ViewBag.ErrorMessage != null) {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage;
+            </div>
+        }
+
         @RenderBody()
         
         <footer id="footer">
-            <br />
             <hr />
-            <p>&copy; Bert Goens - Patient Transport - @DateTime.Now.Year</p>
+            <div class="container">
+                <p>&copy; Bert Goens - Patient Transport - @DateTime.Now.Year</p>
+            </div>          
         </footer>
     </div>
 </body>

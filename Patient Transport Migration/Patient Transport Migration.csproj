@@ -100,11 +100,15 @@
     <Content Include="Content\Css\bootstrap.css" />
     <Content Include="Content\Css\bootstrap.min.css" />
     <Content Include="Content\Css\Site.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\Images\ajax-loader.gif" />
     <Content Include="Content\Images\cat_waiting.gif" />
     <Content Include="Content\Images\favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <None Include="TODO.md" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -127,7 +131,6 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DAL\Aanvraag.cs" />
-    <Compile Include="Models\DAL\AanvraagStatus.cs" />
     <Compile Include="Models\DAL\AanvraagType.cs" />
     <Compile Include="Models\DAL\Dokter.cs" />
     <Compile Include="Models\DAL\ExceptionLogger.cs" />
@@ -137,6 +140,9 @@
     <Compile Include="Models\DAL\Transportwijze.cs" />
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
+    <Compile Include="Models\Util\Pager.cs" />
+    <Compile Include="Models\VM\DispatchOverzicht\WachtendeTransportTakenVM.cs" />
+    <Compile Include="Models\VM\DispatchOverzicht\WerknemersVM.cs" />
     <Compile Include="Models\VM\DokterStatus\DokterDetailsVM.cs" />
     <Compile Include="Models\VM\DokterStatus\DokterLijstVM.cs" />
     <Compile Include="Models\VM\MaakVervoerAanvraag\AanvraagTypesVM.cs" />
@@ -161,19 +167,20 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\DokterStatus.cshtml" />
-    <Content Include="Views\Home\PatientInfo.cshtml" />
-    <Content Include="Views\Home\_PatientInfo_PatientDetails.cshtml" />
-    <Content Include="Views\Home\_DokterStatus_EditDokter.cshtml" />
-    <Content Include="Views\Home\_PatientInfo_AanvraagTypes.cshtml" />
-    <Content Include="Views\Home\VerplegingOverzicht.cshtml" />
-    <Content Include="Views\Home\_VerplegingOverzichtPatientenInOrde.cshtml" />
-    <Content Include="Views\Home\_VerplegingOverzichtPatientenWachtend.cshtml" />
-    <Content Include="Views\Home\_PatientInfo_PatientMedischeAanvragen.cshtml" />
-    <Content Include="Views\Home\_MaakVervoerAanvraag_AanvraagDetails.cshtml" />
-    <Content Include="Views\Home\MaakVervoerAanvraag.cshtml" />
-    <Content Include="Views\Home\_PatientInfo_AanvraagDetails.cshtml" />
-    <Content Include="Views\Home\DispatchOverzicht.cshtml" />
+    <Content Include="Views\Home\DokterStatus\DokterStatus.cshtml" />
+    <Content Include="Views\Home\PatientInfo\PatientInfo.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_PatientDetails.cshtml" />
+    <Content Include="Views\Home\DokterStatus\_EditDokter.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_AanvraagTypes.cshtml" />
+    <Content Include="Views\Home\VerplegingOverzicht\VerplegingOverzicht.cshtml" />
+    <Content Include="Views\Home\VerplegingOverzicht\_PatientenInOrde.cshtml" />
+    <Content Include="Views\Home\VerplegingOverzicht\_PatientenWachtend.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_PatientMedischeAanvragen.cshtml" />
+    <Content Include="Views\Home\MaakVervoerAanvraag\_AanvraagDetails.cshtml" />
+    <Content Include="Views\Home\MaakVervoerAanvraag\MaakVervoerAanvraag.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_AanvraagDetails.cshtml" />
+    <Content Include="Views\Home\DispatchOverzicht\DispatchOverzicht.cshtml" />
+    <Content Include="Views\Home\DispatchOverzicht\_WachtendeTransportTaken.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -184,7 +191,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="HtmlExtensions\" />
-    <Folder Include="Models\VM\DispatchOverzicht\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>

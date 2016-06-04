@@ -3,27 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
-    public class PatientenInOrdeVM {
-        public PatientenInOrdeVM() {
+    public class RecentVervoerdePatienten {
+        public RecentVervoerdePatienten(string page) {
             var db = new MSSQLContext();
 
-            PatientVervoerTakenInOrde = db.tblTransportTaken.Where(t =>
+            // Query alle patienten met recentelijke vervoertaken die in orde zijn
+            DateTime date = DateTime.Now.AddHours(-4);
+            var _qryItems = db.tblTransportTaken.Where(t =>
                 // Bevat patient
-                !string.IsNullOrEmpty(t.Aanvraag.PatientId) || !string.IsNullOrEmpty(t.Aanvraag.PatientVisit) &&
-                // Is ongoing
-                t.DatumCompleet != null)
+                t.Aanvraag.AanvraagType.Include_Patient &&
+                // Is recent
+                t.DatumCompleet > date)
                 .ToList();
+            _qryItems.Reverse();
+
+            int pageNr = 0;
+            int.TryParse(page, out pageNr);
+            Pager = new Pager(_qryItems.Count(), pageNr);
+            PatientVervoerTakenInOrde = _qryItems.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
         }
 
-        //  TODO Constructor met filter voor dienst
-        //  TODO Paginering?
+        //  TODO Constructor met filter voor dienst?
 
-        /// <summary>
-        /// Lijst van <c>TransportTaak</c> met een <c>Patient</c> 
-        /// die recentelijk verplaatst zijn door Transport personeel
-        /// </summary>
         public List<TransportTaak> PatientVervoerTakenInOrde { get; private set; }
+
+        public Pager Pager { get; private set; }
     }
 }

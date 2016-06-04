@@ -7,13 +7,18 @@ using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
     public class AanvraagTypesVM {
-        public AanvraagTypesVM() {
+        public AanvraagTypesVM(string patient, string type) {
             var db = new MSSQLContext();
             _AanvraagTypes = db.tblAanvraagTypes.ToList();
+
+            //State onthouden
+            SelectedPatient = patient;
+            SelectedAanvraagTypeId = type;
         }
+     
+        public string SelectedPatient { get; private set; }
 
         public string SelectedAanvraagTypeId { get; set; }
-
         private List<AanvraagType> _AanvraagTypes { get; set; }
         public IEnumerable<SelectListItem> AanvraagTypeLijst {
             get {

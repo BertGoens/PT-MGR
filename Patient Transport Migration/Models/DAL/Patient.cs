@@ -26,7 +26,7 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(255)]
         public string Achternaam { get; set; }
 
-        [Display(Name = "Naam:")]
+        [Display(Name = "Naam Patient:")]
         public string Naam { get { return Voornaam + " " + Achternaam; } }
 
         [DataType(DataType.Date)]

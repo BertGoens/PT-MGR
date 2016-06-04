@@ -1,0 +1,22 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.AanvraagTypesVM
+
+<div>
+    <label for="dllRequestTypes" style="margin-bottom:0.4em">Selecteer een aanvraag</label>
+    <br />
+    @Html.DropDownList("AanvraagId", new SelectList(Model.AanvraagTypeLijst, "Value", "Text"), "Aanvragen",
+    htmlAttributes: new { onchange = "dllRequestTypes_Onchange(this.value)" })
+    <br />
+    <button onclick="btnLoadSelectedAanvraagType()" style="margin-top:0.4em">Maak aanvraag</button>
+</div>
+
+<script>
+    function dllRequestTypes_Onchange(type) {
+        aanvraagtype = type;
+    };
+
+    function btnLoadSelectedAanvraagType() {
+        if (aanvraagtype != "") {
+            this.location.href = "/Home/MaakVervoerAanvraag?patient=@Model.PatientId&type=" + aanvraagtype;
+        }
+    };
+</script>

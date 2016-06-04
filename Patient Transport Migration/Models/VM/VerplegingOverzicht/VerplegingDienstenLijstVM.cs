@@ -4,17 +4,16 @@ using System.Linq;
 using System.Web;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
-    /// <summary>
-    /// TODO Opmaken
-    /// </summary>
     public class VerplegingDienstenLijstVM {
-        public VerplegingDienstenLijstVM() {
-
+        public VerplegingDienstenLijstVM(string Dienst, string PatientenOkPage, string PatientenWachtendPage) {
+            //TODO List Diensten
+            this.PatientenOkPage = PatientenOkPage;
+            this.PatientenWachtendPage = PatientenWachtendPage;
         }
 
-        public VerplegingDienstenLijstVM(string Dienst) {
-
-        }
+        // Onthoud State van de pagina
+        public string PatientenOkPage { get; private set; }
+        public string PatientenWachtendPage { get; private set; }
 
         private List<string> diensten { get; set; }
     }

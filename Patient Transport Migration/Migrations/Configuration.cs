@@ -9,7 +9,7 @@ namespace Patient_Transport_Migration.Migrations {
         public Configuration() {
             AutomaticMigrationDataLossAllowed = true;
             // TODO Uitzetten AutomaticMigrationsEnabled in production anders gg data: https://coding.abel.nu/2012/03/ef-migrations-command-reference/
-            AutomaticMigrationsEnabled = true;
+            //AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(MSSQLContext context) {

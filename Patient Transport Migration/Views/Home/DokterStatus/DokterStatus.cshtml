@@ -8,12 +8,6 @@
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
 <div id="content-container">
-    @if (ViewBag.ErrorMessage != null) {
-        <div class="error">
-            @ViewBag.ErrorMessage;
-        </div>
-    }
-
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
         <div>
@@ -33,29 +27,25 @@
 </div>
 
 <script>
-    //ONLOAD
-    $(new function () {
-        //Select dokter from url
-    });
-
     function ddlDoktersOnChange(docId) {
-        $("#dvDokterStatus").load('GetDokterStatus_DokterDetails?docterId=' + docId);
-
         var $dvLoader = $('#dvLoaderDokterStatus');
         var $dvContent = $("#dvDokterStatus");
         $dvContent.html('');
 
         if (docId != "") {
-            //Laad Content
             $.ajax({
                 type: "GET",
+                async: true,
                 url: "GetDokterStatus_DokterDetails?docterId=" + docId,
                 beforeSend: function () {
                     $dvLoader.show();
-                },
-                success: function (result) {
-                    $dvLoader.hide();
+                }, success: function (result) {                  
                     $dvContent.html(result);
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    $dvContent.html(
+                        "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                }, complete: function () {
+                    $dvLoader.hide();
                 }
 
             });

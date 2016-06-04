@@ -11,9 +11,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
     /// Maak een nieuwe aanvraag op basis van een type
     /// </summary>
     public class MaakAanvraag {
-        public MaakAanvraag() { }
-
-        public MaakAanvraag(string aanvraagTypeId) {
+        public MaakAanvraag(string aanvraagTypeId, string patient) {
             var db = new MSSQLContext();
             //maak aanvraag adhv gegeven type
             if (aanvraagTypeId.Length > 0) {
@@ -21,22 +19,25 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                 try {
                     AanvraagTypeId = int.Parse(aanvraagTypeId);
                     _DisplayAanvraagTypeData = db.tblAanvraagTypes.First(a => a.Id == AanvraagTypeId);
+
+                    if (_DisplayAanvraagTypeData.Include_Patient) {
+                        //Query db naar patienten & sorteer A-Z
+                        if(!string.IsNullOrEmpty(patient)) {
+                            _patientenLijst = new List<Patient>() { db.tblPatienten.First(p => p.PatientVisit.Equals(patient)) };
+                        } else {
+                            _patientenLijst = db.tblPatienten.OrderBy(p => p.Achternaam).ToList();
+                        }                     
+                    }
+
+                    if (_DisplayAanvraagTypeData.Include_avr_Transportwijze) {
+                        _transportwijzeLijst = db.tblTransportwijzes.ToList();
+                    }
                 } catch (Exception ex) {
                     ex.ToString();
                     // InvalidOperationException => Sequence contains no elements
                     // FormatExeption => Slechte request
                     return;
                 }
-
-            }
-
-            if (_DisplayAanvraagTypeData.Include_Patient || _DisplayAanvraagTypeData.Include_PatientVisit) {
-                //Query db naar patienten & sorteer A-Z
-                _patientenLijst = db.tblPatienten.OrderBy(patient => patient.Achternaam).ToList();
-            }
-
-            if (_DisplayAanvraagTypeData.Include_avr_Transportwijze) {
-                _transportwijzeLijst = db.tblTransportwijzes.ToList();
             }
         }
 

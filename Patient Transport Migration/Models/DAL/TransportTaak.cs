@@ -3,13 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Patient_Transport_Migration.Models.DAL {
-    // TODO  (2) TransportTaak
-    // Later Locatie Tabel Linken
-    // Later Geschatte tijd berekenen ipv statische 8 minuten
     public class TransportTaak {
         public TransportTaak() {
-            this.GeschatteTijdNodigInSeconden = 480;
-            this.DatumGemaakt = DateTime.Now;
         }
 
         [Key]

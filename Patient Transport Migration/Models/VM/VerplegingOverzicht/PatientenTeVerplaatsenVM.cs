@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class PatientenTeVerplaatsenVM {
-        public PatientenTeVerplaatsenVM() {
+        public PatientenTeVerplaatsenVM(string page) {
             var db = new MSSQLContext();
 
             // query de recente uitgevoerde taken met een patient
+
             DateTime date = DateTime.Now.AddHours(-4);
-            PatientenWachtend = db.tblTransportTaken
+            var _qryItems = db.tblTransportTaken
                 .Where(t => !string.IsNullOrEmpty(t.Aanvraag.PatientId) && t.DatumCompleet < date)
                 .OrderBy(t => t.DatumGemaakt)
                 .ToList();
-
+            _qryItems.Reverse(); //Nieuwste (datum) bovenaan
+            int pageNr = 0;
+            int.TryParse(page, out pageNr);
+            Pager = new Pager(_qryItems.Count(), pageNr);
+            PatientenWachtend = _qryItems.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
         }
 
         // TODO Filter maken per dienst
 
-        /// <summary>
-        /// Lijst van <c>TransportTaak</c> met een <c>Patient</c>
-        /// die verplaatst zullen worden door Transport personeel
-        /// </summary>
         public List<TransportTaak> PatientenWachtend { get; private set; }
 
+        public Pager Pager { get; private set; }
     }
 }

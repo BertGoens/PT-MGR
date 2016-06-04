@@ -1,15 +1,6 @@
-﻿Create Aanvraag
-Read / Update Aanvraag
+﻿Finish VerplegingOverzicht
 
-Data Annotations aanpassen voor [Aanvraag]
---> Multiline , ...
-
-Partial View _Aanvraag maken
-
-/* Verre Todo */
-Ajax --> POST zetten (Geen browser history)
-
-Database Caching
+Create Mobile Friendly TransportWerknemer Task Overzicht
 
 Security Project Mergen
 
