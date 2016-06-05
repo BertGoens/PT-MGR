@@ -10,7 +10,7 @@ namespace Patient_Transport_Migration.Models.VM.DispatchOverzicht {
     public class WachtendeTransportTakenVM {
         public WachtendeTransportTakenVM(int? page) {
             var db = new MSSQLContext();
-            var taken = db.tblTransportTaken.Where(t => t.TransportWerknemer == null).ToList();
+            var taken = db.tblTransportTaken.Where(t => t.TransportWerknemer == null && t.DatumCompleet == null).ToList();
             Pager = new Pager(taken.Count(), page);
             _TransportTaken = taken.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
             _TransportWerknemers = db.tblTransportWerknemers.ToList();

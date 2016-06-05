@@ -5,7 +5,7 @@
 }
 
 <script src="~/Scripts/jquery-1.10.2.js"></script>
-<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
 
 <div class="content-container">
     <div>
@@ -13,7 +13,7 @@
         <div id="dvWerknemers">
             <table class="table table-bordered table-hover table-responsive table-striped">
                 <caption>
-                    <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="loadWerknemersSchemas"> </span>
+                    <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LoadWerknemersSchemas"> </span>
                     <big>Werknemersschema</big>
                 </caption>
                 <tr>
@@ -21,8 +21,12 @@
                     <th>Schema</th>
                 </tr>
                 @foreach (var wn in Model.TransportWerknemers) {
-                    <tr>
-                        <td><span class="glyphicon glyphicon-refresh glyphicon-clickable"> </span>@wn.Naam</td>
+                    <tr data-werknemer-id="@wn.Gebruikersnaam">
+                        <td>
+                            <span class="ajax-loader"> </span>
+                            <span class="glyphicon glyphicon-refresh glyphicon-clickable"> </span>
+                            @wn.Naam
+                        </td>
                         <td>SCHEMA HIER</td>
                     </tr>
                 }
@@ -31,31 +35,128 @@
     </div>
     <div>
         <div id="dvLoaderTaken" class="ajax-loader"></div>
+        <div id="dvTakenStatus"></div>
         <div id="dvTaken"></div>
     </div>
 </div>
 
 <script>
+    function RemoveTaakFromSchema(Werknemer, Taak) {
+
+    };
+
+    function SaveWerknemersSchema(Werknemer) {
+
+    };
+
+    function LoadWerknemersSchemas() {
+
+    };
+
     function LaadWerknemersSchema(Werknemer) {
-        var $ajaxLoaderWerknemers = $('#dvLoaderWerknemers');
-        var $dvWerknemers = $("#dvWerknemers");
-        $ajaxLoaderWerknemers.show();
+
+    };
+
+    function DeleteTaak(TaakId) {
+        if (confirm("Ben je zeker dat je Taak " + TaakId + " wilt verwijderen?")) {
+            var $TaakTr = $('#Taak-' + TaakId);
+            function fail() {
+                MaakTaakStatus(TaakId, "alert-danger", "Kon de taak niet verwijderen, probeer opnieuw!");
+                $TaakTr.css({ opacity: 1.0 }).show();
+            };
+            $.ajax({
+                type: "POST",
+                async: true,
+                dataType: "text",
+                timeout: 3000,
+                url: "DispatchOverzicht_DeleteTaak",
+                data: "jsonTaak=" + JSON.stringify({ "TaakId": TaakId }),
+                beforeSend() {
+                    $TaakTr.css({ opacity: 0.5 });
+                }, success: function () {
+                    if (data) { // = True
+                        MaakTaakStatus(TaakId, "alert-success", "Taak verwijderd!");
+                        VerbergTaak(TaakId);
+                    } else {
+                        fail();
+                    };
+                }, error: function (jqXHR, textStatus, errorThrown) {
+                    fail();
+                }
+            });
+        };
+    };
+
+    function VerbergTaak(TaakId) {
+        var $TaakTr = $('#Taak-' + TaakId);
+        $TaakTr.remove();
+    };
+
+    function SaveTaak(TaakId) {
+        var $TaakTr = $('#Taak-' + TaakId);
+        var TaakWerknemerId = $('#Taak-' + TaakId + "-WerknemerId").val();
+
+        //Controleer of alles ingegeven is
+        if (TaakWerknemerId == "") {
+            MaakTaakStatus(TaakId, "alert-warning",
+                "Selecteer een werknemer voor je de taak opslaat!");
+            return null;
+        }
+
+        // Collect data voor je post request
+        var TaakNotities = $('#Taak-' + TaakId + "-TransportNotities").val();
+        var TaakIsHogePrioriteit = $('#Taak-' + TaakId + "-IsPrioriteitHoog").prop('checked');
+
+        var sendData = {
+            "TaakId": TaakId,
+            "TaakNotities": TaakNotities,
+            "TaakIsHogePrioriteit": TaakIsHogePrioriteit,
+            "TaakWerknemerId": TaakWerknemerId
+        };
+
         $.ajax({
-            type: "GET",
+            type: "POST",
             async: true,
-            url: "GetDispatchOverzicht_WerknemerSchema?wnId="+Werknemer,
-            beforeSend: function () {
-                $dvWerknemers.css({ opacity: 0.5 });
-            }, success: function (result) {
-                $dvWerknemers.html(result);
+            dataType: "text",
+            timeout: 3000,
+            url: "DispatchOverzicht_SaveTaak",
+            data: "jsonTaak=" + JSON.stringify(sendData),
+            beforeSend() {
+                $TaakTr.css({ opacity: 0.5 });
+            }, success: function () {
+                if (data) { // = True
+                    MaakTaakStatus(TaakId, "alert-success", "Taak toegewezen");
+                    VerbergTaak(TaakId);
+                } else {
+                    MaakTaakStatus(TaakId, "alert-danger", "Kon de taak niet opslaan, probeer opnieuw!");
+                    $TaakTr.css({ opacity: 1.0 }).show();
+                };
             }, error: function (jqXHR, textStatus, errorThrown) {
-                $dvWerknemers.html(
-                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
-            }, complete: function () {
-                $ajaxLoaderWerknemers.hide();
-                $dvWerknemers.css({ opacity: 1.0 }).show();
+                MaakTaakStatus(TaakId, "alert-danger", "Kon de taak niet opslaan, probeer opnieuw!\n" + textStatus);
+                $TaakTr.css({ opacity: 1.0 }).show();
             }
-        })
+        });
+    };
+
+    function MaakTaakStatus(TaakId, AlertType, Message) {
+        var $dvTakenStatus = $('#dvTakenStatus');
+        $dvTakenStatus.children('#Taak-Status-' + TaakId);
+
+        var $dvTaakStatus = $('#Taak-Status-' + TaakId);
+
+        if ($dvTaakStatus.length > 0) {
+            $dvTaakStatus.remove();
+        }
+
+        $dvTaakStatus = $('<div id=Taak-Status-' + TaakId + '></div>');
+        $dvTaakStatus.addClass("alert").addClass(AlertType);
+        $dvTaakStatus.text("Taak: " + TaakId + "\n" + Message);
+        $dvTaakStatus.html($dvTaakStatus.html().replace(/\n/g, '<br/>'));
+
+        $dvTakenStatus.append($dvTaakStatus);
+        $dvTaakStatus.fadeTo("slow", "0.6", function () {
+            $(this).remove();
+        });
     };
 
     function LoadTaken() {
@@ -64,6 +165,7 @@
         $ajaxLoaderTaken.show();
         $.ajax({
             type: "GET",
+            cache: false,
             async: true,
             url: "GetDispatchOverzicht_WachtendeTransportTaken",
             beforeSend: function () {
@@ -81,6 +183,7 @@
     };
 
     $(new function () {
+        $.fx.speeds.slow = 6000;
         LoadTaken();
     });
 </script>

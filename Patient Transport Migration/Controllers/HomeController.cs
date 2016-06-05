@@ -43,20 +43,19 @@ namespace Patient_Transport_Migration.Controllers {
             if (ModelState.IsValid) {
                 // Haal dokter op & bewerk zijn instellingen
                 try {
-                Dokter dr = db.tblDokters.First(d => d.Id == vm.Id);
-                if (dr.IsConsultVerwachtend != vm.IsConsultVerwachtend) {
-                    dr.IsConsultVerwachtend = vm.IsConsultVerwachtend;
-                    //Save doctor consult status
-                    db.Entry(dr).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
+                    Dokter dr = db.tblDokters.First(d => d.Id == vm.Id);
+                    if (dr.IsConsultVerwachtend != vm.IsConsultVerwachtend) {
+                        dr.IsConsultVerwachtend = vm.IsConsultVerwachtend;
+                        //Save doctor consult status
+                        db.Entry(dr).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
                 } catch (Exception ex) {
                     ViewBag.ErrorMessage = ex.Message;
                     return DokterStatus();
                 }
                 return RedirectToAction("DokterStatus");
-            } else 
-           {
+            } else {
                 var errors = getViewModelErrors();
                 ViewBag.ErrorMessage = errors;
             }
@@ -120,7 +119,7 @@ namespace Patient_Transport_Migration.Controllers {
             } else {
                 ViewBag.ErrorMessage = getViewModelErrors();
                 return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(vm.PatientVisitId));
-            }   
+            }
         }
 
         #endregion PatientInfo
@@ -128,8 +127,8 @@ namespace Patient_Transport_Migration.Controllers {
         #region VerplegingOverzicht
         [HttpGet]
         public ViewResult VerplegingOverzicht(string dienst, string PatientenOkPage, string PatientenWachtendPage) {
-            return View("./VerplegingOverzicht/VerplegingOverzicht", 
-                new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(dienst, PatientenOkPage, PatientenWachtendPage ));
+            return View("./VerplegingOverzicht/VerplegingOverzicht",
+                new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(dienst, PatientenOkPage, PatientenWachtendPage));
         }
 
         [HttpGet]
@@ -203,9 +202,51 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpPost]
-        public ActionResult DispatchOverzicht(Models.VM.DispatchOverzicht.WachtendeTransportTakenVM vm) {
-            Debug.Print("DispatchOverzicht POST");
-            return View();
+        public bool DispatchOverzicht_DeleteTaak(string jsonTaak) {
+            if (!string.IsNullOrEmpty(jsonTaak)) {
+                try {
+                    dynamic data = System.Web.Helpers.Json.Decode(jsonTaak);
+                    long taakId = data.TaakId;
+                    var taak = db.tblTransportTaken.First(t => t.Id == taakId);
+                    taak.DatumCompleet = DateTime.Now;
+                    return true;
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                    throw;
+                }
+            }
+            return false;
+        }
+
+        [HttpPost]
+        public bool DispatchOverzicht_SaveTaak(string jsonTaak) {
+            if (!string.IsNullOrEmpty(jsonTaak)) {
+                try {
+                    dynamic data = System.Web.Helpers.Json.Decode(jsonTaak);
+                    long taakId = data.TaakId;
+                    string TaakNotities = data.TaakNotities;
+                    bool isHogePrioriteit = data.TaakIsHogePrioriteit;
+                    string TaakWerknemerId = data.TaakWerknemerId;
+
+                    var Taak = db.tblTransportTaken.First(t => t.Id == taakId);
+                    Taak.IsPrioriteitHoog = isHogePrioriteit;
+                    Taak.TransportNotities = TaakNotities;
+                    var TWerknemer = db.tblTransportWerknemers.First(w => w.Gebruikersnaam == TaakWerknemerId);
+                    Taak.TransportWerknemer = TWerknemer;
+
+                    int TakenVoorWerknemer = db.tblTransportTaken.Where(t => t.TransportWerknemer == TWerknemer).Count();
+                    Taak.TaakWachtrijNummer = TakenVoorWerknemer;
+
+                    db.Entry(Taak).State = EntityState.Modified;
+                    db.SaveChanges();
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                    throw;
+                }
+
+                return true;
+            }
+            return false;
         }
         #endregion DispatchOverzicht
     }
