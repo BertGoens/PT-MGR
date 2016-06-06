@@ -6,14 +6,16 @@
 
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/Sortable.min.js"></script>
 
 <div class="content-container">
     <div>
         <div id="dvLoaderWerknemers" class="ajax-loader"></div>
+        <div id="dvSchemaStatussen" class="alert"></div>
         <div id="dvWerknemers">
             <table class="table table-bordered table-hover table-responsive table-striped">
                 <caption>
-                    <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LoadWerknemersSchemas"> </span>
+                    <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LoadWerknemersSchemas()"> </span>
                     <big>Werknemersschema</big>
                 </caption>
                 <tr>
@@ -23,11 +25,12 @@
                 @foreach (var wn in Model.TransportWerknemers) {
                     <tr data-werknemer-id="@wn.Gebruikersnaam">
                         <td>
-                            <span class="ajax-loader"> </span>
-                            <span class="glyphicon glyphicon-refresh glyphicon-clickable"> </span>
+                            <span class="ajax-loader"></span>
+                            <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LaadWerknemersSchema('@wn.Gebruikersnaam')"></span>
+                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam')"></span>
                             @wn.Naam
                         </td>
-                        <td>SCHEMA HIER</td>
+                        <td id="TakenSchema-@wn.Gebruikersnaam">SCHEMA HIER</td>
                     </tr>
                 }
             </table>
@@ -35,26 +38,120 @@
     </div>
     <div>
         <div id="dvLoaderTaken" class="ajax-loader"></div>
-        <div id="dvTakenStatus"></div>
+        <div id="dvTakenStatus" class="alert"></div>
         <div id="dvTaken"></div>
     </div>
 </div>
 
 <script>
-    function RemoveTaakFromSchema(Werknemer, Taak) {
-
+    function RemoveTaakFromSchema(WerknemerId, Taak) {
+        MaakSchemaStatus(WerknemerId, "alert-info", "Taak: " + Taak + "\nNog niet geïmplementeerd");
     };
 
-    function SaveWerknemersSchema(Werknemer) {
-
+    function SaveWerknemersSchema(WerknemerId) {
+        MaakSchemaStatus(WerknemerId, "alert-info", "Nog niet geïmplementeerd");
     };
 
     function LoadWerknemersSchemas() {
-
+        var Werknemers = @Html.Raw(Json.Encode(Model.TransportWerknemers));
+        for (var i = 0; i < Werknemers.length; i++) {
+            LaadWerknemersSchema(Werknemers[i].Gebruikersnaam, Werknemers[i].Naam);
+        };
     };
 
-    function LaadWerknemersSchema(Werknemer) {
+    function LaadWerknemersSchema(WerknemerId, WerknemerNaam) {
+        var $tdSchema = $('#TakenSchema-'+WerknemerId);
+        $.ajax({
+            type: "GET",
+            async: true,
+            dataType: "text",
+            timeout: 3000,
+            url: "DispatchOverzicht_GetWerknemerTaken",
+            data: "WerknemerId="+WerknemerId,
+            beforeSend() {
+                $tdSchema.css({opacity: 0.5});
+            }, success(result) {
+                $tdSchema.html('');
+                $tdSchema.css({opacity: 1});
+                TekenWerknemerSchema($tdSchema, WerknemerId, JSON.parse(result));
+            }, error(jqXHR, textStatus, errorThrown) {
+                MaakSchemaStatus(WerknemerId, "alert-danger", 
+                    "Kan het schema voor " + WerknemerNaam + " niet laden, probeer opnieuw!\n" + textStatus);
+            }, always() {
+                $tdSchema.css({opacity: 1});
+            }
+        });
+    };
 
+    function TekenWerknemerSchema($tr, WerknemerId, WerknemerTaken) {
+        var $dvContainer = $('<div></div>');
+        $dvContainer.prop("id", "WnSchema-"+WerknemerId);
+
+        for (var i = 0; i < WerknemerTaken.length; i++) {
+            var wnTaak = WerknemerTaken[i];
+
+            //Bouw Item (Html)
+            var $item = $('<div></div>');
+            $item.data("taak-id", wnTaak.Id);
+            $item.addClass('sortable-taak');
+
+            // Taak #
+            var $itemNummer = $('<span></span>')
+                .text(wnTaak.TaakWachtrijNummer)
+                .addClass("badge");
+            $item.append($itemNummer);
+
+            // Tekst
+            var $itemText = $('<span></span>');
+            $itemText.text(wnTaak.LocatieStart + " - " + wnTaak.LocatieEind);
+            if (wnTaak.IsPrioriteitHoog) {
+                $itemText.addClass("HogePrioriteit");
+            };
+            $item.append($itemText);
+
+            // Beweegbaar icoontje
+            var $moveHandle = $('<span></span>')
+                .addClass("glyphicon")
+                .addClass("glyphicon-move");
+            $item.append($moveHandle);
+            
+            // Verwijder icoontje
+            var $removeIcon = $('<span></span>')
+                .addClass('glyphicon')
+                .addClass('glyphicon-remove');
+            $removeIcon.click(function () {
+                RemoveTaakFromSchema(WerknemerId, wnTaak.Id);
+            });
+            $item.append($removeIcon);
+
+            $dvContainer.append($item);
+        }
+        $tr.append($dvContainer);
+
+        // Sortable.js List with handle
+        Sortable.create(document.getElementById("WnSchema-" + WerknemerId), {
+            handle: '.glyphicon-move',
+            animation: 150
+        });
+    };
+
+    function MaakSchemaStatus(WerknemerId, AlertType, Message) {
+        var $dvSchemaStatussen = $('#dvSchemaStatussen');       
+        var $dvSchemaStatus = $('#SchemaStatus-' + WerknemerId);
+
+        if ($dvSchemaStatus.length > 0) {
+            $dvSchemaStatus.remove();
+        }
+
+        $dvSchemaStatus = $('<div id=SchemaStatus-' + WerknemerId + '></div>');
+        $dvSchemaStatus.addClass("alert").addClass(AlertType);
+        $dvSchemaStatus.text("Werknemer: " + WerknemerId + "\n" + Message);
+        $dvSchemaStatus.html($dvSchemaStatus.html().replace(/\n/g, '<br/>'));
+
+        $dvSchemaStatussen.append($dvSchemaStatus);
+        $dvSchemaStatus.fadeTo("slow", "0.6", function () {
+            $(this).remove();
+        });
     };
 
     function DeleteTaak(TaakId) {
@@ -123,7 +220,7 @@
             data: "jsonTaak=" + JSON.stringify(sendData),
             beforeSend() {
                 $TaakTr.css({ opacity: 0.5 });
-            }, success: function () {
+            }, success: function (data) {
                 if (data) { // = True
                     MaakTaakStatus(TaakId, "alert-success", "Taak toegewezen");
                     VerbergTaak(TaakId);
@@ -140,8 +237,6 @@
 
     function MaakTaakStatus(TaakId, AlertType, Message) {
         var $dvTakenStatus = $('#dvTakenStatus');
-        $dvTakenStatus.children('#Taak-Status-' + TaakId);
-
         var $dvTaakStatus = $('#Taak-Status-' + TaakId);
 
         if ($dvTaakStatus.length > 0) {
@@ -185,5 +280,6 @@
     $(new function () {
         $.fx.speeds.slow = 6000;
         LoadTaken();
+        LoadWerknemersSchemas();
     });
 </script>

@@ -111,3 +111,27 @@ table.table-spacify td {
 .HogePrioriteit {
     color: darkred;
 }
+
+.glyphicon-move {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+}
+
+.sortable-taak {
+    display: inline-block;
+    margin-right: 1em;
+    background-color: lightgray;
+    padding: 2px;
+}
+
+.glyphicon {
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: baseline;
+}
+
+.badge {
+    margin-left: 3px;
+    margin-right: 3px;
+}

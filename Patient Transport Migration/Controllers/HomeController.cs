@@ -176,7 +176,7 @@ namespace Patient_Transport_Migration.Controllers {
                 aanvraagTaak.Aanvraag = saveAanvraag;
                 aanvraagTaak.LocatieStart = vm.Van;
                 aanvraagTaak.LocatieEind = vm.Naar;
-                //aanvraagTaak.DatumGemaakt = new System.DateTime();
+                aanvraagTaak.DatumGemaakt = DateTime.Now;
                 db.tblTransportTaken.Add(aanvraagTaak);
                 // SAVE
                 db.SaveChanges();
