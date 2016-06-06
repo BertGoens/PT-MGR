@@ -9,7 +9,7 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models.VM.PatientInfo {
     public class AanvraagDetailsVM {
         public AanvraagDetailsVM() {
-
+            // Required for POST
         }
 
         public AanvraagDetailsVM(string aanvraagId) {

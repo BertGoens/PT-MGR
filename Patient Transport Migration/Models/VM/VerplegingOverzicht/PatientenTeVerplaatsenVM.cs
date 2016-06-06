@@ -14,10 +14,13 @@ namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
 
             DateTime date = DateTime.Now.AddHours(-4);
             var _qryItems = db.tblTransportTaken
-                .Where(t => !string.IsNullOrEmpty(t.Aanvraag.PatientId) && t.DatumCompleet < date)
+                .Where(t =>
+                t.Aanvraag.PatientId != null
+                && t.DatumCompleet == null)
                 .OrderBy(t => t.DatumGemaakt)
                 .ToList();
             _qryItems.Reverse(); //Nieuwste (datum) bovenaan
+
             int pageNr = 0;
             int.TryParse(page, out pageNr);
             Pager = new Pager(_qryItems.Count(), pageNr);

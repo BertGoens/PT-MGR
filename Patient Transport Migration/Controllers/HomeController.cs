@@ -201,6 +201,16 @@ namespace Patient_Transport_Migration.Controllers {
             return PartialView("./DispatchOverzicht/_WachtendeTransportTaken", new Models.VM.DispatchOverzicht.WachtendeTransportTakenVM(pageNr));
         }
 
+       [HttpGet]
+       public string DispatchOverzicht_GetWerknemerTaken(string WerknemerId) {
+            var Taken = db.tblTransportTaken.Where(t =>
+            t.TransportWerknemerId == WerknemerId &&
+            t.DatumCompleet == null)
+            .ToList();
+            var jsonTaken = System.Web.Helpers.Json.Encode(Taken);
+            return jsonTaken;
+        }
+
         [HttpPost]
         public bool DispatchOverzicht_DeleteTaak(string jsonTaak) {
             if (!string.IsNullOrEmpty(jsonTaak)) {
@@ -234,7 +244,10 @@ namespace Patient_Transport_Migration.Controllers {
                     var TWerknemer = db.tblTransportWerknemers.First(w => w.Gebruikersnaam == TaakWerknemerId);
                     Taak.TransportWerknemer = TWerknemer;
 
-                    int TakenVoorWerknemer = db.tblTransportTaken.Where(t => t.TransportWerknemer == TWerknemer).Count();
+                    int TakenVoorWerknemer = db.tblTransportTaken.Where(t => 
+                    t.TransportWerknemerId == TWerknemer.Gebruikersnaam
+                    && t.DatumCompleet == null
+                    ).Count();
                     Taak.TaakWachtrijNummer = TakenVoorWerknemer;
 
                     db.Entry(Taak).State = EntityState.Modified;

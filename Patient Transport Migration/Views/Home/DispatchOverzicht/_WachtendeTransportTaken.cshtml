@@ -39,7 +39,7 @@
 <ul class="pagination">
     @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
         <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-            <a href="#" onclick="/Home/DispatchOverzicht?TakenPage=(@page)">@page</a>
+            <a href="/Home/DispatchOverzicht?TakenPage=(@page)">@page</a>
         </li>
     }
 </ul>

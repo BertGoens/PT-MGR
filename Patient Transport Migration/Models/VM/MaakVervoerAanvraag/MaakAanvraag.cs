@@ -11,6 +11,9 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
     /// Maak een nieuwe aanvraag op basis van een type
     /// </summary>
     public class MaakAanvraag {
+        public MaakAanvraag() {
+            // Required for POST
+        }
         public MaakAanvraag(string aanvraagTypeId, string patient) {
             var db = new MSSQLContext();
             //maak aanvraag adhv gegeven type

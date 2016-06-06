@@ -13,10 +13,9 @@ namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
             // Query alle patienten met recentelijke vervoertaken die in orde zijn
             DateTime date = DateTime.Now.AddHours(-4);
             var _qryItems = db.tblTransportTaken.Where(t =>
-                // Bevat patient
-                t.Aanvraag.AanvraagType.Include_Patient &&
-                // Is recent
-                t.DatumCompleet > date)
+                t.Aanvraag.AanvraagType.Include_Patient // Bevat patient
+                && t.DatumCompleet > date // Is recent
+                && t.TransportWerknemerId != null) // Als = null dan is het verwijderd (geen echte taak)
                 .ToList();
             _qryItems.Reverse();
 
