@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
@@ -212,6 +213,74 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpPost]
+        public bool DispatchOverzicht_SaveWerknemerSchema(string jsonSchema) {
+            if (!string.IsNullOrEmpty(jsonSchema)) {
+                try {
+                    dynamic data = System.Web.Helpers.Json.Decode(jsonSchema);
+                    string WerknemerId = data.WerknemerId;
+                    System.Web.Helpers.DynamicJsonArray Taken = data.Taken;
+
+                    int wachtrijNummer = 0;
+                    foreach (var taakId in Taken) {
+                        int tId = int.Parse(taakId.ToString());
+                        var taak = db.tblTransportTaken.First(t =>
+                        t.Id == tId);
+                        if (taak.TaakWachtrijNummer != wachtrijNummer) {
+                            taak.TaakWachtrijNummer = wachtrijNummer;
+                            db.Entry(taak).State = EntityState.Modified;
+                        }
+
+                        wachtrijNummer++;
+                    }
+                    db.SaveChanges();
+                    return true;
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                    throw;
+                }
+            }
+            return false;
+        }
+
+        [HttpPost]
+        public bool DispatchOverzicht_RemoveWerknemerFromTaak(string jsonTaak) {
+            if (!string.IsNullOrEmpty(jsonTaak)) {
+                try {
+                    dynamic data = System.Web.Helpers.Json.Decode(jsonTaak);
+                    long taakId = long.Parse(data.TaakId);
+                    string werknemerId = data.WerknemerId;
+
+                    // Zoek de taak
+                    var taak = db.tblTransportTaken.First(t =>
+                        t.Id == taakId &&
+                        t.TransportWerknemerId == werknemerId);
+
+                    int taakNummerInQueue = (int)taak.TaakWachtrijNummer;
+                    // Pas de taak in kwestie aan 
+                    taak.TransportWerknemer = null;
+                    taak.TransportWerknemerId = null;
+                    db.Entry(taak).State = EntityState.Modified;
+
+                    // Pas alle taken erna aan (-1)
+                    var takenErnaa = db.tblTransportTaken.Where(t =>
+                    t.DatumCompleet == null &&
+                    t.TaakWachtrijNummer < taakNummerInQueue)
+                    .ToList();
+                    foreach (var t in takenErnaa) {
+                        t.TaakWachtrijNummer -= 1;
+                        db.Entry(t).State = EntityState.Modified;
+                    }
+                    db.SaveChanges();
+                    return true;
+                } catch (Exception ex) {
+                    Debug.Print(ex.Message);
+                    throw;
+                }
+            }
+            return false;
+        }
+
+        [HttpPost]
         public bool DispatchOverzicht_DeleteTaak(string jsonTaak) {
             if (!string.IsNullOrEmpty(jsonTaak)) {
                 try {
@@ -219,6 +288,8 @@ namespace Patient_Transport_Migration.Controllers {
                     long taakId = data.TaakId;
                     var taak = db.tblTransportTaken.First(t => t.Id == taakId);
                     taak.DatumCompleet = DateTime.Now;
+                    db.Entry(taak).State = EntityState.Modified;
+                    db.SaveChanges();
                     return true;
                 } catch (Exception ex) {
                     Debug.Print(ex.Message);

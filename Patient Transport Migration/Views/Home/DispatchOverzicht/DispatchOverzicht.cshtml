@@ -27,10 +27,10 @@
                         <td>
                             <span class="ajax-loader"></span>
                             <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LaadWerknemersSchema('@wn.Gebruikersnaam')"></span>
-                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam')"></span>
+                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam', '@wn.Naam')"></span>
                             @wn.Naam
                         </td>
-                        <td id="TakenSchema-@wn.Gebruikersnaam">SCHEMA HIER</td>
+                        <td id="TakenSchema-@wn.Gebruikersnaam">SCHEMA</td>
                     </tr>
                 }
             </table>
@@ -44,12 +44,70 @@
 </div>
 
 <script>
-    function RemoveTaakFromSchema(WerknemerId, Taak) {
-        MaakSchemaStatus(WerknemerId, "alert-info", "Taak: " + Taak + "\nNog niet geïmplementeerd");
+    function RemoveTaakFromSchema(WerknemerId, WerknemerNaam, TaakId) {
+        var $taak = $('#' + WerknemerId +"-taak" + TaakId + '.sortable-taak');
+        var sendData = {"WerknemerId" : WerknemerId, "TaakId": TaakId }
+
+        $.ajax({
+            type: "POST",
+            async: true,
+            dataType: "text",
+            timeout: 3000,
+            url: "DispatchOverzicht_RemoveWerknemerFromTaak",
+            data: "jsonTaak="+JSON.stringify(sendData),
+            beforeSend() {
+                $taak.css({opacity: 0.5});
+            }, success(result) {
+                if (result == "True") { // =True
+                    $taak.remove();
+                    MaakSchemaStatus(WerknemerId, "alert-success",
+                        "Taak verwijderd van " + WerknemerNaam);
+                    LoadTaken();
+                } else {
+                    $taak.css({opacity: 1});
+                    MaakSchemaStatus(WerknemerId, "alert-danger",
+                       "Taak verwijderd mislukt! Probeer opnieuw.");
+                }
+            }, error(jqXHR, textStatus, errorThrown) {
+                $taak.css({opacity: 1});
+                MaakSchemaStatus(WerknemerId, "alert-danger",
+                   "Taak verwijderd mislukt! Probeer opnieuw.");
+            }
+        });
     };
 
-    function SaveWerknemersSchema(WerknemerId) {
-        MaakSchemaStatus(WerknemerId, "alert-info", "Nog niet geïmplementeerd");
+    function SaveWerknemersSchema(WerknemerId, WerknemerNaam) {
+        var $dvCollection = $('#WnSchema-'+WerknemerId)[0];
+
+        // Order of taak items
+        var sendSequence = [];
+        for (var i= 0; i< $dvCollection.children.length; i++) {
+            var item = $dvCollection.children[i];
+            sendSequence[i] = $(item).data("taak-id");
+        }
+
+        var sendData = { "WerknemerId": WerknemerId, "Taken": sendSequence}
+
+        $.ajax({
+            type: "POST",
+            async: true,
+            dataType: "text",
+            timeout: 3000,
+            url: "DispatchOverzicht_SaveWerknemerSchema",
+            data: "jsonSchema="+JSON.stringify(sendData),
+            success(result) {
+                if (result == "True") { // =True
+                    MaakSchemaStatus(WerknemerId, "alert-success",
+                        "Taken succesvol opgeslagen van " + WerknemerNaam);
+                } else {
+                    MaakSchemaStatus(WerknemerId, "alert-danger",
+                       "Taken opgeslaan mislukt van " + WerknemerNaam + " ,probeer opnieuw!");
+                }
+            }, error(jqXHR, textStatus, errorThrown) {
+                MaakSchemaStatus(WerknemerId, "alert-danger",
+                       "Taken opgeslaan mislukt van " + WerknemerNaam + " ,probeer opnieuw!");
+            }
+        });
     };
 
     function LoadWerknemersSchemas() {
@@ -73,9 +131,9 @@
             }, success(result) {
                 $tdSchema.html('');
                 $tdSchema.css({opacity: 1});
-                TekenWerknemerSchema($tdSchema, WerknemerId, JSON.parse(result));
+                TekenWerknemerSchema($tdSchema, WerknemerId, WerknemerNaam, JSON.parse(result));
             }, error(jqXHR, textStatus, errorThrown) {
-                MaakSchemaStatus(WerknemerId, "alert-danger", 
+                MaakSchemaStatus(WerknemerId, "alert-danger",
                     "Kan het schema voor " + WerknemerNaam + " niet laden, probeer opnieuw!\n" + textStatus);
             }, always() {
                 $tdSchema.css({opacity: 1});
@@ -83,7 +141,7 @@
         });
     };
 
-    function TekenWerknemerSchema($tr, WerknemerId, WerknemerTaken) {
+    function TekenWerknemerSchema($tr, WerknemerId, WerknemerNaam, WerknemerTaken) {
         var $dvContainer = $('<div></div>');
         $dvContainer.prop("id", "WnSchema-"+WerknemerId);
 
@@ -91,8 +149,10 @@
             var wnTaak = WerknemerTaken[i];
 
             //Bouw Item (Html)
-            var $item = $('<div></div>');
-            $item.data("taak-id", wnTaak.Id);
+            var $item = $('<div id=' + WerknemerId + '-taak' + wnTaak.Id +'></div>');
+            $item.attr('data-wn-taak-id', wnTaak.Id);
+            $item.attr('data-wn-naam', wnTaak.TransportWerknemer.Naam);
+            $item.attr('data-wn-id', wnTaak.TransportWerknemerId);
             $item.addClass('sortable-taak');
 
             // Taak #
@@ -114,14 +174,19 @@
                 .addClass("glyphicon")
                 .addClass("glyphicon-move");
             $item.append($moveHandle);
-            
+
             // Verwijder icoontje
             var $removeIcon = $('<span></span>')
                 .addClass('glyphicon')
-                .addClass('glyphicon-remove');
-            $removeIcon.click(function () {
-                RemoveTaakFromSchema(WerknemerId, wnTaak.Id);
-            });
+                .addClass('glyphicon-remove')
+                .click(function() {
+                    var $parent = $(this).parent('div');
+                    var werknemer_id = $parent.attr('data-wn-id');
+                    var werknemer_naam = $parent.attr('data-wn-naam');
+                    var taak_id = $parent.attr('data-wn-taak-id');
+                    RemoveTaakFromSchema(werknemer_id, werknemer_naam, taak_id);
+                })
+            ;
             $item.append($removeIcon);
 
             $dvContainer.append($item);
@@ -136,7 +201,7 @@
     };
 
     function MaakSchemaStatus(WerknemerId, AlertType, Message) {
-        var $dvSchemaStatussen = $('#dvSchemaStatussen');       
+        var $dvSchemaStatussen = $('#dvSchemaStatussen');
         var $dvSchemaStatus = $('#SchemaStatus-' + WerknemerId);
 
         if ($dvSchemaStatus.length > 0) {
@@ -189,7 +254,7 @@
         $TaakTr.remove();
     };
 
-    function SaveTaak(TaakId) {
+    function SaveTaakToWerknemer(TaakId) {
         var $TaakTr = $('#Taak-' + TaakId);
         var TaakWerknemerId = $('#Taak-' + TaakId + "-WerknemerId").val();
 
@@ -224,6 +289,7 @@
                 if (data) { // = True
                     MaakTaakStatus(TaakId, "alert-success", "Taak toegewezen");
                     VerbergTaak(TaakId);
+                    LaadWerknemersSchema(TaakWerknemerId);
                 } else {
                     MaakTaakStatus(TaakId, "alert-danger", "Kon de taak niet opslaan, probeer opnieuw!");
                     $TaakTr.css({ opacity: 1.0 }).show();

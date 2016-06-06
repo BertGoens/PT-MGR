@@ -28,7 +28,7 @@
                 <td><input id="Taak-@ttaak.Id-IsPrioriteitHoog" type="checkbox" @(ttaak.IsPrioriteitHoog ? "checked=\"checked\"" : "") /></td>
                 <td>@Html.DropDownList("Taak-"+@ttaak.Id+"-WerknemerId", new SelectList(@Model.TransportWerknemerItems, "Value", "Text"), "")</td>
                 <td>
-                    <span class="glyphicon glyphicon-ok-sign glyphicon-clickable" onclick="SaveTaak(@ttaak.Id)"> </span>
+                    <span class="glyphicon glyphicon-ok-sign glyphicon-clickable" onclick="SaveTaakToWerknemer(@ttaak.Id)"> </span>
                     <span class="glyphicon glyphicon-remove-sign glyphicon-clickable" onclick="DeleteTaak(@ttaak.Id)"> </span>
                 </td>
             </tr>
