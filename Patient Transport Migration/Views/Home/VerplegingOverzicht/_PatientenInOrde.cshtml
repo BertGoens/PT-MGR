@@ -5,19 +5,19 @@
         Recent vervoerde patienten</big>
     </caption>
     <tr>
-        <th>Datum Vervoersaanvraag</th>
+        <th>Datum Vervoer</th>
         <th>Patient</th>
-        <th>Kamer</th>
-        <th>Bed</th>
+        <th>Kamer - Bed</th>
+        <th>Komt van</th>
     </tr>
 
 @if (Model.PatientVervoerTakenInOrde != null) {
     foreach (var taak in Model.PatientVervoerTakenInOrde) {
         <tr>
-            <td>@taak.DatumGemaakt</td>
-            <td>@try { @taak.Aanvraag.Patient.Naam } catch (Exception) { } </td>
-            <td>@try { @taak.Aanvraag.Patient.Kamer } catch (Exception) { }</td>
-            <td>@try { @taak.Aanvraag.Patient.BedNr } catch (Exception) { }</td>
+            <td>@taak.DatumCompleet</td>
+            <td>@try { @taak.Aanvraag.Patient.Naam() } catch (Exception) { } </td>
+            <td>@try { @taak.Aanvraag.Patient.Kamer } catch (Exception) { } - @try { @taak.Aanvraag.Patient.BedNr } catch (Exception) { }</td>
+            <td>@try { @taak.LocatieStart.Kamer } catch (Exception) { }</td>
         </tr>
     }
 }
@@ -26,7 +26,7 @@
 <ul class="pagination">
     @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
         <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-            <a href="/Home/VerplegingOverzicht?PatientenOkPage=@page">@page</a>
+            <a href="#" onclick="LoadPatientenInOrde(@page)">@page</a>
         </li>
     }
 </ul>

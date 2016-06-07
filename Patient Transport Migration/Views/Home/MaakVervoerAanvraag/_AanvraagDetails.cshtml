@@ -4,52 +4,114 @@
     using (Html.BeginForm("MaakVervoerAanvraag", "Home", FormMethod.Post)) {
         @Html.HiddenFor(m => m.AanvraagTypeId)
 
+        <div class="form-group">
+            <dl class="dl-horizontal">
+                <dt>@Html.LabelFor(m => m.DatumAanvraag)</dt>
+                <dd>@Html.EditorFor(m => m.DatumAanvraag)</dd>
+            </dl>
+        </div>
         if (Model.DisplayAanvraagTypeData.Include_Patient) {
             <div class="form-group">
-                @Html.LabelFor(m => m.SelectedPatient)
-                <div>
-                    @Html.DropDownListFor(m => m.SelectedPatient, Model.PatientenLijst)
-                </div>
+                <dl class="dl-horizontal">
+                    <dt>@Html.LabelFor(m => m.PatientSelected)</dt>
+                    <dd>@Html.DropDownListFor(m => m.PatientSelected, Model.PatientenLijst)</dd>
+                </dl>
             </div>
-        }
 
-        if (Model.DisplayAanvraagTypeData.Include_avr_Transportwijze) {
-            <div class="form-group">
-                @Html.LabelFor(m => m.SelectedTransportwijze)
-                <div>
-                    @Html.DropDownListFor(m => m.SelectedTransportwijze, Model.TransportwijzeLijst)
+            if (!Model.DisplayAanvraagTypeData.Include_AanDokter && 
+                !Model.DisplayAanvraagTypeData.Include_Radiologie) {
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.LabelFor(m => m.AfdelingSelected)</dt>
+                        <dd>
+                            @Html.DropDownListFor(m => m.AfdelingSelected,
+            new SelectList(Model.AfdelingLijst, "Value", "Text"),
+            new { @id = "ddlAfdeling", @onchange = "LaadKamersVanAfdeling()" })
+                        </dd>
+                    </dl>
                 </div>
-            </div>
-        }
 
-        if (Model.DisplayAanvraagTypeData.Include_va_Omschrijving) {
-            <div class="form-group">
-                @Html.LabelFor(m => m.va_Omschrijving)
-                <div>
-                    @Html.EditorFor(m => m.va_Omschrijving)
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.LabelFor(m => m.KamerSelected)</dt>
+                        <dd>
+                            @Html.DropDownListFor(m => m.KamerSelected,
+            new SelectList(Enumerable.Empty<SelectListItem>(), "Kamer", "Kamer"),
+            new { @id = "ddlKamer" })
+                        </dd>
+                    </dl>
                 </div>
-            </div>
+            }
+            if (Model.DisplayAanvraagTypeData.Include_Transportwijze) {
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.LabelFor(m => m.TransportwijzeSelected)</dt>
+                        <dd>@Html.DropDownListFor(m => m.TransportwijzeSelected, new SelectList(Model.TransportwijzeLijst, "Value", "Text"))</dd>
+                    </dl>
+                </div>
+            }
+
+            if (Model.DisplayAanvraagTypeData.Include_AanDokter) {
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.LabelFor(m => m.DokterSelected)</dt>
+                        <dd>@Html.DropDownListFor(m => m.DokterSelected, new SelectList(Model.DokterLijst, "Value", "Text"))</dd>
+                    </dl>
+                </div>
+            }
+
+            if (Model.DisplayAanvraagTypeData.Include_Radiologie) {
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>@Html.LabelFor(m => m.CT)</dt>
+                        <dd>@Html.CheckBoxFor(m => m.CT)</dd>
+
+                        <dt>@Html.LabelFor(m => m.NMR)</dt>
+                        <dd>@Html.CheckBoxFor(m => m.NMR)</dd>
+
+                        <dt>@Html.LabelFor(m => m.RX)</dt>
+                        <dd>@Html.CheckBoxFor(m => m.RX)</dd>
+
+                        <dt>@Html.LabelFor(m => m.Echografie)</dt>
+                        <dd>@Html.CheckBoxFor(m => m.Echografie)</dd>
+                    </dl>
+                </div>
+            }
         }
 
         <div class="form-group">
+            @Html.LabelFor(m => m.Omschrijving)
             <div>
-                @Html.LabelFor(m => m.Van)
-                <div>
-                    @Html.EditorFor(m => m.Van)
-                </div>
-            </div>
-            <div>
-                @Html.LabelFor(m => m.Naar)
-                <div>
-                    @Html.EditorFor(m => m.Naar)
-                </div>
+                @Html.EditorFor(m => m.Omschrijving)
             </div>
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Opslaan" class="btn btn-default" />
-        </div>
+                <div class="form-group">
+                    <input type="submit" value="Opslaan" class="btn btn-default" />
+                </div>
     }
 } else {
-    <p>Problemen bij het laden van de aanvraag.</p>
+    <p class="alert alert-danger">Problemen bij het verwerken van de aanvraag.</p>
 }
+
+<script type="text/javascript">
+    $(function () {
+        LaadKamersVanAfdeling($('#ddlAfdeling').val());
+    });
+    function LaadKamersVanAfdeling() {
+        var $ddlKamers = $("#ddlKamer");
+        $ddlKamers.empty();
+
+        var $ddlAfdelingen = $('#ddlAfdeling');
+
+        $.getJSON("../Home/LaadKamersVanAfdeling", { "AfdelingCode": $ddlAfdelingen.val() },
+       function (data) {
+           $.each(data, function (index, itemData) {
+               $ddlKamers.append($('<option/>', {
+                   value: itemData.Value,
+                   text: itemData.Text
+               }));
+           });
+       });
+    };
+</script>

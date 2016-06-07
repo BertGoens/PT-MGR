@@ -23,7 +23,7 @@ namespace Patient_Transport_Migration.Models.VM.DispatchOverzicht {
         public IEnumerable<SelectListItem> TransportWerknemerItems {
             get {
                 return _TransportWerknemers.Select(tw => new SelectListItem {
-                    Text = tw.Naam,
+                    Text = tw.Naam(),
                     Value = tw.Gebruikersnaam
                 });
             }

@@ -7,7 +7,7 @@ using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class RecentVervoerdePatienten {
-        public RecentVervoerdePatienten(string page) {
+        public RecentVervoerdePatienten(string page, string afdelingCode) {
             var db = new MSSQLContext();
 
             // Query alle patienten met recentelijke vervoertaken die in orde zijn
@@ -19,13 +19,17 @@ namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
                 .ToList();
             _qryItems.Reverse();
 
+            if (!string.IsNullOrEmpty(afdelingCode)) { //Filter als een afdeling gegeven is (op de code)
+                _qryItems = _qryItems.Where(t => 
+                t.Aanvraag.Patient.Afdeling == afdelingCode)
+                .ToList();
+            }
+
             int pageNr = 0;
             int.TryParse(page, out pageNr);
             Pager = new Pager(_qryItems.Count(), pageNr);
             PatientVervoerTakenInOrde = _qryItems.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
         }
-
-        //  TODO Constructor met filter voor dienst?
 
         public List<TransportTaak> PatientVervoerTakenInOrde { get; private set; }
 

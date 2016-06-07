@@ -6,7 +6,7 @@ namespace Patient_Transport_Migration.Models {
     public class MSSQLContext : DbContext {
 
         public MSSQLContext()
-            : base("MSSQLDB_V2") {
+            : base("MSSQLDB_V3") {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MSSQLContext, Migrations.Configuration >());
         }
 
@@ -33,7 +33,7 @@ namespace Patient_Transport_Migration.Models {
 
         public DbSet<AanvraagType> tblAanvraagTypes { get; set; }
 
-        //public DbSet<AanvraagStatus> tblAanvraagStatusen { get; set; }
+        public DbSet<Locatie> tblLocaties { get; set; }
 
     }
 }

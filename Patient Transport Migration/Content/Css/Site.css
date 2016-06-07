@@ -19,33 +19,33 @@ input {
     border-radius: 5px;
 }
 
-input[type=submit],
-input[type=checkbox] {
-    max-width: none;
-    width:auto;
-}
+    input[type=submit],
+    input[type=checkbox] {
+        max-width: none;
+        width: auto;
+    }
 
 .content-container {
-    margin:20px auto;
+    margin: 20px auto;
     display: block;
 }
 
 .content-left {
-    box-sizing:border-box;
-    float:left;
-    width:50%;
+    box-sizing: border-box;
+    float: left;
+    width: 50%;
     padding-right: 1em;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .content-right {
-    box-sizing:border-box;
-    float:left;
-    width:50%;
+    box-sizing: border-box;
+    float: left;
+    width: 50%;
 }
 
 #footer {
-    clear:both;
+    clear: both;
     padding-top: 1em;
 }
 
@@ -55,7 +55,7 @@ input[type=checkbox] {
     height: 32px;
     width: 32px;
     background-repeat: no-repeat;
-    display:none;
+    display: none;
 }
 
 select {
@@ -73,7 +73,7 @@ ul.pagination {
 }
 
 table.table-spacify th {
-    text-align:center;
+    text-align: center;
     padding: 0.5em;
 }
 
@@ -91,6 +91,7 @@ table.table-spacify td {
     .dl-horizontal dt {
         width: inherit !important;
     }
+
     .dl-horizontal dd {
         margin-left: 200px !important;
     }
@@ -134,4 +135,8 @@ table.table-spacify td {
 .badge {
     margin-left: 3px;
     margin-right: 3px;
+}
+
+textarea {
+    border-width: 1px;
 }

@@ -11,17 +11,14 @@
                 @:<th>Link</th>
             @:</tr>
 
-    foreach (var vervoersaanvraag in Model.PatientAanvragen) {
+    foreach (var taak in Model.PatientAanvragen) {
                 @:<tr>
-                    @:<td>@vervoersaanvraag.DatumGemaakt</td>
-                    @:<td>@vervoersaanvraag.LocatieStart</td>
-                    @:<td>@vervoersaanvraag.LocatieEind</td>
+                    @:<td>@taak.DatumGemaakt</td>
+                    @:<td>@taak.LocatieStart.Kamer</td>
+                    @:<td>@taak.LocatieEind.Kamer</td>
                     @:<td>
-                        switch (vervoersaanvraag.GetTransportTaakStatus()) {
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.TransportTaakGemaakt:
-                                @Html.Raw("Wachtend");
-                                break;
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.TransportTaakTijdNodigGeschat:
+                        switch (taak.GetTransportTaakStatus()) {
+                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.NietToegewezen_Wachtend:
                                 @Html.Raw("Wachtend");
                                 break;
                             case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.WerknemerToegewezen_Wachtend:
@@ -39,7 +36,7 @@
                         }
                     @:</td>
                     @:<td>
-                        @:<button onclick="btnLoadAanvraagDetails(@vervoersaanvraag.Aanvraag.Id)">Toon Aanvraag</button>
+                        @:<button onclick="btnLoadAanvraagDetails(@taak.Aanvraag.Id)">Toon Aanvraag</button>
                     @:</td>
                 @:</tr>
             }

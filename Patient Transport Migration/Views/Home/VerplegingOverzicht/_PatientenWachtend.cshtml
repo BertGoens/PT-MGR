@@ -7,16 +7,16 @@
     <tr>
         <th>Datum Vervoersaanvraag</th>
         <th>Patient</th>
-        <th>Kamer</th>
-        <th>Bed</th>
+        <th>Kamer - Bed</th>
+        <th>Moet naar</th>
     </tr>
 
     @foreach (var taak in Model.PatientenWachtend) {
         <tr>
             <td>@taak.DatumGemaakt</td>
-            <td>@taak.Aanvraag.Patient.Naam</td>
-            <td>@taak.Aanvraag.Patient.Kamer</td>
-            <td>@taak.Aanvraag.Patient.BedNr</td>
+            <td>@taak.Aanvraag.Patient.Naam()</td>
+            <td>@taak.Aanvraag.Patient.Kamer - @taak.Aanvraag.Patient.BedNr</td>
+            <td>@taak.LocatieEind.Afdeling - @taak.LocatieEind.Kamer</td>
         </tr>
     }
 
@@ -25,7 +25,7 @@
 <ul class="pagination">
     @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
         <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-            <a href="/Home/VerplegingOverzicht?PatientenWachtendPage=@page">@page</a>
+            <a href="#" onclick="LoadPatientenWachtend(@page)">@page</a>
         </li>
     }
 </ul>

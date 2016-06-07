@@ -11,13 +11,19 @@ namespace Patient_Transport_Migration.Models.DAL {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int? Id { get; set; }
 
-        [Display(Name = "Van")]
-        [MaxLength(255)]
-        public string LocatieStart { get; set; }
+        [MaxLength(10)]
+        public string LocatieStartKamer { get; set; }
+        [MaxLength(6)]
+        public string LocatieStartAfdelingId { get; set; }
+        [ForeignKey("LocatieStartKamer, LocatieStartAfdelingId")]
+        public virtual Locatie LocatieStart { get; set; }
 
-        [Display(Name = "Naar")]
-        [MaxLength(255)]
-        public string LocatieEind { get; set; }
+        [MaxLength(10)]
+        public string LocatieEindKamer { get; set; }
+        [MaxLength(6)]
+        public string LocatieEindAfdelingId { get; set; }
+        [ForeignKey("LocatieEindKamer, LocatieEindAfdelingId")]
+        public virtual Locatie LocatieEind { get; set; }
 
         /// <summary>
         /// Notities gedeeld tussen Dispatch(Update) & TransportWerknemer(Read)
@@ -37,16 +43,6 @@ namespace Patient_Transport_Migration.Models.DAL {
         [Display(Name ="Datum compleet")]
         public DateTime? DatumCompleet { get; set; }
 
-        /// <summary>
-        /// De absolute tijd, in seconden, die de taak nodig had om voltooid te worden.
-        /// </summary>
-        public int? TijdNodigInSeconden { get; set; }
-
-        /// <summary>
-        /// De geschatte tijd,in seconden, nodig om de taak te voltooien.
-        /// </summary>
-        public int? GeschatteTijdNodigInSeconden { get; set; }
-        
         public long AanvraagId { get; set; }
         [ForeignKey("AanvraagId")]
         public virtual Aanvraag Aanvraag { get; set; }
@@ -55,8 +51,8 @@ namespace Patient_Transport_Migration.Models.DAL {
         /// Het wachtrij-nummer van de taak.
         /// </summary>
         /// <value>
-        /// -1 = Gedaan
         /// Null = Niet toegewezen
+        /// –2147483648 = Gedaan
         /// 0 = actieve taak
         /// > 0 = volgende taken
         /// </value>
@@ -86,11 +82,7 @@ namespace Patient_Transport_Migration.Models.DAL {
                 return TransportTaakStatus.WerknemerToegewezen_Wachtend;
             }
 
-            if (this.GeschatteTijdNodigInSeconden != null) {
-                return TransportTaakStatus.TransportTaakTijdNodigGeschat;
-            }
-
-            return TransportTaakStatus.TransportTaakGemaakt;
+            return TransportTaakStatus.NietToegewezen_Wachtend;
         }
     }
 
@@ -98,8 +90,7 @@ namespace Patient_Transport_Migration.Models.DAL {
     /// Transport Taak Status
     /// </summary>
     public enum TransportTaakStatus {
-        TransportTaakGemaakt,
-        TransportTaakTijdNodigGeschat,
+        NietToegewezen_Wachtend,
         WerknemerToegewezen_Wachtend,
         WerknemerToegewezen_HuidigeTaak,
         Voltooid

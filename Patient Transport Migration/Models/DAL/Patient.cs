@@ -4,16 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Patient_Transport_Migration.Models.DAL {
-    // Al deze data komt uit een ms-sql view
-    public partial class Patient {
+    public class Patient {
         public Patient() {
-
         }
 
         [Key]
         [Column(Order = 1)]
         [MaxLength(10)]
-        public string Id { get; set; }
+        public string PatientId { get; set; }
 
         [Key]
         [Column(Order = 2)]
@@ -26,27 +24,28 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(255)]
         public string Achternaam { get; set; }
 
-        [Display(Name = "Naam Patient:")]
-        public string Naam { get { return Voornaam + " " + Achternaam; } }
+        [Display(Name = "Patient")]
+        public string Naam() {
+            return Voornaam + " " + Achternaam;
+        }
 
         [DataType(DataType.Date)]
         public DateTime Geboortedatum { get; set; }
 
         public Geslacht Geslacht { get; set; }
 
-        [MaxLength(10)]
+        /// <summary>
+        /// De Code van de afdeling waar de patient ligt.
+        /// </summary>
+        [MaxLength(6)]
         public string Afdeling { get; set; }
-
         [MaxLength(10)]
         public string Kamer { get; set; }
+        [ForeignKey("Kamer, Afdeling")]
+        public virtual Locatie Locatie { get; set; }
 
         [MaxLength(10)]
-        [Display(Name = "Bed Nr")]
+        [Display(Name = "Bed #")]
         public string BedNr { get; set; }
-
-        public string BehandelendeDokterId { get; set; }
-        [Display(Name = "Behandelende dokter:")]
-        [ForeignKey("BehandelendeDokterId")]
-        public Dokter BehandelendeDokter { get; set; }
     }
 }

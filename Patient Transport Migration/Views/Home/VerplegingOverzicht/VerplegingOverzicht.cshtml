@@ -7,70 +7,121 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
-<div>
+<div class="container">
+    <div>
+        <dl class="dl-horizontal">
+            <dt>@Html.LabelFor(m => m.AfdelingSelected)</dt>
+            <dd>
+               @Html.DropDownListFor(m => m.AfdelingSelected,
+               new SelectList(Model.AfdelingLijst, "Value", "Text", @Model.AfdelingSelected),
+               "Alle Afdelingen",
+               new { @id="ddlAfdeling", @onchange="ddlAfdelingChanged(this.val)" })
+            </dd>
+        </dl>
+    </div>
+
     <div>
         <div id="dvLoaderPatientenInOrde" class="ajax-loader"></div>
+        <div id="dvAlertPatientenInOrde"></div>
         <div id="dvPatientenInOrde"></div>
     </div>
     <br />
     <div>
         <div id="dvLoaderPatientenWachtend" class="ajax-loader"></div>
+        <div id="dvAlertPatientenWachtend"></div>
         <div id="dvPatientenWachtend"></div>
     </div>
 </div>
 
 <script>
-    $(document).ready(function () {
-        //Load page manually once
-        LoadPatientenInOrde();
-        LoadPatientenWachtend();
-        //Refresh page every x time
+    $(function () {
+        PageOK = 0;
+        PageTODO = 0;
+        Afdeling = "";
+
         var interval = 300000; //300 Seconds = 5 minutes
-        setInterval(LoadPatientenInOrde(), interval);
-        setInterval(LoadPatientenWachtend(), interval);
+        setInterval(LoadPatientenInOrde(PageOK, Afdeling), interval); //Refresh now + every x time
+        setInterval(LoadPatientenWachtend(PageOK, Afdeling), interval);
     });
 
-    function LoadPatientenInOrde() {
+    function ddlAfdelingChanged(afdeling) {
+        Afdeling = afdeling;
+        LoadPatientenInOrde(PageOK, afdeling);
+        LoadPatientenWachtend(PageTODO ,afdeling);
+    };
+
+    function LoadPatientenInOrde(page) {
+        if (page == undefined) {
+            page = PageOK;
+        }
+
         var $dvLoaderPIO = $('#dvLoaderPatientenInOrde');
         var $dvContentPIO = $("#dvPatientenInOrde");
+
         $.ajax({
             type: "GET",
             cache: false,
+            timeout: 3000,
             async: true,
-            url: "GetPatientenInOrde",
+            url: "GetPatientenInOrde?page"+page+"afdeling"+Afdeling,
             beforeSend: function () {
-                $dvContentPIO.html('');
+                $dvContentPIO.css({ opacity: 0.6 });
                 $dvLoaderPIO.show();
             }, success: function (result) {
+                PageOK = page;
+                MaakStatus($('#dvAlertPatientenInOrde'), "alert-1", 'alert-success', "Pagina vernieuwd.");
                 $dvContentPIO.html(result);
             }, error: function (jqXHR, textStatus, errorThrown) {
-                $dvPatientDetails.html(
-                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                MaakStatus($('#dvAlertPatientenInOrde'), "alert-1", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
             }, complete: function () {
+                $dvContentPIO.css({ opacity: 1 });
                 $dvLoaderPIO.hide();
             }
         });
     };
 
-    function LoadPatientenWachtend() {
+    function LoadPatientenWachtend(page) {
+        if (page != undefined) { // refresh current           
+            page = PageTODO
+        }
+
         var $dvLoaderPW = $('#dvLoaderPatientenWachtend');
         var $dvContentPW = $("#dvPatientenWachtend");
+
         $.ajax({
             type: "GET",
             async: true,
             cache: false,
-            url: "GetPatientenWachtend",
+            url: "GetPatientenWachtend?page="+page+"afdeling="+Afdeling,
             beforeSend: function () {
-                $dvContentPW.html('');
+                $dvContentPW.css({ opacity: 0.6 });
                 $dvLoaderPW.show();
             }, success: function (result) {
+                PageTODO = page;
+                MaakStatus($('#dvAlertPatientenWachtend'), "alert-2", 'alert-success', "Pagina vernieuwd.");
                 $dvContentPW.html(result);
             }, error: function (jqXHR, textStatus, errorThrown) {
-                $dvPatientDetails.html(
-                    "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
+                MaakStatus($('#dvAlertPatientenWachtend'), "alert-2", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
             }, complete: function () {
                 $dvLoaderPW.hide();
+                $dvContentPW.css({ opacity: 1 });
             }
         })
+    };
+
+    function MaakStatus($Container, ItemName, AlertType, Message) {
+        $.fx.speeds.slow = 6000;
+        
+        $('#' + ItemName).remove();
+
+        var $Element = $('<div id='+ItemName+'></div>');
+        $Element.addClass("alert").addClass(AlertType);
+        $Element.text(Message);
+        $Element.html($Element.html().replace(/\n/g, '<br/>'));
+        
+        $Container.append($Element);
+        $Element.fadeTo("slow", "0.6", function () {
+            $(this).remove();
+        });
     };
 </script>

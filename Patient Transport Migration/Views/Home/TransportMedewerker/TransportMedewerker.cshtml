@@ -1,0 +1,57 @@
+﻿@model Patient_Transport_Migration.Models.VM.TransportMedewerker.TransportTakenVM
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/Css/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Images/favicon.ico" rel="icon" type="image/x-icon" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container body-content">
+        <div class="container">
+            <div id="dvStatus" class="alert"></div>
+            <div class="panel-group" id="accordion">
+                @foreach (var taak in Model.TransportTaakLijst) {
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                @if (taak.Aanvraag.AanvraagType.Include_Transportwijze) {
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">@taak.LocatieStart.Kamer - @taak.LocatieEind.Kamer <span class="pull-right">@try { @Html.Raw(taak.Aanvraag.Transportwijze.Omschrijving); } catch (Exception) { }</span></a>
+                                } else {
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">@taak.LocatieStart.Kamer - @taak.LocatieEind.Kamer</a>
+                                }
+                                
+                            </h4>
+                        </div>
+                        <div id="collapse-@taak.Id" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <p>@taak.Aanvraag.AanvraagType.Omschrijving</p>
+                                @if (taak.Aanvraag.AanvraagType.Include_Patient) {
+                                    <p>@taak.Aanvraag.Patient.Naam()</p>
+                                    <p>@taak.Aanvraag.Patient.Geslacht</p>
+                                    <p>@taak.Aanvraag.Patient.Geboortedatum</p>
+                                    <p>@taak.Aanvraag.Patient.Locatie.Omschrijving - @taak.Aanvraag.Patient.Kamer</p>
+                                }
+
+                                <p>@try { @taak.TransportNotities } catch (Exception) { }</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="bottom">
+                <button class="btn btn-default pull-left" type="button">Patiënt inscannen</button>
+                <button class="btn btn-default pull-right" type="button">Patiënt uitscannen</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

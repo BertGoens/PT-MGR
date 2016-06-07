@@ -27,8 +27,8 @@
                         <td>
                             <span class="ajax-loader"></span>
                             <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LaadWerknemersSchema('@wn.Gebruikersnaam')"></span>
-                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam', '@wn.Naam')"></span>
-                            @wn.Naam
+                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam', '@wn.Naam()')"></span>
+                            @wn.Naam()
                         </td>
                         <td id="TakenSchema-@wn.Gebruikersnaam">SCHEMA</td>
                     </tr>

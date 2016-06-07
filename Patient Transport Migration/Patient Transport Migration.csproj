@@ -117,6 +117,11 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\Sortable.js" />
     <Content Include="Scripts\Sortable.min.js" />
@@ -132,15 +137,19 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Core\BehandelTaak.cs" />
+    <Compile Include="Models\Core\OntslaActie.cs" />
     <Compile Include="Models\DAL\Aanvraag.cs" />
     <Compile Include="Models\DAL\AanvraagType.cs" />
     <Compile Include="Models\DAL\Dokter.cs" />
     <Compile Include="Models\DAL\ExceptionLogger.cs" />
+    <Compile Include="Models\DAL\Locatie.cs" />
     <Compile Include="Models\DAL\Patient.cs" />
     <Compile Include="Models\DAL\Geslacht.cs" />
     <Compile Include="Models\DAL\TransportTaak.cs" />
     <Compile Include="Models\DAL\Transportwijze.cs" />
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
+    <Compile Include="Models\Model\Afdeling.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
     <Compile Include="Models\Util\Pager.cs" />
     <Compile Include="Models\VM\DispatchOverzicht\WachtendeTransportTakenVM.cs" />
@@ -154,6 +163,7 @@
     <Compile Include="Models\VM\PatientInfo\PatientDetailsVM.cs" />
     <Compile Include="Models\VM\PatientInfo\PatientLijstVM.cs" />
     <Compile Include="Models\VM\PatientInfo\PatientTransportAanvragenVM.cs" />
+    <Compile Include="Models\VM\TransportMedewerker\TransportTakenVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\PatientenInOrdeVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\PatientenTeVerplaatsenVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\VerplegingDienstenLijstVM.cs" />
@@ -173,16 +183,17 @@
     <Content Include="Views\Home\PatientInfo\PatientInfo.cshtml" />
     <Content Include="Views\Home\PatientInfo\_PatientDetails.cshtml" />
     <Content Include="Views\Home\DokterStatus\_EditDokter.cshtml" />
-    <Content Include="Views\Home\PatientInfo\_AanvraagTypes.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_AanvraagTypesPatient.cshtml" />
     <Content Include="Views\Home\VerplegingOverzicht\VerplegingOverzicht.cshtml" />
     <Content Include="Views\Home\VerplegingOverzicht\_PatientenInOrde.cshtml" />
     <Content Include="Views\Home\VerplegingOverzicht\_PatientenWachtend.cshtml" />
     <Content Include="Views\Home\PatientInfo\_PatientMedischeAanvragen.cshtml" />
     <Content Include="Views\Home\MaakVervoerAanvraag\_AanvraagDetails.cshtml" />
     <Content Include="Views\Home\MaakVervoerAanvraag\MaakVervoerAanvraag.cshtml" />
-    <Content Include="Views\Home\PatientInfo\_AanvraagDetails.cshtml" />
+    <Content Include="Views\Home\PatientInfo\_AanvraagDetailsPatient.cshtml" />
     <Content Include="Views\Home\DispatchOverzicht\DispatchOverzicht.cshtml" />
     <Content Include="Views\Home\DispatchOverzicht\_WachtendeTransportTaken.cshtml" />
+    <Content Include="Views\Home\TransportMedewerker\TransportMedewerker.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

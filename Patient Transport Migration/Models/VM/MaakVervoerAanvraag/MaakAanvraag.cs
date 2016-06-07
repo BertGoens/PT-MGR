@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Model;
 
 namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
-    /// <summary>
-    /// Maak een nieuwe aanvraag op basis van een type
-    /// </summary>
+
     public class MaakAanvraag {
         public MaakAanvraag() {
             // Required for POST
@@ -32,9 +32,20 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                         }                     
                     }
 
-                    if (_DisplayAanvraagTypeData.Include_avr_Transportwijze) {
+                    if (_DisplayAanvraagTypeData.Include_Transportwijze) {
                         _transportwijzeLijst = db.tblTransportwijzes.ToList();
                     }
+
+                    if (_DisplayAanvraagTypeData.Include_AanDokter) {
+                        _dokterLijst = db.tblDokters.ToList();
+                    }
+
+                    _afdelingLijst = db.tblLocaties.Select(l => 
+                    new Afdeling() { Omschrijving = l.Omschrijving, Code = l.Afdeling })
+                    .Distinct()
+                    .ToList();
+
+
                 } catch (Exception ex) {
                     ex.ToString();
                     // InvalidOperationException => Sequence contains no elements
@@ -47,43 +58,70 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
         private AanvraagType _DisplayAanvraagTypeData;
         public AanvraagType DisplayAanvraagTypeData { get { return _DisplayAanvraagTypeData; } }
 
-        /*
-        private Aanvraag _DisplayAanvraagData;
-        public Aanvraag DisplayAanvraagData { get { return _DisplayAanvraagData; } }
-        */
-
-        /// <summary>
-        /// Null bij error
-        /// </summary>
         public long? AanvraagId { get; set; }
 
         public int AanvraagTypeId { get; set; }
 
+        [Display(Name = "Aanvraag voor")]
+        public DateTime DatumAanvraag { get; set; }
+
         [Display(Name = "Omschrijving")]
-        public string va_Omschrijving { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string Omschrijving { get; set; }
 
-        [Display(Name = "Van")]
-        public string Van { get; set; }
+        [Display(Name = "CT Scan")]
+        public bool CT { get; set; }
+        public bool NMR { get; set; }
+        public bool RX { get; set; }
+        public bool Echografie { get; set; }
 
-        [Display(Name = "Naar")]
-        public string Naar { get; set; }
+        private List<Afdeling> _afdelingLijst;
+        [Display(Name = "Afdeling")]
+        public string AfdelingSelected { get; set; }
+        public IEnumerable<SelectListItem> AfdelingLijst {
+            get {
+                var result = _afdelingLijst.Select(l =>
+                new SelectListItem {
+                    Text = l.Omschrijving,
+                    Value = l.Code,
+                });
+                return result;
+            }
+        }
+        [Display(Name = "Kamer")]
+        public string KamerSelected { get; set; }
+
+        private List<Dokter> _dokterLijst;
+        [Display(Name = "Selecteer de dokter")]
+        public string DokterSelected { get; set; }
+        public IEnumerable<SelectListItem> DokterLijst { get {
+                var result = _dokterLijst.Select(d => new SelectListItem {
+                    Value = d.Id,
+                    Text = d.Naam
+                });
+                return result;
+            } }
 
         private List<Patient> _patientenLijst;
         [Display(Name = "Selecteer de patiënt")]
-        public string SelectedPatient { get; set; }
+        public string PatientSelected { get; set; }
         public IEnumerable<SelectListItem> PatientenLijst {
             get {
-                var result = _patientenLijst.Select(f => new SelectListItem {
-                    Value = f.PatientVisit.ToString(),
-                    Text = f.Naam
-                });
+                IEnumerable<SelectListItem> result = null;
+                try {
+                    result = _patientenLijst.Select(f => new SelectListItem {
+                        Value = f.PatientVisit.ToString(),
+                        Text = f.Naam()
+                    });
+                } catch (Exception) {
+                }
                 return result;
             }
         }
 
         private List<Transportwijze> _transportwijzeLijst;
         [Display(Name = "Selecteer de transportwijze")]
-        public string SelectedTransportwijze { get; set; }
+        public string TransportwijzeSelected { get; set; }
         public IEnumerable<SelectListItem> TransportwijzeLijst {
             get {
                 var result = _transportwijzeLijst.Select(t => new SelectListItem {

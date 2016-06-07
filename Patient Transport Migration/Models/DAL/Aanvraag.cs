@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,16 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Aanvraag #")]
         public long? Id { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Aanvraag voor")]
+        public DateTime DatumAanvraag { get; set; }
+
+        [Display(Name = "Aanvraag gedaan op")]
+        [DataType(DataType.DateTime)]
+        public DateTime DatumCompleet { get; set; }
 
         public int AanvraagTypeId { get; set; }
         [ForeignKey("AanvraagTypeId")]
@@ -22,9 +32,6 @@ namespace Patient_Transport_Migration.Models.DAL {
         [Display(Name = "Aanvraag opgemaakt door")]
         [MaxLength(255)]
         public string AanvraagDoor { get; set; }
-
-        /* {N} Data-velden; allemaal nullable */
-        // Gedeeld voor meerdere requests
 
         /// <summary>
         /// Gebruikt om alle persoonlijke patientdata op te zoeken.
@@ -41,65 +48,43 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("PatientId, PatientVisit")]
         public virtual Patient Patient { get; set; }
 
-        // Vervoer Aanvraag: 'va' prefix
-        [Display(Name = "Omschrijving")]
         [MaxLength(1000)]
         [DataType(DataType.MultilineText)]
-        public string va_Omschrijving { get; set; }
+        public string Omschrijving { get; set; }
 
         // Aanvraag van Consult: 'avc' prefix
         [MaxLength(10)]
-        public string avc_AanDokterId { get; set; }
-        [ForeignKey("avc_AanDokterId")]
-        public virtual Dokter avc_AanDokter { get; set; }
+        public string AanDokterId { get; set; }
+        [ForeignKey("AanDokterId")]
+        [Display(Name = "Behandelende dokter")]
+        public virtual Dokter AanDokter { get; set; }
+        [DefaultValue(false)]
+        public bool DokterOntslagen { get; set; }
 
-        [MaxLength(1000)]
-        public string avc_PatientWordtBehandeldVoor { get; set; }
-        [MaxLength(1000)]
-        public string avc_HuidigeKlachten { get; set; }
-        [MaxLength(1000)]
-        public string avc_UwAdviesGevraagdVoor { get; set; }
-        [MaxLength(1000)]
-        public string avc_AndereNotas { get; set; }
+        // Aanvraag van Radiologie: 
+        [DefaultValue(false)]
+        public bool CT { get; set; }
+        [DefaultValue(false)]
+        public bool CT_Ontslagen { get; set; }
 
-        [MaxLength(10)]
-        public string avc_AanvragendeGeneesheerId { get; set; }
-        [ForeignKey("avc_AanvragendeGeneesheerId")]
-        public virtual Dokter avc_AanvragendeGeneesheer { get; set; }
+        [DefaultValue(false)]
+        public bool NMR { get; set; }
+        [DefaultValue(false)]
+        public bool NMR_Ontslagen { get; set; }
 
-        [MaxLength(1000)]
-        public string avc_BevindingenEnAdvies { get; set; }
+        [DefaultValue(false)]
+        public bool RX { get; set; }
+        [DefaultValue(false)]
+        public bool RX_Ontslagen { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime? avc_DatumBevindingen { get; set; }
+        [DefaultValue(false)]
+        public bool Echografie { get; set; }
+        [DefaultValue(false)]
+        public bool Echografie_Ontslagen { get; set; }
 
-        // Aanvraag van Radiologie: 'avr' prefix
-        [MaxLength(1000)]
-        public string avr_RelevanteKlinischeInlichtingen { get; set; }
-        [MaxLength(1000)]
-        public string avr_DiagnostischeVraagstelling { get; set; }
-        [MaxLength(1000)]
-        public string avr_VoorgesteldeOnderzoeken { get; set; }
+        public int? TransportwijzeId { get; set; }
+        [ForeignKey("TransportwijzeId")]
+        public Transportwijze Transportwijze { get; set; }
 
-        public bool? avr_CT { get; set; }
-        public bool? avr_NMR { get; set; }
-        public bool? avr_RX { get; set; }
-        public bool? avr_Echografie { get; set; }
-        [MaxLength(255)]
-        public string avr_Andere { get; set; }
-        public bool? avr_Onbekend { get; set; }
-
-        public int? avr_TransportwijzeId { get; set; }
-        [ForeignKey("avr_TransportwijzeId")]
-        public Transportwijze avr_Transportwijze { get; set; }
-
-        [MaxLength(1000)]
-        public string avr_Allergieen { get; set; }
-        public bool? avr_IsDiabeet { get; set; }
-        public bool? avr_HeeftNierInsufficientie { get; set; }
-        public bool? avr_IsZwanger { get; set; }
-        public bool? avr_HeeftImplantaat { get; set; }
-        [MaxLength(1000)]
-        public string avr_AndereInlichtingen { get; set; }
     }
 }

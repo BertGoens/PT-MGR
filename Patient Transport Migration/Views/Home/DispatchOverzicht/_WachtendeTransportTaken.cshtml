@@ -10,6 +10,7 @@
     <tr>
         <th>Taak</th>
         <th>Datum Gemaakt</th>
+        <th>Patient</th>
         <th>Van</th>
         <th>Naar</th>
         <th>Notities</th>
@@ -22,6 +23,7 @@
             <tr id="Taak-@ttaak.Id" class="@(ttaak.IsPrioriteitHoog ? "HogePrioriteit" : "")">
                 <td>@ttaak.Id</td>
                 <td>@ttaak.DatumGemaakt</td>
+                <td>@if (ttaak.Aanvraag.AanvraagType.Include_Patient) { @ttaak.Aanvraag.Patient.Naam() } else { @Html.Raw("/"); }</td>
                 <td>@ttaak.LocatieStart</td>
                 <td>@ttaak.LocatieEind</td>
                 <td><input id="Taak-@ttaak.Id-TransportNotities" type="text" value="@(ttaak.TransportNotities)" /></td>
@@ -39,7 +41,7 @@
 <ul class="pagination">
     @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++) {
         <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-            <a href="/Home/DispatchOverzicht?TakenPage=(@page)">@page</a>
+            <a href="/Home/DispatchOverzicht?TakenPage=@page">@page</a>
         </li>
     }
 </ul>

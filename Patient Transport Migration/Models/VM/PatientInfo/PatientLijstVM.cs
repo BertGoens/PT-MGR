@@ -27,7 +27,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
             get {
                 return _Patienten.Select(t => new SelectListItem {
                     Value = t.PatientVisit.ToString(),
-                    Text = t.Naam
+                    Text = t.Naam()
                 });
             }
         }

@@ -7,10 +7,10 @@ using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class PatientenTeVerplaatsenVM {
-        public PatientenTeVerplaatsenVM(string page) {
+        public PatientenTeVerplaatsenVM(string page, string afdeling) {
             var db = new MSSQLContext();
 
-            // query de recente uitgevoerde taken met een patient
+            // query de recente uitgevoerde taken met een patienten in afdeling
 
             DateTime date = DateTime.Now.AddHours(-4);
             var _qryItems = db.tblTransportTaken
@@ -21,13 +21,20 @@ namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
                 .ToList();
             _qryItems.Reverse(); //Nieuwste (datum) bovenaan
 
+            //Filter als een afdeling gegeven is (op de code)
+            if (!string.IsNullOrEmpty(afdeling)) {
+                _qryItems = _qryItems.Where(a => 
+                a.Aanvraag.Patient.Afdeling == afdeling)
+                .ToList();
+            }
+
             int pageNr = 0;
             int.TryParse(page, out pageNr);
             Pager = new Pager(_qryItems.Count(), pageNr);
-            PatientenWachtend = _qryItems.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
+            PatientenWachtend = _qryItems.Skip((Pager.CurrentPage - 1) * Pager.PageSize)
+                .Take(Pager.PageSize)
+                .ToList();
         }
-
-        // TODO Filter maken per dienst
 
         public List<TransportTaak> PatientenWachtend { get; private set; }
 

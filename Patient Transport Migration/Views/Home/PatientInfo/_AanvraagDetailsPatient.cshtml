@@ -1,0 +1,78 @@
+﻿@model Patient_Transport_Migration.Models.VM.PatientInfo.AanvraagDetailsVM
+
+@if (Model.Aanvraag != null) {
+    <dl class="dl-horizontal">
+        <dt>@Html.LabelFor(m => m.Aanvraag.Id)</dt>
+        <dd>@Html.ValueFor(m => m.Aanvraag.Id)</dd>
+
+        <dt>@Html.LabelFor(m => m.Aanvraag.DatumAanvraag)</dt>
+        <dd>@Html.ValueFor(m => m.Aanvraag.DatumAanvraag)</dd>
+
+        <dt>@Html.LabelFor(m => m.Aanvraag.DatumCompleet)</dt>
+        <dd>@Html.ValueFor(m => m.Aanvraag.DatumCompleet)</dd>
+
+        <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dt>
+        <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dd>
+
+        <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagDoor)r</dt>
+        <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagDoor)</dd>
+
+        @if (Model.Aanvraag.AanvraagType.Include_Patient) {
+            <dt>@Html.LabelFor(m => m.Aanvraag.Patient.Naam())</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.Patient.Naam())</dd>
+        }
+
+        @if (Model.Aanvraag.AanvraagType.Include_AanDokter) {
+            <dt>@Html.LabelFor(m => m.Aanvraag.AanDokter)</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.AanDokter)</dd>
+        }
+
+        @if (Model.Aanvraag.AanvraagType.Include_Radiologie) {
+            if (Model.Aanvraag.CT) {
+                <dt>@Html.LabelFor(m => m.Aanvraag.CT)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.CT)</dd>
+
+                <dt>@Html.LabelFor(m => m.Aanvraag.CT_Ontslagen)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.CT_Ontslagen)</dd>
+            }
+
+            if (Model.Aanvraag.NMR) {
+                <dt>@Html.LabelFor(m => m.Aanvraag.NMR)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.NMR)</dd>
+
+                <dt>@Html.LabelFor(m => m.Aanvraag.NMR_Ontslagen)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.NMR_Ontslagen)</dd>
+            }
+
+            if (Model.Aanvraag.RX) {
+                <dt>@Html.LabelFor(m => m.Aanvraag.RX)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.RX)</dd>
+
+                <dt>@Html.LabelFor(m => m.Aanvraag.RX_Ontslagen)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.RX_Ontslagen)</dd>
+            }
+
+            if (Model.Aanvraag.Echografie) {
+                <dt>@Html.LabelFor(m => m.Aanvraag.Echografie)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.Echografie)</dd>
+
+                <dt>@Html.LabelFor(m => m.Aanvraag.Echografie_Ontslagen)</dt>
+                <dd>@Html.ValueFor(m => m.Aanvraag.Echografie_Ontslagen)</dd>
+            }
+        }
+
+        @if (Model.Aanvraag.AanvraagType.Include_Transportwijze) {
+            <dt>@Html.LabelFor(m => m.Aanvraag.Transportwijze.Omschrijving))</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.Transportwijze.Omschrijving)</dd>
+        }
+
+    </dl>
+} else {
+    <p>Problemen bij het laden van de aanvraag.</p>
+}
+
+<script>
+    $(new function () {
+        $("#dvAanvraagDetails").show();
+    })
+</script>
