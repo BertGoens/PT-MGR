@@ -15,7 +15,7 @@
                @Html.DropDownListFor(m => m.AfdelingSelected,
                new SelectList(Model.AfdelingLijst, "Value", "Text", @Model.AfdelingSelected),
                "Alle Afdelingen",
-               new { @id="ddlAfdeling", @onchange="ddlAfdelingChanged(this.val)" })
+               new { @id="ddlAfdeling", @onchange="ddlAfdelingChanged()" })
             </dd>
         </dl>
     </div>
@@ -44,10 +44,11 @@
         setInterval(LoadPatientenWachtend(PageOK, Afdeling), interval);
     });
 
-    function ddlAfdelingChanged(afdeling) {
-        Afdeling = afdeling;
-        LoadPatientenInOrde(PageOK, afdeling);
-        LoadPatientenWachtend(PageTODO ,afdeling);
+    function ddlAfdelingChanged() {
+        Afdeling = $('#ddlAfdeling').val();
+
+        LoadPatientenInOrde(PageOK, Afdeling);
+        LoadPatientenWachtend(PageTODO , Afdeling);
     };
 
     function LoadPatientenInOrde(page) {
@@ -63,7 +64,7 @@
             cache: false,
             timeout: 3000,
             async: true,
-            url: "GetPatientenInOrde?page"+page+"afdeling"+Afdeling,
+            url: "GetPatientenInOrde?page"+page+"&Afdeling"+Afdeling,
             beforeSend: function () {
                 $dvContentPIO.css({ opacity: 0.6 });
                 $dvLoaderPIO.show();
@@ -92,7 +93,7 @@
             type: "GET",
             async: true,
             cache: false,
-            url: "GetPatientenWachtend?page="+page+"afdeling="+Afdeling,
+            url: "GetPatientenWachtend?page="+page+"&Afdeling="+Afdeling,
             beforeSend: function () {
                 $dvContentPW.css({ opacity: 0.6 });
                 $dvLoaderPW.show();

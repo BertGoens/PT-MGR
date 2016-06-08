@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Patient_Transport_Migration.Models.DAL {
+namespace Patient_Transport_Migration.Models.POCO {
     public class Patient {
         public Patient() {
         }
@@ -25,9 +25,7 @@ namespace Patient_Transport_Migration.Models.DAL {
         public string Achternaam { get; set; }
 
         [Display(Name = "Patient")]
-        public string Naam() {
-            return Voornaam + " " + Achternaam;
-        }
+        public string Naam { get { return Voornaam + " " + Achternaam; } }
 
         [DataType(DataType.Date)]
         public DateTime Geboortedatum { get; set; }

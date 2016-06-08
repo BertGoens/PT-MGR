@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Model;
 using Patient_Transport_Migration.Models.POCO;
 
 namespace Patient_Transport_Migration.Models.Repositories {
-    public class TransportWerknemerRepository : IDisposable {
+    public class LocatieRepository : IDisposable {
         private Context _context;
 
-        public TransportWerknemerRepository(Context context) {
+        public LocatieRepository(Context context) {
             _context = context;
         }
 
-        public IEnumerable<TransportWerknemer> GetAll() {
-            return _context.tblTransportWerknemers.ToList();
+        public IEnumerable<Locatie> GetKamersVanAfdeling(string AfdelingCode) {
+            return _context.tblLocaties.Where(l => l.Afdeling == AfdelingCode);
         }
 
-        public TransportWerknemer GetWerknemerByGebruikersnaam(string Gebruikersnaam) {
-            return _context.tblTransportWerknemers.First(w => w.Gebruikersnaam == Gebruikersnaam);
+        public IEnumerable<Afdeling> GetUniekeAfdelingen() {
+            return _context.tblLocaties.Select(l =>
+                    new Afdeling() { Omschrijving = l.Omschrijving, Code = l.Afdeling })
+                    .Distinct()
+                    .ToList();
         }
 
         #region IDisposable Support

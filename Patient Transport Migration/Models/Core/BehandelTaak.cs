@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.Model;
+using Patient_Transport_Migration.Models.POCO;
 
 namespace Patient_Transport_Migration.Models.Core {
     /// <summary>
@@ -41,26 +42,25 @@ namespace Patient_Transport_Migration.Models.Core {
         /// </summary>
         /// <param name="aanvraag">De nieuwe aanvraag</param>
         /// <param name="Kamer">De geselecteerde kamer als het geen dokter is</param>
-        public static void NieuweAanvraag(Aanvraag aanvraag, Locatie Kamer = null) {
-            var db = new Context();
+        public static void NieuweAanvraag(Context context, Aanvraag aanvraag, Locatie Kamer = null) {
             var transportTaak = new TransportTaak();
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
             transportTaak.LocatieStart = aanvraag.Patient.Locatie;
 
             // Ga aanvraagtype van de aanvraag af en kijk naar eerste transport
-            if (ZetEindLocatie(new DokterContext(), transportTaak, Kamer)) {
+            if (ZetEindLocatie(context, transportTaak, Kamer)) {
                 // Opslaan
-                db.tblTransportTaken.Add(transportTaak);
-                db.SaveChanges();
+                context.tblTransportTaken.Add(transportTaak);
+                context.SaveChanges();
             } else {
-                db.tblExceptionLogger.Add(new ExceptionLogger() 
+                context.tblExceptionLogger.Add(new ExceptionLogger() 
                     { ExceptionMessage = "Kon geen EindLocatie vinden bij creatie van Aanvraag " + aanvraag.Id }
                 );
             };
         }
 
-        private static bool ZetEindLocatie(DokterContext db, TransportTaak transportTaak, Locatie Kamer = null) {
+        private static bool ZetEindLocatie(Context context, TransportTaak transportTaak, Locatie Kamer = null) {
             var aanvraag = transportTaak.Aanvraag;
             var AanvrType = transportTaak.Aanvraag.AanvraagType;
 
@@ -80,26 +80,23 @@ namespace Patient_Transport_Migration.Models.Core {
             }
             if (AanvrType.Include_Radiologie) {
                 if (aanvraag.CT) {
-                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_CT).Locatie;
+                    transportTaak.LocatieEind = context.tblDokters.First(l => l.Id == ID_CT).Locatie;
                     return true;
                 } else if (aanvraag.NMR) {
-                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_NMR).Locatie;
+                    transportTaak.LocatieEind = context.tblDokters.First(l => l.Id == ID_NMR).Locatie;
                     return true;
                 } else if (aanvraag.RX) {
-                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_RX).Locatie;
+                    transportTaak.LocatieEind = context.tblDokters.First(l => l.Id == ID_RX).Locatie;
                     return true;
                 } else if (aanvraag.Echografie) {
-                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
+                    transportTaak.LocatieEind = context.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
                     return true;
                 }
             }
             return false;
         }
 
-        public static void OntslagAanvraag(Aanvraag aanvraag, TransportActie transportActie) {
-            var _dokterContext = new DokterContext();
-            var _context = new Context();
-
+        public static void OntslagAanvraag(Context context, Aanvraag aanvraag, TransportActie transportActie) {
             var transportTaak = new TransportTaak();
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
@@ -116,19 +113,19 @@ namespace Patient_Transport_Migration.Models.Core {
                     break;
                 case TransportActie.CT_Ontslagen:
                     nieuweActie = true;
-                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_CT).Locatie;
+                    transportTaak.LocatieStart = context.tblDokters.First(l => l.Id == ID_CT).Locatie;
                     break;
                 case TransportActie.NMR_Ontslagen:
                     nieuweActie = true;
-                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_NMR).Locatie;
+                    transportTaak.LocatieStart = context.tblDokters.First(l => l.Id == ID_NMR).Locatie;
                     break;
                 case TransportActie.RX_Ontslagen:
                     nieuweActie = true;
-                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_RX).Locatie;
+                    transportTaak.LocatieStart = context.tblDokters.First(l => l.Id == ID_RX).Locatie;
                     break;
                 case TransportActie.Echografie_Ontslagen:
                     nieuweActie = true;
-                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
+                    transportTaak.LocatieStart = context.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
                     break;
                 case TransportActie.TransportVolbracht:
                     // Wacht op ontslag
@@ -140,12 +137,12 @@ namespace Patient_Transport_Migration.Models.Core {
             if (!nieuweActie) {
                 // Geen nieuwe actie = aanvraag voltooid
                 aanvraag.DatumCompleet = DateTime.Now;
-                _context.Entry(aanvraag).State = EntityState.Modified;
-                _context.SaveChanges();
+                context.Entry(aanvraag).State = EntityState.Modified;
+                context.SaveChanges();
             } else {
                 // Nieuwe TransportTaak maken
-                _context.tblTransportTaken.Add(transportTaak);
-                _context.SaveChanges();
+                context.tblTransportTaken.Add(transportTaak);
+                context.SaveChanges();
             }
         }
     }

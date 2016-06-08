@@ -13,9 +13,11 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding:0">
     <div class="container body-content">
         <div class="container">
+            <h3>Taken @User.Identity.Name</h3>
+            <hr />
             <div id="dvStatus" class="alert"></div>
             <div class="panel-group" id="accordion">
                 @foreach (var taak in Model.TransportTaakLijst) {
@@ -26,9 +28,10 @@
                 Html.Raw("data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse-" + @taak.Id + "\"");
                 Html.Raw(">");
 
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id" style="font-size:1.5em;">
                     <span class="badge">@taak.TaakWachtrijNummer</span>
-                    <b>Van</b> @taak.LocatieStart.Omschrijving : @taak.LocatieStart.Kamer <b>Naar</b> @taak.LocatieEind.Omschrijving : @taak.LocatieEind.Kamer
+                    <span><b>Van</b> @taak.LocatieStart.Omschrijving : @taak.LocatieStart.Kamer</span>
+                    <span style="float:right"><b>Naar</b> @taak.LocatieEind.Omschrijving : @taak.LocatieEind.Kamer</span>
                     <span class="pull-right">
                         @try { @Html.Raw(taak.Aanvraag.Transportwijze.Omschrijving);
                         } catch (Exception) { }
@@ -39,16 +42,15 @@
                     Html.Raw("</div>"); @* End Panel Heading*@
 
                     @* Panel Collapse Href *@
-                    <div id="collapse-@taak.Id" class="panel-collapse collapse in">
+                    <div id="collapse-@taak.Id" class="panel-collapse collapse @(taak.TaakWachtrijNummer == 0? "in" : "")">
 
                         <div class="panel-body">
-                            <p>@taak.Aanvraag.Omschrijving</p>
+                            <p><i>Omschrijving:</i> @taak.Aanvraag.Omschrijving</p>
                             @if (taak.Aanvraag.AanvraagType.Include_Patient) {
-                                <div class="content-container">
-                                    <div class="content-left">
+                                <div class="content-left">
                                         <dl class="dl-horizontal">
-                                            <dd>Patient</dd>
-                                            <dd>@taak.Aanvraag.Patient.Naam()</dd>
+                                            <dt>Patient</dt>
+                                            <dd>@taak.Aanvraag.Patient.Naam</dd>
 
                                             <dt>Geboortedatum</dt>
                                             <dd>@taak.Aanvraag.Patient.Geboortedatum</dd>
@@ -56,21 +58,20 @@
                                     </div>
                                     <div class="content-right">
                                         <dl class="dl-horizontal">
-                                            <dd>Geslacht</dd>
-                                            <dt>@taak.Aanvraag.Patient.Geslacht</dt>
+                                            <dt>Geslacht</dt>
+                                            <dd>@taak.Aanvraag.Patient.Geslacht</dd>
 
                                             <dt>Datum Aanvraag</dt>
                                             <dd>@taak.DatumGemaakt</dd>
                                         </dl>
                                     </div>
-                                </div>
                             }
-                            <p>@taak.TransportNotities</p>
+                            <p style="clear:both"><b>Transport Notities:</b> @taak.TransportNotities</p>
                         </div>
 
                         <div class="panel-footer">
-                            <button class="btn btn-default pull-left" type="button" onclick="TaakStart(@taak.Id)">Start</button>
-                            <button class="btn btn-default pull-right" type="button" onclick="TaakVolbracht(@taak.Id)">Stop</button>
+                            <button class="btn btn-default" type="button" onclick="TaakStart(@taak.Id)">Start</button>
+                            <button class="btn btn-default pull-right" type="button" onclick="TaakVolbracht(@taak.Id)">Compleet</button>
                         </div>
                     </div>
                 }

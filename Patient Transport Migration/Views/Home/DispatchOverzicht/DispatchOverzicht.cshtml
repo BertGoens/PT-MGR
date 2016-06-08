@@ -27,8 +27,8 @@
                         <td>
                             <span class="ajax-loader"></span>
                             <span class="glyphicon glyphicon-refresh glyphicon-clickable" onclick="LaadWerknemersSchema('@wn.Gebruikersnaam')"></span>
-                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam', '@wn.Naam()')"></span>
-                            @wn.Naam()
+                            <span class="glyphicon glyphicon-ok-circle glyphicon-clickable" onclick="SaveWerknemersSchema('@wn.Gebruikersnaam', '@wn.Naam')"></span>
+                            @wn.Naam
                         </td>
                         <td id="TakenSchema-@wn.Gebruikersnaam">SCHEMA</td>
                     </tr>
@@ -144,10 +144,8 @@
     function TekenWerknemerSchema($tr, WerknemerId, WerknemerNaam, WerknemerTaken) {
         var $dvContainer = $('<div></div>');
         $dvContainer.prop("id", "WnSchema-"+WerknemerId);
-
         for (var i = 0; i < WerknemerTaken.length; i++) {
-            var wnTaak = WerknemerTaken[i];
-
+             wnTaak = WerknemerTaken[i];
             //Bouw Item (Html)
             var $item = $('<div id=' + WerknemerId + '-taak' + wnTaak.Id +'></div>');
             $item.attr('data-wn-taak-id', wnTaak.Id);
@@ -163,7 +161,9 @@
 
             // Tekst
             var $itemText = $('<span></span>');
-            $itemText.text(wnTaak.LocatieStart + " - " + wnTaak.LocatieEind);
+            $itemText.text(wnTaak.LocatieStart.Omschrijving + " " + wnTaak.LocatieStart.Kamer + 
+                " - " + wnTaak.LocatieEind.Omschrijving + " " + wnTaak.LocatieEind.Kamer
+            );
             if (wnTaak.IsPrioriteitHoog) {
                 $itemText.addClass("HogePrioriteit");
             };

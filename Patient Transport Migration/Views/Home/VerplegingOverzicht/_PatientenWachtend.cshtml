@@ -14,7 +14,7 @@
     @foreach (var taak in Model.PatientenWachtend) {
         <tr>
             <td>@taak.DatumGemaakt</td>
-            <td>@taak.Aanvraag.Patient.Naam()</td>
+            <td>@taak.Aanvraag.Patient.Naam</td>
             <td>@taak.Aanvraag.Patient.Kamer - @taak.Aanvraag.Patient.BedNr</td>
             <td>@taak.LocatieEind.Omschrijving - @taak.LocatieEind.Kamer</td>
         </tr>

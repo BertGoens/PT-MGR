@@ -23,9 +23,9 @@
             <tr id="Taak-@ttaak.Id" class="@(ttaak.IsPrioriteitHoog ? "HogePrioriteit" : "")">
                 <td>@ttaak.Id</td>
                 <td>@ttaak.DatumGemaakt</td>
-                <td>@if (ttaak.Aanvraag.AanvraagType.Include_Patient) { @ttaak.Aanvraag.Patient.Naam() } else { @Html.Raw("/"); }</td>
-                <td>@ttaak.LocatieStart</td>
-                <td>@ttaak.LocatieEind</td>
+                <td>@if (ttaak.Aanvraag.AanvraagType.Include_Patient) { @ttaak.Aanvraag.Patient.Naam } else { @Html.Raw("/"); }</td>
+                <td>@ttaak.LocatieStart.Omschrijving - @ttaak.LocatieStart.Kamer</td>
+                <td>@ttaak.LocatieEind.Omschrijving - @ttaak.LocatieEind.Kamer</td>
                 <td><input id="Taak-@ttaak.Id-TransportNotities" type="text" value="@(ttaak.TransportNotities)" /></td>
                 <td><input id="Taak-@ttaak.Id-IsPrioriteitHoog" type="checkbox" @(ttaak.IsPrioriteitHoog ? "checked=\"checked\"" : "") /></td>
                 <td>@Html.DropDownList("Taak-"+@ttaak.Id+"-WerknemerId", new SelectList(@Model.TransportWerknemerItems, "Value", "Text"), "")</td>

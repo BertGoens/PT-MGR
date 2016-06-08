@@ -1,4 +1,4 @@
-﻿namespace Patient_Transport_Migration.Models.DAL {
+﻿namespace Patient_Transport_Migration.Models.POCO {
     public enum Geslacht {
         X = 0,
         Man = 1,

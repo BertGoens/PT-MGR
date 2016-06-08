@@ -5,12 +5,13 @@ using Patient_Transport_Migration.Models;
 using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Migrations {
-    public class Configuration : DbMigrationsConfiguration<Models.Context> {
+    public class Configuration : DbMigrationsConfiguration<Models.DAL.Context> {
 
         public Configuration() {
-            // TODO Uitzetten AutomaticMigrationsEnabled in production anders gg data: https://coding.abel.nu/2012/03/ef-migrations-command-reference/
-             // AutomaticMigrationDataLossAllowed = true;
-             // AutomaticMigrationsEnabled = true;
+             // #Standaard uit tenzij je een database update wilt doen met nieuwe seed data
+             // #Bv een mock repository maken om unit tests te maken ofzo.
+              AutomaticMigrationDataLossAllowed = true;
+              AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Context context) {

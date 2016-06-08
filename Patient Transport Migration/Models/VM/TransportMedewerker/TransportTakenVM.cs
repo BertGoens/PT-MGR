@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
+using Patient_Transport_Migration.Models.Repositories;
 
 namespace Patient_Transport_Migration.Models.VM.TransportMedewerker {
     public class TransportTakenVM {
-        public TransportTakenVM(string medewerkerId) {
-            var db = new Context();
-            TransportTaakLijst = db.tblTransportTaken.Where(t =>
-            t.TransportWerknemerId == medewerkerId)
-            .ToList();
+        public TransportTakenVM(Context context, string medewerkerId) {
+            TransportTaakLijst = new TransportTaakRepository(context).GetWerknemerTakenQueue(medewerkerId).ToList();
         }
 
-        public List<TransportTaak> TransportTaakLijst;
+        public List<TransportTaak> TransportTaakLijst { get; private set; }
     }
 }

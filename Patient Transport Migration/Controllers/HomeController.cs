@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models;
 using Patient_Transport_Migration.Models.Core;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
 using Patient_Transport_Migration.Models.Repositories;
 using Patient_Transport_Migration.Models.VM;
 
@@ -15,7 +15,7 @@ namespace Patient_Transport_Migration.Controllers {
 
     public class HomeController : Controller {
 
-        private Context db = new Context();
+        Context _context = new Context();
 
         private string getViewModelErrors() {
             return string.Join(",", ModelState.Values.Where(e => e.Errors.Count > 0)
@@ -32,12 +32,14 @@ namespace Patient_Transport_Migration.Controllers {
         #region DokterStatus
         [HttpGet]
         public ViewResult DokterStatus() {
-            return View("./DokterStatus/DokterStatus", new Models.VM.DokterStatus.DokterLijstVM());
+            var DoktersExclusiefRadiologie = new DokterRepository(_context).GetDoktersExcludeRadiologie();
+            return View("./DokterStatus/DokterStatus", new Models.VM.DokterStatus.DokterLijstVM(DoktersExclusiefRadiologie));
         }
 
         [HttpGet]
         public PartialViewResult GetDokterStatus_DokterDetails(string docterId) {
-            var vm = new Models.VM.DokterStatus.DokterDetailsVM(docterId);
+            var DokterDetails = _context.tblDokters.Single(d => d.Id == docterId);
+            var vm = new Models.VM.DokterStatus.DokterDetailsVM(DokterDetails);
             return PartialView("./DokterStatus/_EditDokter", vm);
         }
 
@@ -46,15 +48,15 @@ namespace Patient_Transport_Migration.Controllers {
             if (ModelState.IsValid) {
                 // Haal dokter op & bewerk zijn instellingen
                 try {
-                    DokterContext db = new DokterContext();
-                    Dokter dr = db.tblDokters.First(d => d.Id == vm.Id);
+                    Dokter dr = _context.tblDokters.Find(vm.Id);
                     if (dr.IsConsultVerwachtend != vm.IsConsultVerwachtend) {
                         dr.IsConsultVerwachtend = vm.IsConsultVerwachtend;
                         //Save doctor consult status
-                        db.Entry(dr).State = EntityState.Modified;
-                        db.SaveChanges();
+                        _context.Entry(dr).State = EntityState.Modified;
+                        _context.SaveChanges();
                     }
                 } catch (Exception ex) {
+                    //TODO LOG
                     ViewBag.ErrorMessage = ex.Message;
                     return DokterStatus();
                 }
@@ -71,22 +73,22 @@ namespace Patient_Transport_Migration.Controllers {
         #region PatientInfo
         [HttpGet]
         public ViewResult PatientInfo(string visitId) {
-            return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(visitId));
+            return View("./PatientInfo/PatientInfo", new Models.VM.PatientInfo.PatientLijstVM(_context,visitId));
         }
 
         [HttpGet]
         public PartialViewResult GetPatientInfo_PatientDetails(string visitId) {
-            return PartialView("./PatientInfo/_PatientDetails", new Models.VM.PatientInfo.PatientDetailsVM(visitId));
+            return PartialView("./PatientInfo/_PatientDetails", new Models.VM.PatientInfo.PatientDetailsVM(visitId, _context));
         }
 
         [HttpGet]
         public PartialViewResult GetPatientInfo_MedischeAanvragen(string visitId, string page) {
-            return PartialView("./PatientInfo/_PatientMedischeAanvragen", new Models.VM.PatientInfo.PatientTransportAanvragenVM(visitId, page));
+            return PartialView("./PatientInfo/_PatientMedischeAanvragen", new Models.VM.PatientInfo.PatientTransportAanvragenVM(_context, visitId, page));
         }
 
         [HttpGet]
         public PartialViewResult GetPatientInfo_AanvraagTypes(string visitId) {
-            return PartialView("./PatientInfo/_AanvraagTypesPatient", new Models.VM.PatientInfo.AanvraagTypesVM(visitId));
+            return PartialView("./PatientInfo/_AanvraagTypesPatient", new Models.VM.PatientInfo.AanvraagTypesVM(visitId, _context));
         }
 
         [HttpGet]
@@ -101,17 +103,17 @@ namespace Patient_Transport_Migration.Controllers {
         [HttpGet]
         public ViewResult VerplegingOverzicht(string afdeling) {
             return View("./VerplegingOverzicht/VerplegingOverzicht",
-                new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(afdeling));
+                new Models.VM.VerplegingOverzicht.VerplegingDienstenLijstVM(_context, afdeling));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientenInOrde(string page, string afdeling) {
-            return PartialView("./VerplegingOverzicht/_PatientenInOrde", new Models.VM.VerplegingOverzicht.RecentVervoerdePatienten(page, afdeling));
+        public PartialViewResult GetPatientenInOrde(string page, string Afdeling) {
+            return PartialView("./VerplegingOverzicht/_PatientenInOrde", new Models.VM.VerplegingOverzicht.RecentVervoerdePatienten(_context, page, Afdeling));
         }
 
         [HttpGet]
-        public PartialViewResult GetPatientenWachtend(string page, string afdeling) {
-            return PartialView("./VerplegingOverzicht/_PatientenWachtend", new Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM(page, afdeling));
+        public PartialViewResult GetPatientenWachtend(string page, string Afdeling) {
+            return PartialView("./VerplegingOverzicht/_PatientenWachtend", new Models.VM.VerplegingOverzicht.PatientenTeVerplaatsenVM(_context, page, Afdeling));
         }
         #endregion VerplegingOverzicht
 
@@ -123,12 +125,12 @@ namespace Patient_Transport_Migration.Controllers {
 
         [HttpGet]
         public PartialViewResult GetMaakVervoerAanvraag_AanvraagDetails(string aanvraagTypeId, string patient) {
-            return PartialView("./MaakVervoerAanvraag/_AanvraagDetails", new Models.VM.MaakVervoerAanvraag.MaakAanvraag(aanvraagTypeId, patient));
+            return PartialView("./MaakVervoerAanvraag/_AanvraagDetails", new Models.VM.MaakVervoerAanvraag.MaakAanvraag(aanvraagTypeId, patient, _context));
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
         public JsonResult LaadKamersVanAfdeling(string AfdelingCode) {
-            var locatieLijst = db.tblLocaties.Where(l => l.Afdeling == AfdelingCode).ToList();
+            var locatieLijst = new LocatieRepository(_context).GetKamersVanAfdeling(AfdelingCode);
 
             if (locatieLijst != null) {
                 var AfdelingKamers = locatieLijst.Select(l => new SelectListItem() {
@@ -147,22 +149,22 @@ namespace Patient_Transport_Migration.Controllers {
                 //Maak Aanvraag
                 var aanvraagData = new Aanvraag();
 
-                aanvraagData.DatumAanvraag = vm.DatumAanvraag;
+                aanvraagData.DatumAanvraag = DateTime.Now;
                 aanvraagData.AanvraagDoor = User.Identity.Name;                
                 aanvraagData.Omschrijving = vm.Omschrijving;
 
-                aanvraagData.AanvraagType = db.tblAanvraagTypes.First(at => at.Id == vm.AanvraagTypeId);
+                aanvraagData.AanvraagType = _context.tblAanvraagTypes.First(at => at.Id == vm.AanvraagTypeId);
 
                 if (aanvraagData.AanvraagType.Include_Patient) {
-                    aanvraagData.Patient = db.tblPatienten.First(p => p.PatientVisit == vm.PatientSelected);                    
+                    aanvraagData.Patient = _context.tblPatienten.First(p => p.PatientVisit == vm.PatientSelected);                    
 
                     if (aanvraagData.AanvraagType.Include_Transportwijze) {
                         int transportwijze = int.Parse(vm.TransportwijzeSelected);
-                        aanvraagData.Transportwijze = db.tblTransportwijzes.First(p => p.Id == transportwijze);
+                        aanvraagData.Transportwijze = _context.tblTransportwijzes.First(p => p.Id == transportwijze);
                     }
 
                     if (aanvraagData.AanvraagType.Include_AanDokter) {
-                        aanvraagData.AanDokter = new DokterContext().tblDokters.First(d => d.Id == vm.DokterSelected);
+                        aanvraagData.AanDokter = _context.tblDokters.First(d => d.Id == vm.DokterSelected);
                     }
 
                     if (aanvraagData.AanvraagType.Include_Radiologie) {
@@ -173,13 +175,13 @@ namespace Patient_Transport_Migration.Controllers {
                     }
                 }
 
-                db.tblAanvragen.Add(aanvraagData);
+                _context.tblAanvragen.Add(aanvraagData);
                 // SAVE
-                db.SaveChanges();
+                _context.SaveChanges();
 
                 //Verwerk Aanvraag    
-                var locKamer = db.tblLocaties.First(l => l.Kamer == vm.KamerSelected);
-                BehandelAanvraag.NieuweAanvraag(aanvraagData, locKamer);               
+                var locKamer = _context.tblLocaties.First(l => l.Kamer == vm.KamerSelected);
+                BehandelAanvraag.NieuweAanvraag(_context, aanvraagData, locKamer);               
             } else {
                 var errors = getViewModelErrors();
                 ViewBag.ErrorMessage = errors;
@@ -203,13 +205,9 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpGet]
-        public string DispatchOverzicht_GetWerknemerTaken(string WerknemerId) {
-            var Taken = db.tblTransportTaken.Where(t =>
-            t.TransportWerknemerId == WerknemerId &&
-            t.DatumCompleet == null)
-            .ToList();
-            var jsonTaken = System.Web.Helpers.Json.Encode(Taken);
-            return jsonTaken;
+        public JsonResult DispatchOverzicht_GetWerknemerTaken(string WerknemerId) {
+            var Taken = new TransportTaakRepository(_context).GetWerknemerTakenQueue(WerknemerId).ToList();
+            return Json(Taken, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -223,19 +221,19 @@ namespace Patient_Transport_Migration.Controllers {
                     int wachtrijNummer = 0;
                     foreach (var taakId in Taken) {
                         int tId = int.Parse(taakId.ToString());
-                        var taak = db.tblTransportTaken.First(t =>
+                        var taak = _context.tblTransportTaken.First(t =>
                         t.Id == tId);
                         if (taak.TaakWachtrijNummer != wachtrijNummer) {
                             taak.TaakWachtrijNummer = wachtrijNummer;
-                            db.Entry(taak).State = EntityState.Modified;
+                            _context.Entry(taak).State = EntityState.Modified;
                         }
 
                         wachtrijNummer++;
                     }
-                    db.SaveChanges();
+                    _context.SaveChanges();
                     return true;
                 } catch (Exception ex) {
-                    db.tblExceptionLogger.Add(new ExceptionLogger() {
+                    _context.tblExceptionLogger.Add(new ExceptionLogger() {
                         ExceptionMessage = ex.Message,
                         ExceptionStackTrace = ex.StackTrace
                     });
@@ -249,33 +247,31 @@ namespace Patient_Transport_Migration.Controllers {
             if (!string.IsNullOrEmpty(jsonTaak)) {
                 try {
                     dynamic data = System.Web.Helpers.Json.Decode(jsonTaak);
-                    long taakId = long.Parse(data.TaakId);
+                    int taakId = int.Parse(data.TaakId);
                     string werknemerId = data.WerknemerId;
 
+                    var TaakRepo = new TransportTaakRepository(_context);
+
                     // Zoek de taak
-                    var taak = db.tblTransportTaken.First(t =>
-                        t.Id == taakId &&
-                        t.TransportWerknemerId == werknemerId);
+                    var taak = TaakRepo.GetTransportTaakByWerknemerByNumber(werknemerId, taakId);
 
                     int taakNummerInQueue = (int)taak.TaakWachtrijNummer;
                     // Pas de taak in kwestie aan 
                     taak.TransportWerknemer = null;
                     taak.TransportWerknemerId = null;
-                    db.Entry(taak).State = EntityState.Modified;
+                    _context.Entry(taak).State = EntityState.Modified;
 
                     // Pas alle taken erna aan (-1)
-                    var takenErnaa = db.tblTransportTaken.Where(t =>
-                    t.DatumCompleet == null &&
-                    t.TaakWachtrijNummer < taakNummerInQueue)
-                    .ToList();
+                    var takenErnaa = TaakRepo.GetTakenInQueueForMedewerkenNa(werknemerId, taakNummerInQueue);
+                    
                     foreach (var t in takenErnaa) {
                         t.TaakWachtrijNummer -= 1;
-                        db.Entry(t).State = EntityState.Modified;
+                        _context.Entry(t).State = EntityState.Modified;
                     }
-                    db.SaveChanges();
+                    _context.SaveChanges();
                     return true;
                 } catch (Exception ex) {
-                    db.tblExceptionLogger.Add(new ExceptionLogger() {
+                    _context.tblExceptionLogger.Add(new ExceptionLogger() {
                         ExceptionMessage = ex.Message,
                         ExceptionStackTrace = ex.StackTrace
                     });
@@ -290,13 +286,13 @@ namespace Patient_Transport_Migration.Controllers {
                 try {
                     dynamic data = System.Web.Helpers.Json.Decode(jsonTaak);
                     long taakId = data.TaakId;
-                    var taak = db.tblTransportTaken.First(t => t.Id == taakId);
+                    var taak = _context.tblTransportTaken.First(t => t.Id == taakId);
                     taak.DatumCompleet = DateTime.Now;
-                    db.Entry(taak).State = EntityState.Modified;
-                    db.SaveChanges();
+                    _context.Entry(taak).State = EntityState.Modified;
+                    _context.SaveChanges();
                     return true;
                 } catch (Exception ex) {
-                    db.tblExceptionLogger.Add(new ExceptionLogger() {
+                    _context.tblExceptionLogger.Add(new ExceptionLogger() {
                         ExceptionMessage = ex.Message,
                         ExceptionStackTrace = ex.StackTrace
                     });
@@ -313,25 +309,25 @@ namespace Patient_Transport_Migration.Controllers {
                     long taakId = data.TaakId;
                     string TaakNotities = data.TaakNotities;
                     bool isHogePrioriteit = data.TaakIsHogePrioriteit;
-                    string TaakWerknemerId = data.TaakWerknemerId;
+                    string TaakWerknemerGebruikersnaam = data.TaakWerknemerId;
 
-                    var Taak = db.tblTransportTaken.First(t => t.Id == taakId);
+                    var WernemerRepo = new TransportWerknemerRepository(_context);
+
+                    var Taak = _context.tblTransportTaken.First(t => t.Id == taakId);
                     Taak.IsPrioriteitHoog = isHogePrioriteit;
                     Taak.TransportNotities = TaakNotities;
-                    var TWerknemer = db.tblTransportWerknemers.First(w => w.Gebruikersnaam == TaakWerknemerId);
+                    var TWerknemer = WernemerRepo.GetWerknemerByGebruikersnaam(TaakWerknemerGebruikersnaam);
                     Taak.TransportWerknemer = TWerknemer;
 
-                    int TakenVoorWerknemer = db.tblTransportTaken.Where(t =>
-                    t.TransportWerknemerId == TWerknemer.Gebruikersnaam
-                    && t.DatumCompleet == null
-                    ).Count();
-                    Taak.TaakWachtrijNummer = TakenVoorWerknemer;
+                    Taak.TaakWachtrijNummer = new TransportTaakRepository(_context)
+                        .GetWerknemerTakenQueue(TaakWerknemerGebruikersnaam)
+                        .Count();
 
-                    db.Entry(Taak).State = EntityState.Modified;
-                    db.SaveChanges();
+                    _context.Entry(Taak).State = EntityState.Modified;
+                    _context.SaveChanges();
                     return true;
                 } catch (Exception ex) {
-                    db.tblExceptionLogger.Add(new ExceptionLogger() {
+                    _context.tblExceptionLogger.Add(new ExceptionLogger() {
                         ExceptionMessage = ex.Message,
                         ExceptionStackTrace = ex.StackTrace
                     });
@@ -346,7 +342,7 @@ namespace Patient_Transport_Migration.Controllers {
         public PartialViewResult TransportMedewerker() {
             //TODO naar User.Identity overschakelen
             string id = "sta_it2";
-            return PartialView("./TransportMedewerker/TransportMedewerker", new Models.VM.TransportMedewerker.TransportTakenVM(id));
+            return PartialView("./TransportMedewerker/TransportMedewerker", new Models.VM.TransportMedewerker.TransportTakenVM(_context, id));
         }
 
         [HttpPost]

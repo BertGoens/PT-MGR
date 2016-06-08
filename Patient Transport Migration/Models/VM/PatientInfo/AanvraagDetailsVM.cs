@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
 
 namespace Patient_Transport_Migration.Models.VM.PatientInfo {
     public class AanvraagDetailsVM {

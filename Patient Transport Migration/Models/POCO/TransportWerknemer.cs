@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Patient_Transport_Migration.Models.DAL {
+namespace Patient_Transport_Migration.Models.POCO {
     public class TransportWerknemer {
         // PK
         [Key]
@@ -13,9 +13,7 @@ namespace Patient_Transport_Migration.Models.DAL {
         [MaxLength(255)]
         public string Achternaam { get; set; }
 
-        public string Naam() {
-            return Voornaam + " " + Achternaam;
-        }
+        public string Naam { get { return Voornaam + " " + Achternaam; } }
 
         /// <summary>
         /// TODO Houd de status van is werknemer present zelf bij (in DispatchOverzicht)

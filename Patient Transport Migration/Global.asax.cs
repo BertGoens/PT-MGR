@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Repositories;
 
 namespace Patient_Transport_Migration {
     public class MvcApplication : System.Web.HttpApplication {
@@ -14,8 +15,7 @@ namespace Patient_Transport_Migration {
 
         private void StartDatabase() {
             // Voor Migrations, geeft error als configuratie ergens niet klopt.
-            var db = new DokterContext();
-            var doctorList = db.tblDokters.First();
+            var doctorList = new Context().tblDokters.First();
         }
 
     }

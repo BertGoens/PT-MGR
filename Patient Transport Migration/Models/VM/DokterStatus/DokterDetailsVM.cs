@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
+using Patient_Transport_Migration.Models.Repositories;
 
 namespace Patient_Transport_Migration.Models.VM.DokterStatus {
     public class DokterDetailsVM {
@@ -11,14 +13,10 @@ namespace Patient_Transport_Migration.Models.VM.DokterStatus {
             //REQUIRED FOR POST
         }
 
-        public DokterDetailsVM(string dokterDetailsId) {
-            var db = new DokterContext();
-            try {
-                DokterDetails = db.tblDokters.First(d => d.Id.Equals(dokterDetailsId));
-                Id = DokterDetails.Id;
-                IsConsultVerwachtend = DokterDetails.IsConsultVerwachtend;
-            } catch (Exception) {
-            }
+        public DokterDetailsVM(Dokter dokterDetails) {
+            Id = dokterDetails.Id;
+            IsConsultVerwachtend = dokterDetails.IsConsultVerwachtend;
+            this.DokterDetails = dokterDetails;
         }
 
         public Dokter DokterDetails { get; private set; }

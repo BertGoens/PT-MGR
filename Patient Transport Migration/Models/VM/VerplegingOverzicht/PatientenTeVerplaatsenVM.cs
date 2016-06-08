@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
 using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class PatientenTeVerplaatsenVM {
-        public PatientenTeVerplaatsenVM(string page, string afdeling) {
-            var db = new Context();
-
+        public PatientenTeVerplaatsenVM(Context context, string page, string afdeling) {
             // query de recente uitgevoerde taken met een patienten in afdeling
 
             DateTime date = DateTime.Now.AddHours(-4);
-            var _qryItems = db.tblTransportTaken
+            var _qryItems = context.tblTransportTaken
                 .Where(t =>
                 t.Aanvraag.PatientId != null
                 && t.DatumCompleet == null)

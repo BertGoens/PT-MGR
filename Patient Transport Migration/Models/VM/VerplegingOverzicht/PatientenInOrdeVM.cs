@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
 using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class RecentVervoerdePatienten {
-        public RecentVervoerdePatienten(string page, string afdelingCode) {
-            var db = new Context();
+        public RecentVervoerdePatienten(Context context, string page, string afdelingCode) {
 
             // Query alle patienten met recentelijke vervoertaken die in orde zijn
             DateTime date = DateTime.Now.AddHours(-4);
-            var _qryItems = db.tblTransportTaken.Where(t =>
+            var _qryItems = context.tblTransportTaken.Where(t =>
                 t.Aanvraag.AanvraagType.Include_Patient // Bevat patient
                 && t.DatumCompleet > date // Is recent
                 && t.TransportWerknemerId != null) // Als = null dan is het verwijderd (geen echte taak)

@@ -4,16 +4,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.POCO;
 using Patient_Transport_Migration.Models.Repositories;
 using Patient_Transport_Migration.Models.Util;
 
 namespace Patient_Transport_Migration.Models.VM.DispatchOverzicht {
     public class WachtendeTransportTakenVM {
         public WachtendeTransportTakenVM(int? page) {
-            var taken = new TransportTaakRepository().GetWachtendeTaken();
+            var taken = new TransportTaakRepository(new Context()).GetWachtendeTaken();
             Pager = new Pager(taken.Count(), page);
             _TransportTaken = taken.Skip((Pager.CurrentPage - 1) * Pager.PageSize).Take(Pager.PageSize).ToList();
-            _TransportWerknemers = new TransportWerknemerRepository().GetAll();
+            _TransportWerknemers = new TransportWerknemerRepository(new Context()).GetAll();
         }
 
         private IEnumerable<TransportTaak> _TransportTaken { get; set; }
@@ -23,7 +24,7 @@ namespace Patient_Transport_Migration.Models.VM.DispatchOverzicht {
         public IEnumerable<SelectListItem> TransportWerknemerItems {
             get {
                 return _TransportWerknemers.Select(tw => new SelectListItem {
-                    Text = tw.Naam(),
+                    Text = tw.Naam,
                     Value = tw.Gebruikersnaam
                 });
             }

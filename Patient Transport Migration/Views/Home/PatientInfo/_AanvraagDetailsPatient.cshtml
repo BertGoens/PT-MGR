@@ -14,12 +14,12 @@
         <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dt>
         <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagType.Omschrijving)</dd>
 
-        <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagDoor)r</dt>
+        <dt>@Html.LabelFor(m => m.Aanvraag.AanvraagDoor)</dt>
         <dd>@Html.ValueFor(m => m.Aanvraag.AanvraagDoor)</dd>
 
         @if (Model.Aanvraag.AanvraagType.Include_Patient) {
-            <dt>@Html.LabelFor(m => m.Aanvraag.Patient.Naam())</dt>
-            <dd>@Html.ValueFor(m => m.Aanvraag.Patient.Naam())</dd>
+            <dt>@Html.LabelFor(m => m.Aanvraag.Patient.Naam)</dt>
+            <dd>@Html.ValueFor(m => m.Aanvraag.Patient.Naam)</dd>
         }
 
         @if (Model.Aanvraag.AanvraagType.Include_AanDokter) {
@@ -62,7 +62,7 @@
         }
 
         @if (Model.Aanvraag.AanvraagType.Include_Transportwijze) {
-            <dt>@Html.LabelFor(m => m.Aanvraag.Transportwijze.Omschrijving))</dt>
+            <dt>@Html.LabelFor(m => m.Aanvraag.Transportwijze.Omschrijving)</dt>
             <dd>@Html.ValueFor(m => m.Aanvraag.Transportwijze.Omschrijving)</dd>
         }
 

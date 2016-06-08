@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Patient_Transport_Migration.Models.DAL {
+namespace Patient_Transport_Migration.Models.POCO {
     public class Aanvraag {
         public Aanvraag() {
 
@@ -20,7 +20,7 @@ namespace Patient_Transport_Migration.Models.DAL {
 
         [Display(Name = "Aanvraag gedaan op")]
         [DataType(DataType.DateTime)]
-        public DateTime DatumCompleet { get; set; }
+        public DateTime? DatumCompleet { get; set; }
 
         public int AanvraagTypeId { get; set; }
         [ForeignKey("AanvraagTypeId")]

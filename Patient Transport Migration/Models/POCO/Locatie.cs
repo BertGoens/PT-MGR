@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace Patient_Transport_Migration.Models.DAL {
+namespace Patient_Transport_Migration.Models.POCO {
     public class Locatie {
         public Locatie() {
         }

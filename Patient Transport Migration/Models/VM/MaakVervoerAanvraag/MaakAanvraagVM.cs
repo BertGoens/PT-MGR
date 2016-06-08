@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.Model;
+using Patient_Transport_Migration.Models.POCO;
+using Patient_Transport_Migration.Models.Repositories;
 
 namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
 
@@ -14,7 +16,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
         public MaakAanvraag() {
             // Required for POST
         }
-        public MaakAanvraag(string aanvraagTypeId, string patient) {
+        public MaakAanvraag(string aanvraagTypeId, string patient, Context context) {
             var db = new Context();
             //maak aanvraag adhv gegeven type
             if (aanvraagTypeId.Length > 0) {
@@ -26,9 +28,9 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                     if (_DisplayAanvraagTypeData.Include_Patient) {
                         //Query db naar patienten & sorteer A-Z
                         if(!string.IsNullOrEmpty(patient)) {
-                            _patientenLijst = new List<Patient>() { db.tblPatienten.First(p => p.PatientVisit.Equals(patient)) };
+                            _patientenLijst = new List<Patient> { new PatientRepository(context).GetPatientByVisitId(patient) };
                         } else {
-                            _patientenLijst = db.tblPatienten.OrderBy(p => p.Achternaam).ToList();
+                            _patientenLijst = new PatientRepository(context).GetPatientenOrderByAchternaam();
                         }                     
                     }
 
@@ -37,15 +39,10 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                     }
 
                     if (_DisplayAanvraagTypeData.Include_AanDokter) {
-                        _dokterLijst = new DokterContext().tblDokters.ToList();
+                        _dokterLijst = new Context().tblDokters.ToList();
                     }
 
-                    _afdelingLijst = db.tblLocaties.Select(l => 
-                    new Afdeling() { Omschrijving = l.Omschrijving, Code = l.Afdeling })
-                    .Distinct()
-                    .ToList();
-
-
+                    _afdelingLijst = new LocatieRepository(context).GetUniekeAfdelingen();
                 } catch (Exception ex) {
                     ex.ToString();
                     // InvalidOperationException => Sequence contains no elements
@@ -75,7 +72,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
         public bool RX { get; set; }
         public bool Echografie { get; set; }
 
-        private List<Afdeling> _afdelingLijst;
+        private IEnumerable<Afdeling> _afdelingLijst;
         [Display(Name = "Afdeling")]
         public string AfdelingSelected { get; set; }
         public IEnumerable<SelectListItem> AfdelingLijst {
@@ -102,7 +99,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                 return result;
             } }
 
-        private List<Patient> _patientenLijst;
+        private IEnumerable<Patient> _patientenLijst;
         [Display(Name = "Selecteer de patiënt")]
         public string PatientSelected { get; set; }
         public IEnumerable<SelectListItem> PatientenLijst {
@@ -111,7 +108,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                 try {
                     result = _patientenLijst.Select(f => new SelectListItem {
                         Value = f.PatientVisit.ToString(),
-                        Text = f.Naam()
+                        Text = f.Naam
                     });
                 } catch (Exception) {
                 }

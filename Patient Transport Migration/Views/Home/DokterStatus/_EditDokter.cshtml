@@ -1,18 +1,15 @@
 ﻿@model Patient_Transport_Migration.Models.VM.DokterStatus.DokterDetailsVM
 
-@if (Model.DokterDetails != null) {
-    @Html.HiddenFor(m => m.Id)
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.IsConsultVerwachtend)
-        <div class="checkbox">
-            @Html.EditorFor(m => m.IsConsultVerwachtend)
-        </div>
-    </div>
+@Html.HiddenFor(m => m.Id)
 
-    <div class="form-group">
-        <input type="submit" value="Opslaan" class="btn btn-default" />
+<div class="form-group">
+    @Html.LabelFor(m => m.IsConsultVerwachtend)
+    <div class="checkbox">
+        @Html.EditorFor(m => m.IsConsultVerwachtend)
     </div>
-} else {
-    <p>Problemen bij het laden van de aanvraag.</p>
-}
+</div>
+
+<div class="form-group">
+    <input type="submit" value="Opslaan" class="btn btn-default" />
+</div>

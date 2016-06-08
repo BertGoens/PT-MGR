@@ -6,19 +6,18 @@ using Patient_Transport_Migration.Models.DAL;
 using Patient_Transport_Migration.Models.POCO;
 
 namespace Patient_Transport_Migration.Models.Repositories {
-    public class TransportWerknemerRepository : IDisposable {
+    public class PatientRepository : IDisposable {
         private Context _context;
-
-        public TransportWerknemerRepository(Context context) {
+        public PatientRepository(Context context) {
             _context = context;
         }
 
-        public IEnumerable<TransportWerknemer> GetAll() {
-            return _context.tblTransportWerknemers.ToList();
+        public Patient GetPatientByVisitId(string visitId) {
+            return _context.tblPatienten.First(p => p.PatientVisit.Equals(visitId));
         }
 
-        public TransportWerknemer GetWerknemerByGebruikersnaam(string Gebruikersnaam) {
-            return _context.tblTransportWerknemers.First(w => w.Gebruikersnaam == Gebruikersnaam);
+        public IEnumerable<Patient> GetPatientenOrderByAchternaam() {
+            return _context.tblPatienten.OrderBy(p => p.Achternaam);
         }
 
         #region IDisposable Support
