@@ -81,7 +81,7 @@
                 }, success: function (result) {                   
                     $dvMedischeAanvragen.html(result);
                 }, error: function (jqXHR, textStatus, errorThrown) {
-                    $dvPatientDetails.html(
+                    $dvMedischeAanvragen.html(
                         "<p class=\"alert alert-warning\">Probleem met het verkrijgen van de data.<br />" + textStatus + ": " + errorThrown);
                 }, complete: function () {
                     $dvLoaderMedischeAanvragen.hide();

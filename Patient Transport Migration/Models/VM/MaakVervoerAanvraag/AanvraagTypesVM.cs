@@ -8,7 +8,7 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
     public class AanvraagTypesVM {
         public AanvraagTypesVM(string patient, string type) {
-            var db = new MSSQLContext();
+            var db = new Context();
             _AanvraagTypes = db.tblAanvraagTypes.ToList();
 
             //State onthouden

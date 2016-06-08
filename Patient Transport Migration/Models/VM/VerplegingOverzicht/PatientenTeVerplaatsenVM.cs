@@ -8,7 +8,7 @@ using Patient_Transport_Migration.Models.Util;
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class PatientenTeVerplaatsenVM {
         public PatientenTeVerplaatsenVM(string page, string afdeling) {
-            var db = new MSSQLContext();
+            var db = new Context();
 
             // query de recente uitgevoerde taken met een patienten in afdeling
 

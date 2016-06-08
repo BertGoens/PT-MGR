@@ -12,7 +12,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
             if (!string.IsNullOrEmpty(aanvraagId)) {
                 try {
                     //Db opzoeken
-                    var db = new MSSQLContext();
+                    var db = new Context();
                     long aId = long.Parse(aanvraagId.ToString());
                     Aanvraag = db.tblAanvragen.First(a => a.Id == aId);
                 } catch (Exception ex) {

@@ -13,7 +13,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
             PatientVisitId = visitId;
 
             if (!string.IsNullOrEmpty(visitId)) {
-                var db = new MSSQLContext();
+                var db = new Context();
                 // Zoek alle medische recente aanvragen voor de patient
                 //(recent doordat we filteren op patientvisit)
                 var _qryItems = db.tblTransportTaken

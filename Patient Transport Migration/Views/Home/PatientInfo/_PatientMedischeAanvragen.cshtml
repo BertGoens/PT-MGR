@@ -17,17 +17,17 @@
                     @:<td>@taak.LocatieStart.Kamer</td>
                     @:<td>@taak.LocatieEind.Kamer</td>
                     @:<td>
-                        switch (taak.GetTransportTaakStatus()) {
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.NietToegewezen_Wachtend:
+                        switch (Patient_Transport_Migration.Models.Core.BehandelAanvraag.GetTransportTaakStatus(taak)) {
+                            case Patient_Transport_Migration.Models.Model.TransportTaakStatus.NietToegewezen_Wachtend:
                                 @Html.Raw("Wachtend");
                                 break;
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.WerknemerToegewezen_Wachtend:
+                            case Patient_Transport_Migration.Models.Model.TransportTaakStatus.WerknemerToegewezen_Wachtend:
                                 @Html.Raw("Wachtend, werknemer toegewezen");
                                 break;
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.WerknemerToegewezen_HuidigeTaak:
+                            case Patient_Transport_Migration.Models.Model.TransportTaakStatus.WerknemerToegewezen_HuidigeTaak:
                                 @Html.Raw("Wordt verplaatst");
                                 break;
-                            case Patient_Transport_Migration.Models.DAL.TransportTaakStatus.Voltooid:
+                            case Patient_Transport_Migration.Models.Model.TransportTaakStatus.Voltooid:
                                 @Html.Raw("Voltooid");
                                 break;
                             default:

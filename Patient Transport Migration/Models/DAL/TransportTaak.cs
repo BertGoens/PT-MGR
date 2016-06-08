@@ -66,33 +66,5 @@ namespace Patient_Transport_Migration.Models.DAL {
         [ForeignKey("TransportWerknemerId")]
         public virtual TransportWerknemer TransportWerknemer { get; set; }
 
-        /// <summary>
-        /// De (berekende) status van de taak.
-        /// </summary>
-        public TransportTaakStatus GetTransportTaakStatus() {
-            if (this.DatumCompleet != null) {
-                return TransportTaakStatus.Voltooid;
-            }
-
-            if (this.TaakWachtrijNummer != null) {
-                if (this.TaakWachtrijNummer == 0) {
-                    return TransportTaakStatus.WerknemerToegewezen_HuidigeTaak;
-                }
-
-                return TransportTaakStatus.WerknemerToegewezen_Wachtend;
-            }
-
-            return TransportTaakStatus.NietToegewezen_Wachtend;
-        }
-    }
-
-    /// <summary>
-    /// Transport Taak Status
-    /// </summary>
-    public enum TransportTaakStatus {
-        NietToegewezen_Wachtend,
-        WerknemerToegewezen_Wachtend,
-        WerknemerToegewezen_HuidigeTaak,
-        Voltooid
     }
 }

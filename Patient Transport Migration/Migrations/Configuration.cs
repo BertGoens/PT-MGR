@@ -5,26 +5,27 @@ using Patient_Transport_Migration.Models;
 using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Migrations {
-    public class Configuration : DbMigrationsConfiguration<Models.MSSQLContext> {
+    public class Configuration : DbMigrationsConfiguration<Models.Context> {
 
         public Configuration() {
             // TODO Uitzetten AutomaticMigrationsEnabled in production anders gg data: https://coding.abel.nu/2012/03/ef-migrations-command-reference/
-             AutomaticMigrationDataLossAllowed = true;
-             AutomaticMigrationsEnabled = true;
+             // AutomaticMigrationDataLossAllowed = true;
+             // AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(MSSQLContext context) {
-            /*            
-            var Dokters = new List<Dokter> {
-                new Dokter { Id = "3ab43", Naam = "Dr. Carssen", IsConsultVerwachtend = true },
-                new Dokter { Id = "x9s33", Naam = "Dr. Aristoeles", IsConsultVerwachtend = false }
-            };
-            Dokters.ForEach(d => context.tblDokters.AddOrUpdate(s => s.Id, d));
+        protected override void Seed(Context context) {
+            /*
+            // Vereiste locaties
+            var LocCT = new Locatie { Afdeling = "0000", Kamer = "CT", Omschrijving = "Radiologie" };
+            var LocNMR = new Locatie { Afdeling = "0000", Kamer = "NMR", Omschrijving = "Radiologie" };
+            var LocRX = new Locatie { Afdeling = "0000", Kamer = "RX", Omschrijving = "Radiologie" };
+            var LocEchografie = new Locatie { Afdeling = "0000", Kamer = "Echografie", Omschrijving = "Radiologie" };
 
             var LocChirurgieA = new Locatie { Afdeling = "2101", Kamer = "216", Omschrijving = "Chirurgie A" };
             var LocChirurgieB = new Locatie { Afdeling = "2102", Kamer = "301", Omschrijving = "Chirurgie B" };
 
             var Locaties = new List<Locatie> {
+                LocCT, LocNMR, LocRX, LocEchografie,
                 new Locatie { Afdeling = "1500", Kamer = "501", Omschrijving = "Pediatrie" },
                 new Locatie { Afdeling = "1500", Kamer = "516", Omschrijving = "Pediatrie" },
 
@@ -34,7 +35,18 @@ namespace Patient_Transport_Migration.Migrations {
                 LocChirurgieB,
                 new Locatie { Afdeling = "2102", Kamer = "319", Omschrijving = "Chirurgie B" }
              };
-            Locaties.ForEach(l => context.tblLocaties.AddOrUpdate(p => p.Afdeling, l));          
+            Locaties.ForEach(l => context.tblLocaties.AddOrUpdate(p => p.Afdeling, l));
+
+            var Dokters = new List<Dokter> {
+                // Vereiste dokters
+                new Dokter { Id = "CT", Naam = "CT", IsConsultVerwachtend = true, GebruikersNaam = "CT", Locatie = LocCT },
+                new Dokter { Id = "NMR", Naam = "NMR", IsConsultVerwachtend = true, GebruikersNaam = "NMR", Locatie = LocNMR },
+                new Dokter { Id = "RX", Naam = "RX", IsConsultVerwachtend = true, GebruikersNaam = "CT", Locatie = LocRX },
+                new Dokter { Id = "Echografie", Naam = "Echografie", IsConsultVerwachtend = true, GebruikersNaam = "Echografie", Locatie = LocEchografie },
+                new Dokter { Id = "3ab43", Naam = "Dr. Jos", IsConsultVerwachtend = true, GebruikersNaam = "sta_it" },
+                new Dokter { Id = "x9s33", Naam = "Dr. Willy", IsConsultVerwachtend = false, GebruikersNaam = "sta_it" }
+            };
+            Dokters.ForEach(d => context.tblDokters.AddOrUpdate(s => s.Id, d));
 
             var date = new DateTime(1991, 2, 23);
             var Patienten = new List<Patient> {

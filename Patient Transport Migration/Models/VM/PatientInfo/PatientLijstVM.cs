@@ -10,7 +10,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
     public class PatientLijstVM {
 
         public PatientLijstVM() {
-            var db = new MSSQLContext();
+            var db = new Context();
             //Query db naar patienten en sorteer
             _Patienten = db.tblPatienten.OrderBy(p => p.Achternaam).ToList();
         }

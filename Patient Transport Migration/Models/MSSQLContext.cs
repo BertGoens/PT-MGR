@@ -3,11 +3,11 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using Patient_Transport_Migration.Models.DAL;
 
 namespace Patient_Transport_Migration.Models {
-    public class MSSQLContext : DbContext {
+    public class Context : DbContext {
 
-        public MSSQLContext()
+        public Context()
             : base("MSSQLDB_V3") {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MSSQLContext, Migrations.Configuration >());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Migrations.Configuration >());
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder) {
@@ -19,7 +19,7 @@ namespace Patient_Transport_Migration.Models {
 
         public DbSet<ExceptionLogger> tblExceptionLogger { get; set; }
 
-        public DbSet<Dokter> tblDokters { get; set; }
+        //public DbSet<Dokter> tblDokters { get; set; }
 
         public DbSet<Patient> tblPatienten { get; set; }
 

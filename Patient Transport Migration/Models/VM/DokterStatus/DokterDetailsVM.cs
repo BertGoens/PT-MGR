@@ -12,7 +12,7 @@ namespace Patient_Transport_Migration.Models.VM.DokterStatus {
         }
 
         public DokterDetailsVM(string dokterDetailsId) {
-            var db = new MSSQLContext();
+            var db = new DokterContext();
             try {
                 DokterDetails = db.tblDokters.First(d => d.Id.Equals(dokterDetailsId));
                 Id = DokterDetails.Id;

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
+    <title>Transporttaken voor @User.Identity.Name</title>
     <link href="~/Content/Css/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Images/favicon.ico" rel="icon" type="image/x-icon" />
@@ -19,39 +19,95 @@
             <div id="dvStatus" class="alert"></div>
             <div class="panel-group" id="accordion">
                 @foreach (var taak in Model.TransportTaakLijst) {
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                @if (taak.Aanvraag.AanvraagType.Include_Transportwijze) {
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">@taak.LocatieStart.Kamer - @taak.LocatieEind.Kamer <span class="pull-right">@try { @Html.Raw(taak.Aanvraag.Transportwijze.Omschrijving); } catch (Exception) { }</span></a>
-                                } else {
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">@taak.LocatieStart.Kamer - @taak.LocatieEind.Kamer</a>
-                                }
-                                
-                            </h4>
-                        </div>
-                        <div id="collapse-@taak.Id" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <p>@taak.Aanvraag.AanvraagType.Omschrijving</p>
-                                @if (taak.Aanvraag.AanvraagType.Include_Patient) {
-                                    <p>@taak.Aanvraag.Patient.Naam()</p>
-                                    <p>@taak.Aanvraag.Patient.Geslacht</p>
-                                    <p>@taak.Aanvraag.Patient.Geboortedatum</p>
-                                    <p>@taak.Aanvraag.Patient.Locatie.Omschrijving - @taak.Aanvraag.Patient.Kamer</p>
-                                }
+                    Html.Raw("<div class=\"panel panel-default\">");
+                    @* Start Panel Heading *@
+                Html.Raw("<div class=\"panel-heading\">");
+                Html.Raw("<h4 class=\"panel-title " + (taak.IsPrioriteitHoog ? "HogePrioriteit\" " : "\" "));
+                Html.Raw("data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse-" + @taak.Id + "\"");
+                Html.Raw(">");
 
-                                <p>@try { @taak.TransportNotities } catch (Exception) { }</p>
-                            </div>
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id">
+                    <span class="badge">@taak.TaakWachtrijNummer</span>
+                    <b>Van</b> @taak.LocatieStart.Omschrijving : @taak.LocatieStart.Kamer <b>Naar</b> @taak.LocatieEind.Omschrijving : @taak.LocatieEind.Kamer
+                    <span class="pull-right">
+                        @try { @Html.Raw(taak.Aanvraag.Transportwijze.Omschrijving);
+                        } catch (Exception) { }
+                    </span>
+                </a>
+
+                    Html.Raw("</h4>");
+                    Html.Raw("</div>"); @* End Panel Heading*@
+
+                    @* Panel Collapse Href *@
+                    <div id="collapse-@taak.Id" class="panel-collapse collapse in">
+
+                        <div class="panel-body">
+                            <p>@taak.Aanvraag.Omschrijving</p>
+                            @if (taak.Aanvraag.AanvraagType.Include_Patient) {
+                                <div class="content-container">
+                                    <div class="content-left">
+                                        <dl class="dl-horizontal">
+                                            <dd>Patient</dd>
+                                            <dd>@taak.Aanvraag.Patient.Naam()</dd>
+
+                                            <dt>Geboortedatum</dt>
+                                            <dd>@taak.Aanvraag.Patient.Geboortedatum</dd>
+                                        </dl>
+                                    </div>
+                                    <div class="content-right">
+                                        <dl class="dl-horizontal">
+                                            <dd>Geslacht</dd>
+                                            <dt>@taak.Aanvraag.Patient.Geslacht</dt>
+
+                                            <dt>Datum Aanvraag</dt>
+                                            <dd>@taak.DatumGemaakt</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            }
+                            <p>@taak.TransportNotities</p>
+                        </div>
+
+                        <div class="panel-footer">
+                            <button class="btn btn-default pull-left" type="button" onclick="TaakStart(@taak.Id)">Start</button>
+                            <button class="btn btn-default pull-right" type="button" onclick="TaakVolbracht(@taak.Id)">Stop</button>
                         </div>
                     </div>
                 }
             </div>
-
-            <div class="bottom">
-                <button class="btn btn-default pull-left" type="button">Patiënt inscannen</button>
-                <button class="btn btn-default pull-right" type="button">Patiënt uitscannen</button>
-            </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            var waitMillieSecondsForRefresh = 300000;
+            setTimeout(function () {
+                location.reload(true);
+            }, waitMillieSecondsForRefresh);
+        });
+
+        function TaakStart(taakId) {
+            MaakStatus($('#dvStatus'), 'mijn-alert', 'alert-info', "Test");
+        };
+
+        function TaakEind(taakId) {
+
+        };
+
+        function MaakStatus($Container, ItemName, AlertType, Message) {
+            $.fx.speeds.slow = 6000;
+
+            $('#' + ItemName).remove();
+
+            var $Element = $('<div id=' + ItemName + '></div>');
+            $Element.addClass("alert").addClass(AlertType);
+            $Element.text(Message);
+            $Element.html($Element.html().replace(/\n/g, '<br/>'));
+
+            $Container.append($Element);
+            $Element.fadeTo("slow", "0.6", function () {
+                $(this).remove();
+            });
+        };
+    </script>
 </body>
 </html>

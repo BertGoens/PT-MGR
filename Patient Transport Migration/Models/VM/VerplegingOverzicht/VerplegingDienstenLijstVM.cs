@@ -9,7 +9,7 @@ using Patient_Transport_Migration.Models.Model;
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class VerplegingDienstenLijstVM {
         public VerplegingDienstenLijstVM(string Afdeling) {
-            var db = new MSSQLContext();
+            var db = new Context();
             _afdelingLijst = db.tblLocaties.Select(l =>
                     new Afdeling() { Omschrijving = l.Omschrijving, Code = l.Afdeling })
                     .Distinct()

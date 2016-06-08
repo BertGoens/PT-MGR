@@ -5,17 +5,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Repositories;
 
 namespace Patient_Transport_Migration.Models.VM.DokterStatus {
     public class DokterLijstVM {
         public DokterLijstVM() {
-            var db = new MSSQLContext();
-            _dokterLijst = db.tblDokters.ToList();
+            _dokterLijst = new DokterRepository(new DokterContext()).GetDoktersExcludeRadiologie();
         }
 
         [Display(Name = "Selecteer een dokter")]
         public string DokterLijstSelected { get; set; }
-        private List<Dokter> _dokterLijst;
+        private IEnumerable<Dokter> _dokterLijst;
         public IEnumerable<SelectListItem> DokterLijst {
             get {
                 return _dokterLijst.Select(d => new SelectListItem {

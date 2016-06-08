@@ -11,7 +11,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
     /// </summary>
     public class AanvraagTypesVM {
         public AanvraagTypesVM(string patientId) {
-            var db = new MSSQLContext();
+            var db = new Context();
             _AanvraagTypes = db.tblAanvraagTypes.Where(a => a.Include_Patient).ToList();
             PatientId = patientId;
         }

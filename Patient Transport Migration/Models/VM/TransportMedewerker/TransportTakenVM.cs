@@ -7,7 +7,7 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models.VM.TransportMedewerker {
     public class TransportTakenVM {
         public TransportTakenVM(string medewerkerId) {
-            var db = new MSSQLContext();
+            var db = new Context();
             TransportTaakLijst = db.tblTransportTaken.Where(t =>
             t.TransportWerknemerId == medewerkerId)
             .ToList();

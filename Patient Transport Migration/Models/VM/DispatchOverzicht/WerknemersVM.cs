@@ -8,7 +8,7 @@ using Patient_Transport_Migration.Models.DAL;
 namespace Patient_Transport_Migration.Models.VM.DispatchOverzicht {
     public class WerknemersVM {
         public WerknemersVM(string TakenPage) {
-            var db = new MSSQLContext();
+            var db = new Context();
             TransportWerknemers = db.tblTransportWerknemers.ToList();
         }
 

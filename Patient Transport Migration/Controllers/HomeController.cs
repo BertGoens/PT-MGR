@@ -8,13 +8,14 @@ using System.Web.Mvc;
 using Patient_Transport_Migration.Models;
 using Patient_Transport_Migration.Models.Core;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Repositories;
 using Patient_Transport_Migration.Models.VM;
 
 namespace Patient_Transport_Migration.Controllers {
 
     public class HomeController : Controller {
 
-        private MSSQLContext db = new MSSQLContext();
+        private Context db = new Context();
 
         private string getViewModelErrors() {
             return string.Join(",", ModelState.Values.Where(e => e.Errors.Count > 0)
@@ -45,6 +46,7 @@ namespace Patient_Transport_Migration.Controllers {
             if (ModelState.IsValid) {
                 // Haal dokter op & bewerk zijn instellingen
                 try {
+                    DokterContext db = new DokterContext();
                     Dokter dr = db.tblDokters.First(d => d.Id == vm.Id);
                     if (dr.IsConsultVerwachtend != vm.IsConsultVerwachtend) {
                         dr.IsConsultVerwachtend = vm.IsConsultVerwachtend;
@@ -160,7 +162,7 @@ namespace Patient_Transport_Migration.Controllers {
                     }
 
                     if (aanvraagData.AanvraagType.Include_AanDokter) {
-                        aanvraagData.AanDokter = db.tblDokters.First(d => d.Id == vm.DokterSelected);
+                        aanvraagData.AanDokter = new DokterContext().tblDokters.First(d => d.Id == vm.DokterSelected);
                     }
 
                     if (aanvraagData.AanvraagType.Include_Radiologie) {
@@ -345,6 +347,16 @@ namespace Patient_Transport_Migration.Controllers {
             //TODO naar User.Identity overschakelen
             string id = "sta_it2";
             return PartialView("./TransportMedewerker/TransportMedewerker", new Models.VM.TransportMedewerker.TransportTakenVM(id));
+        }
+
+        [HttpPost]
+        public bool TaakStart(string taak) {
+            return true;
+        }
+
+        [HttpPost]
+        public bool TaakVolbracht(string taak) {
+            return true;
         }
         #endregion
     }

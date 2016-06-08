@@ -18,6 +18,12 @@ namespace Patient_Transport_Migration.Models.DAL {
         public bool IsConsultVerwachtend { get; set; }
 
         public Locatie Locatie { get; set; }
+
+        /// <summary>
+        /// De Domain User die wordt gebruikt om de taken te beheren.
+        /// </summary>
+        [MaxLength(255)]
+        public string GebruikersNaam { get; set; }
     }
 
 }

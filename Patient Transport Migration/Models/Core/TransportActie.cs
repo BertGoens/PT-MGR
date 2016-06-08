@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Patient_Transport_Migration.Models.Core {
     public enum TransportActie {
-        DokterOntslagen,
+        Dokter_Ontslagen,
         CT_Ontslagen,
         NMR_Ontslagen,
         RX_Ontslagen,

@@ -4,28 +4,52 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Patient_Transport_Migration.Models.DAL;
+using Patient_Transport_Migration.Models.Model;
 
 namespace Patient_Transport_Migration.Models.Core {
+    /// <summary>
+    /// Logica omtrent het maken & verwerken van transport-taken
+    /// </summary>
     public static class BehandelAanvraag {
-        private const string LocatieCT = "CT";
-        private const string LocatieNMR = "NMR";
-        private const string LocatieRX = "RX";
-        private const string LocatieEchografie = "Echografie";
+        /* Hardcoded IDs van verplichte 'Dokters' */
+        private const string ID_CT = "CT";
+        private const string ID_NMR = "NMR";
+        private const string ID_RX = "RX";
+        private const string ID_Echografie = "Echografie";
+
+        /// <summary>
+        /// De (berekende) status van de taak.
+        /// </summary>
+        public static TransportTaakStatus GetTransportTaakStatus(TransportTaak taak) {
+            if (taak.DatumCompleet != null) {
+                return TransportTaakStatus.Voltooid;
+            }
+
+            if (taak.TaakWachtrijNummer != null) {
+                if (taak.TaakWachtrijNummer == 0) {
+                    return TransportTaakStatus.WerknemerToegewezen_HuidigeTaak;
+                }
+
+                return TransportTaakStatus.WerknemerToegewezen_Wachtend;
+            }
+
+            return TransportTaakStatus.NietToegewezen_Wachtend;
+        }
 
         /// <summary>
         /// Maakt een transporttaak op basis van de aanvraag
         /// </summary>
         /// <param name="aanvraag">De nieuwe aanvraag</param>
-        /// <param name="Kamer">De geselecteerde kamer</param>
+        /// <param name="Kamer">De geselecteerde kamer als het geen dokter is</param>
         public static void NieuweAanvraag(Aanvraag aanvraag, Locatie Kamer = null) {
-            var db = new MSSQLContext();
+            var db = new Context();
             var transportTaak = new TransportTaak();
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
             transportTaak.LocatieStart = aanvraag.Patient.Locatie;
 
             // Ga aanvraagtype van de aanvraag af en kijk naar eerste transport
-            if (ZetEindLocatie(db, transportTaak, Kamer)) {
+            if (ZetEindLocatie(new DokterContext(), transportTaak, Kamer)) {
                 // Opslaan
                 db.tblTransportTaken.Add(transportTaak);
                 db.SaveChanges();
@@ -36,7 +60,7 @@ namespace Patient_Transport_Migration.Models.Core {
             };
         }
 
-        private static bool ZetEindLocatie(MSSQLContext db, TransportTaak transportTaak, Locatie Kamer = null) {
+        private static bool ZetEindLocatie(DokterContext db, TransportTaak transportTaak, Locatie Kamer = null) {
             var aanvraag = transportTaak.Aanvraag;
             var AanvrType = transportTaak.Aanvraag.AanvraagType;
 
@@ -56,16 +80,16 @@ namespace Patient_Transport_Migration.Models.Core {
             }
             if (AanvrType.Include_Radiologie) {
                 if (aanvraag.CT) {
-                    transportTaak.LocatieEind = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_CT).Locatie;
                     return true;
                 } else if (aanvraag.NMR) {
-                    transportTaak.LocatieEind = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_NMR).Locatie;
                     return true;
                 } else if (aanvraag.RX) {
-                    transportTaak.LocatieEind = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_RX).Locatie;
                     return true;
                 } else if (aanvraag.Echografie) {
-                    transportTaak.LocatieEind = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    transportTaak.LocatieEind = db.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
                     return true;
                 }
             }
@@ -73,7 +97,9 @@ namespace Patient_Transport_Migration.Models.Core {
         }
 
         public static void OntslagAanvraag(Aanvraag aanvraag, TransportActie transportActie) {
-            var db = new MSSQLContext();
+            var _dokterContext = new DokterContext();
+            var _context = new Context();
+
             var transportTaak = new TransportTaak();
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
@@ -84,21 +110,25 @@ namespace Patient_Transport_Migration.Models.Core {
             bool nieuweActie = false;
             switch (transportActie) {
                 // Zoek kamer van ontslag
-                case TransportActie.DokterOntslagen:
+                case TransportActie.Dokter_Ontslagen:
                     nieuweActie = true;
                     transportTaak.LocatieStart = aanvraag.AanDokter.Locatie;
                     break;
                 case TransportActie.CT_Ontslagen:
-                    transportTaak.LocatieStart = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    nieuweActie = true;
+                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_CT).Locatie;
                     break;
                 case TransportActie.NMR_Ontslagen:
-                    transportTaak.LocatieStart = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    nieuweActie = true;
+                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_NMR).Locatie;
                     break;
                 case TransportActie.RX_Ontslagen:
-                    transportTaak.LocatieStart = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    nieuweActie = true;
+                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_RX).Locatie;
                     break;
                 case TransportActie.Echografie_Ontslagen:
-                    transportTaak.LocatieStart = db.tblLocaties.First(l => l.Kamer == LocatieCT);
+                    nieuweActie = true;
+                    transportTaak.LocatieStart = _dokterContext.tblDokters.First(l => l.Id == ID_Echografie).Locatie;
                     break;
                 case TransportActie.TransportVolbracht:
                     // Wacht op ontslag
@@ -110,12 +140,12 @@ namespace Patient_Transport_Migration.Models.Core {
             if (!nieuweActie) {
                 // Geen nieuwe actie = aanvraag voltooid
                 aanvraag.DatumCompleet = DateTime.Now;
-                db.Entry(aanvraag).State = EntityState.Modified;
-                db.SaveChanges();
+                _context.Entry(aanvraag).State = EntityState.Modified;
+                _context.SaveChanges();
             } else {
-                // Transporttaak maken
-                db.tblTransportTaken.Add(transportTaak);
-                db.SaveChanges();
+                // Nieuwe TransportTaak maken
+                _context.tblTransportTaken.Add(transportTaak);
+                _context.SaveChanges();
             }
         }
     }

@@ -11,7 +11,7 @@ namespace Patient_Transport_Migration.Models.VM.PatientInfo {
         public PatientDetailsVM(string visitId) {
             PatientVisitId = visitId;
             if (!string.IsNullOrEmpty(visitId)) {
-                var db = new MSSQLContext();
+                var db = new Context();
                 try {
                     PatientDetails = db.tblPatienten.Where(p => p.PatientVisit.Equals(visitId)).First();
                 } catch (Exception ex) {

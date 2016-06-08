@@ -104,7 +104,6 @@
     <Content Include="Content\Images\ajax-loader.gif" />
     <Content Include="Content\Images\cat_waiting.gif" />
     <Content Include="Content\Images\favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
@@ -138,10 +137,11 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BehandelTaak.cs" />
-    <Compile Include="Models\Core\OntslaActie.cs" />
+    <Compile Include="Models\Core\TransportActie.cs" />
     <Compile Include="Models\DAL\Aanvraag.cs" />
     <Compile Include="Models\DAL\AanvraagType.cs" />
     <Compile Include="Models\DAL\Dokter.cs" />
+    <Compile Include="Models\DAL\DokterContext.cs" />
     <Compile Include="Models\DAL\ExceptionLogger.cs" />
     <Compile Include="Models\DAL\Locatie.cs" />
     <Compile Include="Models\DAL\Patient.cs" />
@@ -150,7 +150,11 @@
     <Compile Include="Models\DAL\Transportwijze.cs" />
     <Compile Include="Models\DAL\TransportWerknemer.cs" />
     <Compile Include="Models\Model\Afdeling.cs" />
+    <Compile Include="Models\Model\TransportTaakStatus.cs" />
     <Compile Include="Models\MSSQLContext.cs" />
+    <Compile Include="Models\Repositories\DokterRepository.cs" />
+    <Compile Include="Models\Repositories\TransportTaakRepository.cs" />
+    <Compile Include="Models\Repositories\TransportWerknemerRepository.cs" />
     <Compile Include="Models\Util\Pager.cs" />
     <Compile Include="Models\VM\DispatchOverzicht\WachtendeTransportTakenVM.cs" />
     <Compile Include="Models\VM\DispatchOverzicht\WerknemersVM.cs" />
@@ -174,9 +178,6 @@
     <Content Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\DokterStatus\DokterStatus.cshtml" />

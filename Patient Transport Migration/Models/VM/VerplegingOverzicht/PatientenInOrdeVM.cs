@@ -8,7 +8,7 @@ using Patient_Transport_Migration.Models.Util;
 namespace Patient_Transport_Migration.Models.VM.VerplegingOverzicht {
     public class RecentVervoerdePatienten {
         public RecentVervoerdePatienten(string page, string afdelingCode) {
-            var db = new MSSQLContext();
+            var db = new Context();
 
             // Query alle patienten met recentelijke vervoertaken die in orde zijn
             DateTime date = DateTime.Now.AddHours(-4);

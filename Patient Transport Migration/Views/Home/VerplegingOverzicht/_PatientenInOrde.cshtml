@@ -17,7 +17,7 @@
             <td>@taak.DatumCompleet</td>
             <td>@try { @taak.Aanvraag.Patient.Naam() } catch (Exception) { } </td>
             <td>@try { @taak.Aanvraag.Patient.Kamer } catch (Exception) { } - @try { @taak.Aanvraag.Patient.BedNr } catch (Exception) { }</td>
-            <td>@try { @taak.LocatieStart.Kamer } catch (Exception) { }</td>
+            <td>@try { Html.Raw(taak.LocatieStart.Omschrijving); Html.Raw(" - "); Html.Raw(taak.LocatieStart.Kamer); } catch (Exception) { }</td>
         </tr>
     }
 }

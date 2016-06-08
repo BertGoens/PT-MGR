@@ -69,10 +69,10 @@
                 $dvLoaderPIO.show();
             }, success: function (result) {
                 PageOK = page;
-                MaakStatus($('#dvAlertPatientenInOrde'), "alert-1", 'alert-success', "Pagina vernieuwd.");
+                MaakStatus($('#dvAlertPatientenInOrde'), "alert-pat-ok", 'alert-success', "Pagina vernieuwd.");
                 $dvContentPIO.html(result);
             }, error: function (jqXHR, textStatus, errorThrown) {
-                MaakStatus($('#dvAlertPatientenInOrde'), "alert-1", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
+                MaakStatus($('#dvAlertPatientenInOrde'), "alert-pat-ok", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
             }, complete: function () {
                 $dvContentPIO.css({ opacity: 1 });
                 $dvLoaderPIO.hide();
@@ -98,10 +98,10 @@
                 $dvLoaderPW.show();
             }, success: function (result) {
                 PageTODO = page;
-                MaakStatus($('#dvAlertPatientenWachtend'), "alert-2", 'alert-success', "Pagina vernieuwd.");
+                MaakStatus($('#dvAlertPatientenWachtend'), "alert-pat-todo", 'alert-success', "Pagina vernieuwd.");
                 $dvContentPW.html(result);
             }, error: function (jqXHR, textStatus, errorThrown) {
-                MaakStatus($('#dvAlertPatientenWachtend'), "alert-2", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
+                MaakStatus($('#dvAlertPatientenWachtend'), "alert-pat-todo", 'alert-warning', "Kon de pagina niet vernieuwen, probeer opnieuw.\n" + textStatus + ":" + errorThrown);
             }, complete: function () {
                 $dvLoaderPW.hide();
                 $dvContentPW.css({ opacity: 1 });

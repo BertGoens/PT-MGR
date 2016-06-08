@@ -15,7 +15,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
             // Required for POST
         }
         public MaakAanvraag(string aanvraagTypeId, string patient) {
-            var db = new MSSQLContext();
+            var db = new Context();
             //maak aanvraag adhv gegeven type
             if (aanvraagTypeId.Length > 0) {
                 // Laad type uit db
@@ -37,7 +37,7 @@ namespace Patient_Transport_Migration.Models.VM.MaakVervoerAanvraag {
                     }
 
                     if (_DisplayAanvraagTypeData.Include_AanDokter) {
-                        _dokterLijst = db.tblDokters.ToList();
+                        _dokterLijst = new DokterContext().tblDokters.ToList();
                     }
 
                     _afdelingLijst = db.tblLocaties.Select(l => 
