@@ -30,17 +30,25 @@ namespace Patient_Transport_Migration.Models.Repositories {
             t.DatumCompleet == null);
         }
 
+        public IEnumerable<TransportTaak> GetWerknemerTakenQueueOrdered(string WerknemerId) {
+            return _context.tblTransportTaken.Where(t =>
+            t.TransportWerknemerId == WerknemerId &&
+            t.DatumCompleet == null)
+            .OrderBy(t => t.TaakWachtrijNummer);
+        }
+
         public TransportTaak GetTransportTaakByWerknemerByNumber(string WerknemerId, int TaakId) {
             return _context.tblTransportTaken.First(t =>
                         t.Id == TaakId &&
                         t.TransportWerknemerId == WerknemerId);
         }
 
-        public IEnumerable<TransportTaak> GetTakenInQueueForMedewerkenNa(string medewerker, int taakNummerInQueue) {
+        public IEnumerable<TransportTaak> GetTakenInQueueForMedewerkenNaOrderByTaakNummer(string medewerker, int taakNummerInQueue) {
             return _context.tblTransportTaken.Where(t =>
                      t.DatumCompleet == null &&
                      t.TransportWerknemerId == medewerker &&
-                     t.TaakWachtrijNummer > taakNummerInQueue);
+                     t.TaakWachtrijNummer > taakNummerInQueue)
+                     .OrderBy(t => t.TaakWachtrijNummer);
         }
 
         public IEnumerable<TransportTaak> GetTransportTakenForPatientOrderByDatum(string patientVisitId) {

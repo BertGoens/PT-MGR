@@ -33,6 +33,16 @@ namespace Patient_Transport_Migration.Models.POCO {
         [MaxLength(255)]
         public string AanvraagDoor { get; set; }
 
+        [MaxLength(1000)]
+        [DataType(DataType.MultilineText)]
+        public string Omschrijving { get; set; }
+
+        [MaxLength(10)]
+        public string DokterId { get; set; }
+        [ForeignKey("DokterId")]
+        public Dokter PatientBij { get; set; }
+
+        #region Patient data
         /// <summary>
         /// Gebruikt om alle persoonlijke patientdata op te zoeken.
         /// </summary>
@@ -47,12 +57,9 @@ namespace Patient_Transport_Migration.Models.POCO {
 
         [ForeignKey("PatientId, PatientVisit")]
         public virtual Patient Patient { get; set; }
+        #endregion Patient data
 
-        [MaxLength(1000)]
-        [DataType(DataType.MultilineText)]
-        public string Omschrijving { get; set; }
-
-        // Aanvraag van Consult: 'avc' prefix
+        #region Aanvraag van Consult
         [MaxLength(10)]
         public string AanDokterId { get; set; }
         [ForeignKey("AanDokterId")]
@@ -60,8 +67,10 @@ namespace Patient_Transport_Migration.Models.POCO {
         public virtual Dokter AanDokter { get; set; }
         [DefaultValue(false)]
         public bool DokterOntslagen { get; set; }
+        #endregion
 
-        // Aanvraag van Radiologie: 
+        #region Aanvraag van Radiologie
+
         [DefaultValue(false)]
         public bool CT { get; set; }
         [DefaultValue(false)]
@@ -81,6 +90,7 @@ namespace Patient_Transport_Migration.Models.POCO {
         public bool Echografie { get; set; }
         [DefaultValue(false)]
         public bool Echografie_Ontslagen { get; set; }
+        #endregion
 
         public int? TransportwijzeId { get; set; }
         [ForeignKey("TransportwijzeId")]

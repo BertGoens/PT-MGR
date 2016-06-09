@@ -4,26 +4,17 @@
     using (Html.BeginForm("MaakVervoerAanvraag", "Home", FormMethod.Post)) {
         @Html.HiddenFor(m => m.AanvraagTypeId)
 
-        if (Model.DisplayAanvraagTypeData.Include_Patient) {
+        if (!Model.DisplayAanvraagTypeData.Include_Radiologie) {
             <div class="form-group">
                 <dl class="dl-horizontal">
-                    <dt>@Html.LabelFor(m => m.PatientSelected)</dt>
-                    <dd>@Html.DropDownListFor(m => m.PatientSelected, Model.PatientenLijst)</dd>
-                </dl>
-            </div>
-
-            if (!Model.DisplayAanvraagTypeData.Include_AanDokter && 
-                !Model.DisplayAanvraagTypeData.Include_Radiologie) {
-                <div class="form-group">
-                    <dl class="dl-horizontal">
-                        <dt>@Html.LabelFor(m => m.AfdelingSelected)</dt>
-                        <dd>
-                            @Html.DropDownListFor(m => m.AfdelingSelected,
+                    <dt>@Html.LabelFor(m => m.AfdelingSelected)</dt>
+                    <dd>
+                        @Html.DropDownListFor(m => m.AfdelingSelected,
             new SelectList(Model.AfdelingLijst, "Value", "Text"),
             new { @id = "ddlAfdeling", @onchange = "LaadKamersVanAfdeling()" })
-                        </dd>
-                    </dl>
-                </div>
+                    </dd>
+                </dl>
+            </div>
 
                 <div class="form-group">
                     <dl class="dl-horizontal">
@@ -35,7 +26,16 @@
                         </dd>
                     </dl>
                 </div>
-            }
+        }
+
+        if (Model.DisplayAanvraagTypeData.Include_Patient) {
+            <div class="form-group">
+                <dl class="dl-horizontal">
+                    <dt>@Html.LabelFor(m => m.PatientSelected)</dt>
+                    <dd>@Html.DropDownListFor(m => m.PatientSelected, Model.PatientenLijst)</dd>
+                </dl>
+            </div>
+
             if (Model.DisplayAanvraagTypeData.Include_Transportwijze) {
                 <div class="form-group">
                     <dl class="dl-horizontal">

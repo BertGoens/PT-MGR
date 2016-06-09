@@ -56,8 +56,10 @@ namespace Patient_Transport_Migration.Controllers {
                         _context.SaveChanges();
                     }
                 } catch (Exception ex) {
-                    //TODO LOG
-                    ViewBag.ErrorMessage = ex.Message;
+                    _context.tblExceptionLogger.Add(new ExceptionLogger() {
+                        ExceptionMessage = ex.Message,
+                        ExceptionStackTrace = ex.StackTrace
+                    });
                     return DokterStatus();
                 }
                 return RedirectToAction("DokterStatus");
@@ -166,13 +168,6 @@ namespace Patient_Transport_Migration.Controllers {
                     if (aanvraagData.AanvraagType.Include_AanDokter) {
                         aanvraagData.AanDokter = _context.tblDokters.First(d => d.Id == vm.DokterSelected);
                     }
-
-                    if (aanvraagData.AanvraagType.Include_Radiologie) {
-                        aanvraagData.CT = vm.CT;
-                        aanvraagData.NMR = vm.NMR;
-                        aanvraagData.RX = vm.RX;
-                        aanvraagData.Echografie = vm.Echografie;
-                    }
                 }
 
                 _context.tblAanvragen.Add(aanvraagData);
@@ -181,7 +176,7 @@ namespace Patient_Transport_Migration.Controllers {
 
                 //Verwerk Aanvraag    
                 var locKamer = _context.tblLocaties.First(l => l.Kamer == vm.KamerSelected);
-                BehandelAanvraag.NieuweAanvraag(_context, aanvraagData, locKamer);               
+                BehandelTaak.NieuweAanvraag(_context, aanvraagData, locKamer);               
             } else {
                 var errors = getViewModelErrors();
                 ViewBag.ErrorMessage = errors;
@@ -206,7 +201,7 @@ namespace Patient_Transport_Migration.Controllers {
 
         [HttpGet]
         public JsonResult DispatchOverzicht_GetWerknemerTaken(string WerknemerId) {
-            var Taken = new TransportTaakRepository(_context).GetWerknemerTakenQueue(WerknemerId).ToList();
+            var Taken = new TransportTaakRepository(_context).GetWerknemerTakenQueueOrdered(WerknemerId).ToList();
             return Json(Taken, JsonRequestBehavior.AllowGet);
         }
 
@@ -262,7 +257,7 @@ namespace Patient_Transport_Migration.Controllers {
                     _context.Entry(taak).State = EntityState.Modified;
 
                     // Pas alle taken erna aan (-1)
-                    var takenErnaa = TaakRepo.GetTakenInQueueForMedewerkenNa(werknemerId, taakNummerInQueue);
+                    var takenErnaa = TaakRepo.GetTakenInQueueForMedewerkenNaOrderByTaakNummer(werknemerId, taakNummerInQueue);
                     
                     foreach (var t in takenErnaa) {
                         t.TaakWachtrijNummer -= 1;
@@ -346,14 +341,31 @@ namespace Patient_Transport_Migration.Controllers {
         }
 
         [HttpPost]
-        public bool TaakStart(string taak) {
-            return true;
+        public bool TransportMedewerker_TaakStart(string taak) {
+            int TaakId = int.Parse(taak);
+            var TaakStart = _context.tblTransportTaken.Single(t => t.Id == TaakId);
+            return BehandelTaak.StartTransport(_context, TaakStart);
         }
 
         [HttpPost]
-        public bool TaakVolbracht(string taak) {
-            return true;
+        public bool TransportMedewerker_AnnuleerStartTaak(string taak) {
+            int TaakId = int.Parse(taak);
+            var TaakAnnuleer = _context.tblTransportTaken.Single(t => t.Id == TaakId);
+            return BehandelTaak.AnnuleerTransport(_context, TaakAnnuleer);
         }
+
+        [HttpPost]
+        public bool TransportMedewerker_TaakVolbracht(string taak) {
+            int TaakId = int.Parse(taak);
+            var TaakVolbracht = _context.tblTransportTaken.Single(t => t.Id == TaakId);
+            return BehandelTaak.EindeTransport(_context, TaakVolbracht);
+        }
+        #endregion
+
+        #region DokterPraktijk
+
+
+
         #endregion
     }
 }

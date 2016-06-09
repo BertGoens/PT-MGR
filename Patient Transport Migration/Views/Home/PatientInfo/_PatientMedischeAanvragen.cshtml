@@ -17,7 +17,7 @@
                     @:<td>@taak.LocatieStart.Kamer</td>
                     @:<td>@taak.LocatieEind.Kamer</td>
                     @:<td>
-                        switch (Patient_Transport_Migration.Models.Core.BehandelAanvraag.GetTransportTaakStatus(taak)) {
+                        switch (Patient_Transport_Migration.Models.Core.BehandelTaak.GetTransportTaakStatus(taak)) {
                             case Patient_Transport_Migration.Models.Model.TransportTaakStatus.NietToegewezen_Wachtend:
                                 @Html.Raw("Wachtend");
                                 break;

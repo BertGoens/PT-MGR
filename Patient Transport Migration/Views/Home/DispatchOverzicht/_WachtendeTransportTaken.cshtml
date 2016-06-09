@@ -22,10 +22,20 @@
         foreach (var ttaak in Model.TransportTaken) {
             <tr id="Taak-@ttaak.Id" class="@(ttaak.IsPrioriteitHoog ? "HogePrioriteit" : "")">
                 <td>@ttaak.Id</td>
-                <td>@ttaak.DatumGemaakt</td>
+                <td>@try { @ttaak.DatumGemaakt.ToString(); } catch { Html.Raw("??"); }</td>
                 <td>@if (ttaak.Aanvraag.AanvraagType.Include_Patient) { @ttaak.Aanvraag.Patient.Naam } else { @Html.Raw("/"); }</td>
-                <td>@ttaak.LocatieStart.Omschrijving - @ttaak.LocatieStart.Kamer</td>
-                <td>@ttaak.LocatieEind.Omschrijving - @ttaak.LocatieEind.Kamer</td>
+                <td>@try { @ttaak.LocatieStart.Omschrijving; @Html.Raw(" - "); @ttaak.LocatieStart.Kamer;} catch { @Html.Raw("/")}</td>
+                
+                @if (@ttaak.DokterEind != null) {
+                    if (ttaak.DokterEind.IsConsultVerwachtend) {
+                        <td>@ttaak.LocatieEind.Omschrijving - @ttaak.LocatieEind.Kamer</td>
+                    } else {
+                        <td class="label-danger">@ttaak.LocatieEind.Omschrijving - @ttaak.LocatieEind.Kamer</td>
+                    }
+                } else {
+                    <td>@ttaak.LocatieEind.Omschrijving - @ttaak.LocatieEind.Kamer</td>
+                }
+
                 <td><input id="Taak-@ttaak.Id-TransportNotities" type="text" value="@(ttaak.TransportNotities)" /></td>
                 <td><input id="Taak-@ttaak.Id-IsPrioriteitHoog" type="checkbox" @(ttaak.IsPrioriteitHoog ? "checked=\"checked\"" : "") /></td>
                 <td>@Html.DropDownList("Taak-"+@ttaak.Id+"-WerknemerId", new SelectList(@Model.TransportWerknemerItems, "Value", "Text"), "")</td>

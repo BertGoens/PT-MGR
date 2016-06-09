@@ -83,7 +83,7 @@
         var sendSequence = [];
         for (var i= 0; i< $dvCollection.children.length; i++) {
             var item = $dvCollection.children[i];
-            sendSequence[i] = $(item).data("taak-id");
+            sendSequence[i] = $(item).attr("data-wn-taak-id");
         }
 
         var sendData = { "WerknemerId": WerknemerId, "Taken": sendSequence}
@@ -99,6 +99,7 @@
                 if (result == "True") { // =True
                     MaakSchemaStatus(WerknemerId, "alert-success",
                         "Taken succesvol opgeslagen van " + WerknemerNaam);
+                    LaadWerknemersSchema(WerknemerId, WerknemerNaam)
                 } else {
                     MaakSchemaStatus(WerknemerId, "alert-danger",
                        "Taken opgeslaan mislukt van " + WerknemerNaam + " ,probeer opnieuw!");
@@ -145,7 +146,8 @@
         var $dvContainer = $('<div></div>');
         $dvContainer.prop("id", "WnSchema-"+WerknemerId);
         for (var i = 0; i < WerknemerTaken.length; i++) {
-             wnTaak = WerknemerTaken[i];
+            var wnTaak = WerknemerTaken[i];
+            console.log(wnTaak);
             //Bouw Item (Html)
             var $item = $('<div id=' + WerknemerId + '-taak' + wnTaak.Id +'></div>');
             $item.attr('data-wn-taak-id', wnTaak.Id);
@@ -159,15 +161,25 @@
                 .addClass("badge");
             $item.append($itemNummer);
 
-            // Tekst
-            var $itemText = $('<span></span>');
-            $itemText.text(wnTaak.LocatieStart.Omschrijving + " " + wnTaak.LocatieStart.Kamer + 
-                " - " + wnTaak.LocatieEind.Omschrijving + " " + wnTaak.LocatieEind.Kamer
-            );
+            // Tekst VAN
+            try {
+            var $itemTextVan = $('<span></span>');
+            $itemTextVan.text(wnTaak.LocatieStart.Omschrijving + " " + wnTaak.LocatieStart.Kamer + " - ");
             if (wnTaak.IsPrioriteitHoog) {
-                $itemText.addClass("HogePrioriteit");
+                $itemTextVan.addClass("HogePrioriteit");
             };
-            $item.append($itemText);
+            $item.append($itemTextVan);
+            } catch(err) {}
+
+            // Tekst NAAR
+            try {
+                var $itemTextNaar = $('<span></span>');
+                $itemTextNaar.text(wnTaak.LocatieEind.Omschrijving + " " + wnTaak.LocatieEind.Kamer);
+                if (wnTaak.IsPrioriteitHoog) {
+                    $itemTextNaar.addClass("HogePrioriteit");
+                };
+                $item.append($itemTextNaar);
+            } catch(err) {}
 
             // Beweegbaar icoontje
             var $moveHandle = $('<span></span>')

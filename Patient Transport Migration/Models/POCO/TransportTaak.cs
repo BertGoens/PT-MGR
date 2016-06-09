@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,6 +26,12 @@ namespace Patient_Transport_Migration.Models.POCO {
         [ForeignKey("LocatieEindKamer, LocatieEindAfdelingId")]
         public virtual Locatie LocatieEind { get; set; }
 
+
+        [MaxLength(10)]
+        public string DokterId { get; set; }
+        [ForeignKey("DokterId")]
+        public virtual Dokter DokterEind { get; set; }
+
         /// <summary>
         /// Notities gedeeld tussen Dispatch(Update) & TransportWerknemer(Read)
         /// </summary>
@@ -47,12 +54,15 @@ namespace Patient_Transport_Migration.Models.POCO {
         [ForeignKey("AanvraagId")]
         public virtual Aanvraag Aanvraag { get; set; }
 
+        [DefaultValue(false)]
+        public bool TransportGestart { get; set; }
+
         /// <summary>
         /// Het wachtrij-nummer van de taak.
         /// </summary>
         /// <value>
-        /// Null = Niet toegewezen
-        /// –2147483648 = Gedaan
+        /// DatumCompleet = Voltooid
+        /// Null && !DatumCompleet = Niet toegewezen
         /// 0 = actieve taak
         /// > 0 = volgende taken
         /// </value>
