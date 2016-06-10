@@ -1,0 +1,56 @@
+﻿@model Patient_Transport_Migration.Models.POCO.Dokter
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Dokter</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Locatie.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Locatie.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Naam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Naam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsConsultVerwachtend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsConsultVerwachtend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GebruikersNaam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GebruikersNaam)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

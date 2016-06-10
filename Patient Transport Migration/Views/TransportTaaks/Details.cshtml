@@ -1,0 +1,106 @@
+﻿@model Patient_Transport_Migration.Models.POCO.TransportTaak
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TransportTaak</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Aanvraag.AanvraagDoor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aanvraag.AanvraagDoor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DokterEind.Naam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DokterEind.Naam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocatieEind.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocatieEind.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocatieStart.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocatieStart.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransportWerknemer.Voornaam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransportWerknemer.Voornaam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransportNotities)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransportNotities)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPrioriteitHoog)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPrioriteitHoog)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DatumGemaakt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DatumGemaakt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DatumCompleet)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DatumCompleet)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransportGestart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransportGestart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaakWachtrijNummer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaakWachtrijNummer)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

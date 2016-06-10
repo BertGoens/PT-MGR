@@ -1,0 +1,162 @@
+﻿@model Patient_Transport_Migration.Models.POCO.Aanvraag
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Aanvraag</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AanDokter.Naam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AanDokter.Naam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AanvraagType.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AanvraagType.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Patient.Voornaam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Patient.Voornaam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientBij.Naam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PatientBij.Naam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Transportwijze.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Transportwijze.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DatumAanvraag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DatumAanvraag)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DatumCompleet)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DatumCompleet)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AanvraagDoor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AanvraagDoor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DokterOntslagen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DokterOntslagen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CT_Ontslagen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CT_Ontslagen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NMR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NMR)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NMR_Ontslagen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NMR_Ontslagen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RX)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RX)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RX_Ontslagen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RX_Ontslagen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Echografie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Echografie)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Echografie_Ontslagen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Echografie_Ontslagen)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

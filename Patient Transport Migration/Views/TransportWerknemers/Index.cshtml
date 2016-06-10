@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Patient_Transport_Migration.Models.POCO.TransportWerknemer>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Voornaam)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Achternaam)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Voornaam)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Achternaam)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Gebruikersnaam }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Gebruikersnaam }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Gebruikersnaam })
+        </td>
+    </tr>
+}
+
+</table>

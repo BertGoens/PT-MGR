@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Patient_Transport_Migration.Models.POCO.Aanvraag>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AanDokter.Naam)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AanvraagType.Omschrijving)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Patient.Voornaam)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PatientBij.Naam)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Transportwijze.Omschrijving)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DatumAanvraag)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DatumCompleet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AanvraagDoor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Omschrijving)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DokterOntslagen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CT_Ontslagen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NMR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NMR_Ontslagen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RX)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RX_Ontslagen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Echografie)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Echografie_Ontslagen)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AanDokter.Naam)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AanvraagType.Omschrijving)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Patient.Voornaam)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PatientBij.Naam)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Transportwijze.Omschrijving)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DatumAanvraag)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DatumCompleet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AanvraagDoor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Omschrijving)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DokterOntslagen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CT_Ontslagen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NMR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NMR_Ontslagen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RX)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RX_Ontslagen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Echografie)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Echografie_Ontslagen)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

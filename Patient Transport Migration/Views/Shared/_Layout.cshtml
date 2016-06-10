@@ -44,7 +44,12 @@
                             <li><a href="/Home/TransportMedewerker">Transport Medewerker Taken</a></li>
                         </ul>
                     </li>
-                    <li><a href="/Account/Logout">Afmelden</a></li>
+                    @if (User.Identity.IsAuthenticated) {
+                        <li><a href="/Account/Logout">Afmelden</a></li>
+                    } else {
+                        <li><a href="/Account/">Aanmelden</a></li>
+                    }
+
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

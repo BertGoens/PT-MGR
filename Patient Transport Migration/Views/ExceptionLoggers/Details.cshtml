@@ -1,0 +1,42 @@
+﻿@model Patient_Transport_Migration.Models.POCO.ExceptionLogger
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ExceptionLogger</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ExceptionMessage)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExceptionMessage)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExceptionStackTrace)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExceptionStackTrace)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LogTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LogTime)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

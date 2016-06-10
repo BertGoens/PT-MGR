@@ -1,0 +1,50 @@
+﻿@model Patient_Transport_Migration.Models.POCO.Dokter
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Dokter</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Locatie.Omschrijving)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Locatie.Omschrijving)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Naam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Naam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsConsultVerwachtend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsConsultVerwachtend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GebruikersNaam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GebruikersNaam)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
