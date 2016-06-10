@@ -32,8 +32,11 @@ namespace Patient_Transport_Migration.Controllers {
                     var faCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encTicket);
                     Response.Cookies.Add(faCookie);
 
-                    Redirect("/Home/");
+                    ViewBag.Success = "1";
+                } else {
+                    ViewBag.ErrorMessage = "Authenticatie mislukt!";
                 }
+            } else {
                 ViewBag.ErrorMessage = "Authenticatie mislukt!";
             }
             return View("Login", vm);

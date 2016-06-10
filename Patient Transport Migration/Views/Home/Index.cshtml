@@ -1,23 +1,31 @@
-﻿
+﻿@model Patient_Transport_Migration.Models.VM.Home.IndexVM
+
 @{
     ViewBag.Title = "Home";
 }
 
 <div class="container content-container">
     <p>Stagewerk van Bert Goens</p>
-</div>
 
-<b>Admin Controllers</b>
-<ul>
-    <li><a href="/Aanvraags/">Aanvragen</a></li>
-    <li><a href="/AanvraagTypes/">AanvraagTypes</a></li>
-    <li><a href="/Administrators/">Administrators</a></li>
-    <li><a href="/DispatchWerknemers/">DispatchWerknemers</a></li>
-    <li><a href="/Dokters/">Dokters</a></li>
-    <li><a href="/ExceptionLoggers/">Exception Logger</a></li>
-    <li><a href="/Locaties/">Locaties</a></li>
-    <li><a href="/Patients/">Patienten</a></li>
-    <li><a href="/TransportTaaks/">Transport Taken</a></li>
-    <li><a href="/TransportWerknemers/">Transport Werknemers</a></li>
-    <li><a href="/Transportwijzes/">Transportwijzes</a></li>
-</ul>
+    <p>Dag @User.Identity.Name</p>
+
+    @if (User.Identity.IsAuthenticated) {
+        if (Model.IsAdmin) {
+        <b>Admin Configuratie</b>
+        <ul>
+            <li><a href="/Aanvraags/">Aanvragen</a></li>
+            <li><a href="/AanvraagTypes/">AanvraagTypes</a></li>
+            <li><a href="/Administrators/">Administrators</a></li>
+            <li><a href="/DispatchWerknemers/">DispatchWerknemers</a></li>
+            <li><a href="/Dokters/">Dokters</a></li>
+            <li><a href="/ExceptionLoggers/">Exception Logger</a></li>
+            <li><a href="/Locaties/">Locaties</a></li>
+            <li><a href="/Patients/">Patienten</a></li>
+            <li><a href="/TransportTaaks/">Transport Taken</a></li>
+            <li><a href="/TransportWerknemers/">Transport Werknemers</a></li>
+            <li><a href="/Transportwijzes/">Transportwijzes</a></li>
+        </ul>
+        }
+    }
+
+</div>

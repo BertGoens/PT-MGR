@@ -29,14 +29,26 @@ namespace Patient_Transport_Migration.Controllers {
 
         [HttpGet]
         public ViewResult Index() {
-            return View();
+            bool isAdmin = _context.tblAdministrators.Any(a => a.Gebruikersnaam == User.Identity.Name);
+            return View("Index", new Models.VM.Home.IndexVM(isAdmin));
+        }
+
+        [HttpGet]
+        public ViewResult Home() {
+            return Index();
         }
 
         #region DokterStatus
         [HttpGet]
         public ViewResult DokterStatus() {
-            var DoktersExclusiefRadiologie = new DokterRepository(_context).GetDoktersExcludeRadiologie();
-            return View("./DokterStatus/DokterStatus", new Models.VM.DokterStatus.DokterLijstVM(DoktersExclusiefRadiologie));
+            var UserName = User.Identity.Name;
+            if (_context.tblAdministrators.Any(a => a.Gebruikersnaam == UserName)) {
+                var DoktersExclusiefRadiologie = new DokterRepository(_context).GetDoktersExcludeRadiologie();
+                return View("./DokterStatus/DokterStatus", new Models.VM.DokterStatus.DokterLijstVM(DoktersExclusiefRadiologie));
+            } else {
+                ViewBag.ErrorMessage = "U bent niet gemachtigd om deze pagina te zien.";
+                return Index();
+            }
         }
 
         [HttpGet]
@@ -197,7 +209,14 @@ namespace Patient_Transport_Migration.Controllers {
         #region DispatchOverzicht
         [HttpGet]
         public ViewResult DispatchOverzicht(string TakenPage) {
-            return View("./DispatchOverzicht/DispatchOverzicht", new Models.VM.DispatchOverzicht.WerknemersVM(TakenPage));
+            string UserName = User.Identity.Name;
+            if (_context.tblDispatchWerknemers.Any(dw => dw.Gebruikersnaam == UserName) ||
+                _context.tblAdministrators.Any(adm => adm.Gebruikersnaam == UserName)) {
+                return View("./DispatchOverzicht/DispatchOverzicht", new Models.VM.DispatchOverzicht.WerknemersVM(TakenPage));
+            } else {
+                ViewBag.ErrorMessage = "Geen rechten";
+                return Index();
+            }            
         }
 
         [HttpGet]
@@ -343,8 +362,7 @@ namespace Patient_Transport_Migration.Controllers {
         #region TransportMedewerker
         [HttpGet]
         public PartialViewResult TransportMedewerker() {
-            //TODO naar User.Identity overschakelen
-            string id = "sta_it2";
+            string id = User.Identity.Name;
             return PartialView("./TransportMedewerker/TransportMedewerker", new Models.VM.TransportMedewerker.TransportTakenVM(_context, id));
         }
 
@@ -376,14 +394,12 @@ namespace Patient_Transport_Migration.Controllers {
         public ViewResult DokterPraktijk() {
             try {
                 string dokGebruikersNaam = User.Identity.Name;
-                // TODO Gebruik User Identity
-                dokGebruikersNaam = "sta_it2";
                 var Dok = _context.tblDokters.First(d => d.GebruikersNaam == dokGebruikersNaam);
                 var DokTaken = new TransportTaakRepository(_context).GetTransportTakenForDokterOrderByTaakId(Dok.Id);
                 return View("./DokterPraktijk/DokterPraktijk", new Models.VM.DokterPraktijk.PatientenVoorDokterVM(DokTaken, Dok));
             } catch (Exception) {
-                ViewBag.ErrorMessage = "Niet gemachtigd.";
-                return View("Index");
+                ViewBag.ErrorMessage = "U bent niet als dokter opgenomen in het systeem.";
+                return Index();
             }
         }
 

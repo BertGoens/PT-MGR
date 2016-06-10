@@ -25,7 +25,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-default">
-                    <li><a class="active" href=""><i>@ViewBag.Title</i></a></li>
+                    <li><a class="active" href="@Request.Url.AbsoluteUri"><i>@ViewBag.Title</i></a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                                         
@@ -35,9 +35,10 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Patient Info <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header">Patient Info</li>
-                            <li><a href="/Home/PatientInfo">Patiënt Info</a></li>
-                            <li><a href="/Home/DokterPraktijk">Dokter Praktijk</a></li>
+                            <li><a href="/Home/PatientInfo">Patiënt Info</a></li>                          
                             <li><a href="/Home/VerplegingOverzicht">Verpleging Overzicht</a></li>
+                            <li class="divider"></li>
+                            <li><a href="~/Home/DokterPraktijk">Dokter Praktijk</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Transport</li>
                             <li><a href="/Home/DispatchOverzicht">Dispatch Overzicht</a></li>

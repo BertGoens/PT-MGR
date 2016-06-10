@@ -13,36 +13,34 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
-<body style="padding:0">
+<body style="padding: 0">
     <div class="container body-content">
         <div class="container">
-            <h3>Taken @User.Identity.Name</h3>
-            <hr />
             <div id="dvStatus" class="alert"></div>
-            <div class="panel-group" id="accordion" style="margin-bottom:10px;">
+            <div class="panel-group" id="accordion" style="margin-bottom: 10px;">
                 @foreach (var taak in Model.TransportTaakLijst) {
                     @Html.Raw("<div id=panel-" + taak.Id + " class=\"panel panel-default\">");
-                    @* Start Panel Heading *@
+@* Start Panel Heading *@
                     @Html.Raw("<div class=\"panel-heading\" style=\"margin-bottom:10px;border-bottom:1px solid #000000\">");
-                    @Html.Raw("<h4 class=\"panel-title " + (taak.IsPrioriteitHoog ? "HogePrioriteit\" " : "\" "));
+                    @Html.Raw("<p class=\"panel-title clearfix " + (taak.IsPrioriteitHoog ? "HogePrioriteit\" " : "\" "));
                     @Html.Raw("data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse-" + @taak.Id + "\"");
                     @Html.Raw(">");
 
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id" style="font-size:1.5em;">
-                        <span class="badge">@taak.TaakWachtrijNummer</span>
-                        @if (taak.LocatieStart != null) { <span><b>Van</b> @taak.LocatieStart.Omschrijving : @taak.LocatieStart.Kamer </span> }
-                        <span style="float:right"><b>Naar</b> @taak.LocatieEind.Omschrijving : @taak.LocatieEind.Kamer</span>
-                        <span style="float:right">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-@taak.Id" style="font-size:1em;">
+                        <span class="badge" style="float:right">@taak.TaakWachtrijNummer</span>
+                        @if (taak.LocatieStart != null) { <span style="float:left;padding-right:1em;"><b>Van</b> @taak.LocatieStart.Omschrijving : @taak.LocatieStart.Kamer </span> }
+                        <span style="float: left"><b>Naar</b> @taak.LocatieEind.Omschrijving : @taak.LocatieEind.Kamer</span>
+                        <span style="float: right">
                             @try { @Html.Raw(taak.Aanvraag.Transportwijze.Omschrijving);
                             } catch (Exception) { }
                         </span>
                     </a>
 
-                    @Html.Raw("</h4>");
+                    @Html.Raw("</p>");
                     @Html.Raw("</div>"); @* End Panel Heading*@
 
-                    @* Panel Collapse Href *@
-                    <div id="collapse-@taak.Id" class="panel-collapse collapse @(taak.TaakWachtrijNummer == 0? "in" : "")">
+@* Panel Collapse Href *@
+                    <div id="collapse-@taak.Id" class="panel-collapse collapse @(taak.TaakWachtrijNummer == 0 ? "in" : "")">
 
                         <div class="panel-body">
                             <p><i>Omschrijving:</i> @taak.Aanvraag.Omschrijving</p>
@@ -53,13 +51,7 @@
                                         <dd>@taak.Aanvraag.Patient.Naam</dd>
 
                                         <dt>Geboortedatum</dt>
-                                        <dd>@taak.Aanvraag.Patient.Geboortedatum</dd>
-
-                                        @if (taak.DokterEind != null) {
-                                            <dt>Dokter beschikbaar</dt>
-                                            <dd>@Html.Raw(@taak.DokterEind.IsConsultVerwachtend ? "Ja" : "Nee")</dd>
-                                        }
-
+                                        <dd>@taak.Aanvraag.Patient.Geboortedatum.ToShortDateString()</dd>
                                     </dl>
                                 </div>
                                 <div class="content-right">
@@ -71,14 +63,20 @@
                                         <dd>@taak.DatumGemaakt</dd>
                                     </dl>
                                 </div>
+                                if (taak.DokterEind != null) {
+                                    <dl class="dl-horizontal">                                    
+                                        <dt>Dokter beschikbaar</dt>
+                                        <dd>@Html.Raw(@taak.DokterEind.IsConsultVerwachtend ? "Ja" : "Nee")</dd>
+                                    </dl>
+                                }
                             }
-                            <p style="clear:both"><b>Transport Notities:</b> @taak.TransportNotities</p>
+                            <p style="clear: both"><b>Transport Notities:</b> @taak.TransportNotities</p>
                         </div>
 
-                        <div class="panel-footer">
-                            <button class="btn btn-default" type="button" onclick="TaakStart(@taak.Id)">Start</button>
-                            <button class="btn btn-default" type="button" onclick="TaakAnnuleer(@taak.Id)">Annuleer</button>
-                            <button class="btn btn-default pull-right" type="button" onclick="TaakVolbracht(@taak.Id)">Compleet</button>
+                        <div class="panel-footer clearfix">
+                            <button style="padding:3px 6px" class="btn btn-default" type="button" onclick="TaakStart(@taak.Id)">Start</button>
+                            <button style="padding:3px 6px" class="btn btn-default" type="button" onclick="TaakAnnuleer(@taak.Id)">Annuleer</button>
+                            <button style="padding:3px 6px" class="btn btn-default pull-right" type="button" onclick="TaakVolbracht(@taak.Id)">Compleet</button>
                         </div>
                     </div>
                     @Html.Raw("</div>")
@@ -106,11 +104,11 @@
                         MaakStatus('alert-info', "Taak gestart");
                     } else {
                         MaakStatus('alert-danger', "Mislukt, probeer opnieuw!");
-                    }
-                }, error(jqXHR, textStatus, errorThrown) {
-                    MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
-                }
-            });
+        }
+        }, error(jqXHR, textStatus, errorThrown) {
+            MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
+        }
+        });
         };
 
         function TaakAnnuleer(taakId) {
@@ -125,11 +123,11 @@
                         MaakStatus('alert-info', "Taak geannuleerd");
                     } else {
                         MaakStatus('alert-danger', "Mislukt, probeer opnieuw!");
-                    }
-                }, error(jqXHR, textStatus, errorThrown) {
-                    MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
-                }
-            });
+        }
+        }, error(jqXHR, textStatus, errorThrown) {
+            MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
+        }
+        });
         }
 
         function TaakVolbracht(taakId) {
@@ -145,11 +143,11 @@
                         $('#panel-' + taakId).remove();
                     } else {
                         MaakStatus('alert-danger', "Mislukt, probeer opnieuw!");
-                    }
-                }, error(jqXHR, textStatus, errorThrown) {
-                    MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
-                }
-            });
+        }
+        }, error(jqXHR, textStatus, errorThrown) {
+            MaakStatus('alert-danger', "Mislukt, probeer opnieuw!\n" + textStatus + ": " + errorThrown);
+        }
+        });
         };
 
         function MaakStatus(AlertType, Message) {

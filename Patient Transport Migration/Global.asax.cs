@@ -13,10 +13,23 @@ namespace Patient_Transport_Migration {
             StartDatabase();
         }
 
+        // Voor Migrations, geeft error als configuratie ergens niet klopt.
         private void StartDatabase() {
-            // Voor Migrations, geeft error als configuratie ergens niet klopt.
-            var doctorList = new Context().tblDokters.First();
+            var context = new Context();
+            // NIET AANZETTEN IN PRODUCTION!
+            //var contextConfig = new Patient_Transport_Migration.Migrations.Configuration().ForceSeed(context);
+            var doctorList = context.tblDokters.ToList();
         }
 
+        protected void Application_Error(object sender, EventArgs e) {
+            Exception exception = Server.GetLastError();
+
+            var context = new Context();
+            context.tblExceptionLogger.Add(new Models.POCO.ExceptionLogger {
+                ExceptionMessage = exception.Message,
+                ExceptionStackTrace = exception.StackTrace,
+            });
+            context.SaveChanges();
+        }
     }
 }
