@@ -43,7 +43,7 @@ namespace Patient_Transport_Migration.Models.Core {
         /// </summary>
         /// <param name="aanvraag">De nieuwe aanvraag</param>
         /// <param name="Kamer">De geselecteerde kamer als het geen dokter is</param>
-        public static void NieuweAanvraag(Context context, Aanvraag aanvraag, Locatie Kamer = null) {
+        public static bool NieuweAanvraag(Context context, Aanvraag aanvraag, Locatie Kamer = null) {
             var transportTaak = new TransportTaak();
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
@@ -57,10 +57,12 @@ namespace Patient_Transport_Migration.Models.Core {
                 // Opslaan
                 context.tblTransportTaken.Add(transportTaak);
                 context.SaveChanges();
+                return true;
             } else {
                 context.tblExceptionLogger.Add(new ExceptionLogger() { ExceptionMessage = "Kon geen EindLocatie vinden bij creatie van Aanvraag " + aanvraag.Id }
                 );
             };
+            return false;
         }
 
         // Gebruikt door NieuweAanvraag
@@ -68,14 +70,16 @@ namespace Patient_Transport_Migration.Models.Core {
             var aanvraag = transportTaak.Aanvraag;
             var AanvrType = transportTaak.Aanvraag.AanvraagType;
 
-            if (!AanvrType.Include_Patient) {
-                transportTaak.LocatieEind = Kamer;
-                return true;
-            }
-
             if (AanvrType.Include_AanDokter) {
                 transportTaak.DokterEind = aanvraag.AanDokter;
                 transportTaak.LocatieEind = aanvraag.AanDokter.Locatie;
+                context.SaveChanges();
+                return true;
+            }
+
+            if (!AanvrType.Include_Patient && Kamer != null) {
+                transportTaak.LocatieEind = Kamer;
+                context.SaveChanges();
                 return true;
             }
 
@@ -95,14 +99,15 @@ namespace Patient_Transport_Migration.Models.Core {
         }
 
         public static bool EindeTransport(Context context, TransportTaak taak) {
-            // Huidige taak afwerkstatus = afgewerkt
+            // TransportTaak = gedaan
             taak.DatumCompleet = DateTime.Now;
+
+            // Sla patient (tussen) locatie op
             if (taak.Aanvraag.AanvraagType.Include_Patient) {
                 taak.Aanvraag.PatientBij = taak.DokterEind;
-            }
+            } 
 
             // Pas Queue aan
-
             var TakenNaDeze = new TransportTaakRepository(context).GetTakenInQueueForMedewerkenNaOrderByTaakNummer(
                 taak.TransportWerknemer.Gebruikersnaam, (int)taak.TaakWachtrijNummer);
             for (int i = 0; i < TakenNaDeze.Count(); i++) {
@@ -114,12 +119,11 @@ namespace Patient_Transport_Migration.Models.Core {
             return true;
         }
 
-        public static void OntslagAanvraag(Context context, Aanvraag aanvraag, Dokter Dokter) {
+        public static bool OntslagAanvraag(Context context, Aanvraag aanvraag, Dokter Dokter) {
             aanvraag.DatumCompleet = DateTime.Now;
             aanvraag.PatientBij = null;
 
             var transportTaak = new TransportTaak();
-            transportTaak.Aanvraag = aanvraag;
             transportTaak.Aanvraag = aanvraag;
             transportTaak.DatumGemaakt = DateTime.Now;
             transportTaak.LocatieStart = Dokter.Locatie;
@@ -130,6 +134,7 @@ namespace Patient_Transport_Migration.Models.Core {
             context.Entry(aanvraag).State = EntityState.Modified;
             context.tblTransportTaken.Add(transportTaak);
             context.SaveChanges();
+            return true;
         }
     }
 

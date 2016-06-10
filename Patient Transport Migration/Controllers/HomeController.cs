@@ -17,6 +17,9 @@ namespace Patient_Transport_Migration.Controllers {
 
         Context _context = new Context();
 
+        public HomeController() {
+        }
+
         private string getViewModelErrors() {
             return string.Join(",", ModelState.Values.Where(e => e.Errors.Count > 0)
                     .SelectMany(e => e.Errors)
@@ -174,8 +177,13 @@ namespace Patient_Transport_Migration.Controllers {
                 // SAVE
                 _context.SaveChanges();
 
-                //Verwerk Aanvraag    
-                var locKamer = _context.tblLocaties.First(l => l.Kamer == vm.KamerSelected);
+                //Verwerk Aanvraag   
+                Locatie locKamer = null;
+                try {
+                    locKamer = _context.tblLocaties.First(l => l.Kamer == vm.KamerSelected);
+                } catch (Exception) {
+                } 
+                
                 BehandelTaak.NieuweAanvraag(_context, aanvraagData, locKamer);               
             } else {
                 var errors = getViewModelErrors();
@@ -363,9 +371,45 @@ namespace Patient_Transport_Migration.Controllers {
         #endregion
 
         #region DokterPraktijk
+        
+        [HttpGet]
+        public ViewResult DokterPraktijk() {
+            try {
+                string dokGebruikersNaam = User.Identity.Name;
+                // TODO Gebruik User Identity
+                dokGebruikersNaam = "sta_it2";
+                var Dok = _context.tblDokters.First(d => d.GebruikersNaam == dokGebruikersNaam);
+                var DokTaken = new TransportTaakRepository(_context).GetTransportTakenForDokterOrderByTaakId(Dok.Id);
+                return View("./DokterPraktijk/DokterPraktijk", new Models.VM.DokterPraktijk.PatientenVoorDokterVM(DokTaken, Dok));
+            } catch (Exception) {
+                ViewBag.ErrorMessage = "Niet gemachtigd.";
+                return View("Index");
+            }
+        }
 
+        [HttpPost]
+        public bool DokterPraktijk_VeranderConsultStatus(string dokterId, string verwachtConsult) {
+            if (!string.IsNullOrEmpty(dokterId) && !string.IsNullOrEmpty(verwachtConsult)) {
+                var ConsultOK = verwachtConsult.Equals("1");
+                var dok = _context.tblDokters.First(d => d.Id == dokterId);
+                dok.IsConsultVerwachtend = ConsultOK;
+                _context.Entry(dok).State = EntityState.Modified;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
 
-
+        [HttpPost]
+        public bool DokterPraktijk_OntslaPatient(string dokterId, string taakId) {
+            if (!string.IsNullOrEmpty(dokterId) && !string.IsNullOrEmpty(taakId)) {
+                var dok = _context.tblDokters.First(d => d.Id == dokterId);
+                int tId = int.Parse(taakId);
+                var taak = _context.tblTransportTaken.First(t => t.Id == tId);
+                return BehandelTaak.OntslagAanvraag(_context, taak.Aanvraag, dok);
+            }
+            return false;
+        }
         #endregion
     }
 }

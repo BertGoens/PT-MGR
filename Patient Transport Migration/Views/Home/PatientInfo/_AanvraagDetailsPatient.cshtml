@@ -24,7 +24,7 @@
 
         @if (Model.Aanvraag.AanvraagType.Include_AanDokter) {
             <dt>@Html.LabelFor(m => m.Aanvraag.AanDokter)</dt>
-            <dd>@Html.ValueFor(m => m.Aanvraag.AanDokter)</dd>
+            <dd>@Html.ValueFor(m => m.Aanvraag.AanDokter.Naam)</dd>
         }
 
         @if (Model.Aanvraag.AanvraagType.Include_Radiologie) {

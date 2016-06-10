@@ -4,7 +4,7 @@
     using (Html.BeginForm("MaakVervoerAanvraag", "Home", FormMethod.Post)) {
         @Html.HiddenFor(m => m.AanvraagTypeId)
 
-        if (!Model.DisplayAanvraagTypeData.Include_Radiologie) {
+        if (!Model.DisplayAanvraagTypeData.Include_Radiologie && !Model.DisplayAanvraagTypeData.Include_AanDokter) {
             <div class="form-group">
                 <dl class="dl-horizontal">
                     <dt>@Html.LabelFor(m => m.AfdelingSelected)</dt>

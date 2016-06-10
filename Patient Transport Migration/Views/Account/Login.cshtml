@@ -1,0 +1,23 @@
+﻿@model Patient_Transport_Migration.Models.VM.UserLoginVM.UserLoginVM
+
+@{
+    ViewBag.Title = "Login";
+}
+@if (ViewBag.ErrorMessage != null) {
+    <div class="alert alert-danger" style="display:inline-block">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post)) {
+
+    <dl class="dl-horizontal" style="max-width:500px">
+        <dt>@Html.LabelFor(m => m.Gebruikersnaam)</dt>
+        <dd>@Html.TextBoxFor(m => m.Gebruikersnaam)</dd>
+
+        <dt>@Html.LabelFor(m => m.Paswoord)</dt>
+        <dd>@Html.PasswordFor(m => m.Paswoord)</dd>
+    </dl>
+
+    <button type="submit" class="btn btn-default">Inloggen</button>
+}

@@ -131,16 +131,18 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BehandelTaak.cs" />
-    <Compile Include="Models\Core\TransportActie.cs" />
     <Compile Include="Models\DAL\Context.cs" />
     <Compile Include="Models\POCO\Aanvraag.cs" />
     <Compile Include="Models\POCO\AanvraagType.cs" />
+    <Compile Include="Models\POCO\Administrator.cs" />
+    <Compile Include="Models\POCO\DispatchWerknemer.cs" />
     <Compile Include="Models\POCO\Dokter.cs" />
     <Compile Include="Models\POCO\ExceptionLogger.cs" />
     <Compile Include="Models\POCO\Locatie.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="Models\Util\Pager.cs" />
     <Compile Include="Models\VM\DispatchOverzicht\WachtendeTransportTakenVM.cs" />
     <Compile Include="Models\VM\DispatchOverzicht\WerknemersVM.cs" />
+    <Compile Include="Models\VM\DokterPraktijk\PatientenVoorDokterVM.cs" />
     <Compile Include="Models\VM\DokterStatus\DokterDetailsVM.cs" />
     <Compile Include="Models\VM\DokterStatus\DokterLijstVM.cs" />
     <Compile Include="Models\VM\MaakVervoerAanvraag\AanvraagTypesVM.cs" />
@@ -170,6 +173,7 @@
     <Compile Include="Models\VM\PatientInfo\PatientLijstVM.cs" />
     <Compile Include="Models\VM\PatientInfo\PatientTransportAanvragenVM.cs" />
     <Compile Include="Models\VM\TransportMedewerker\TransportTakenVM.cs" />
+    <Compile Include="Models\VM\UserLoginVM\UserLoginVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\PatientenInOrdeVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\PatientenTeVerplaatsenVM.cs" />
     <Compile Include="Models\VM\VerplegingOverzicht\VerplegingDienstenLijstVM.cs" />
@@ -197,6 +201,8 @@
     <Content Include="Views\Home\DispatchOverzicht\DispatchOverzicht.cshtml" />
     <Content Include="Views\Home\DispatchOverzicht\_WachtendeTransportTaken.cshtml" />
     <Content Include="Views\Home\TransportMedewerker\TransportMedewerker.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Home\DokterPraktijk\DokterPraktijk.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

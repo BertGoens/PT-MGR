@@ -1,0 +1,149 @@
+﻿@model Patient_Transport_Migration.Models.VM.DokterPraktijk.PatientenVoorDokterVM
+
+@{
+    ViewBag.Title = "Dokter Praktijk";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div class="container">
+    <div class="alert" id="alert-dokter"></div>
+    <dl class="dl-horizontal">
+        <dt>Dokter</dt>
+        <dd>@Model.Dokter.Naam</dd>
+
+        <dt>Beschikbaar voor consult</dt>
+        <dd><button class="btn" id="btn-verwacht-consult">@(Model.Dokter.IsConsultVerwachtend ? "Ja" : "Nee")</button></dd>
+    </dl>
+    <div style="overflow-x:auto">
+        <table class="table-striped table-bordered table-hover table-responsive table-spacify">
+            <tr>
+                <th>Taak #</th>
+                <th>Datum Aanvraag</th>
+                <th>Patientnaam</th>
+                <th>Geslacht</th>
+                <th>Geboortedatum</th>
+                <th>Status</th>
+                <th>Actie</th>
+            </tr>
+
+            @foreach (var taak in Model.TransportTakenVoorDokter) {
+                <tr id="ontsla-@taak.Id">
+                    <td>@taak.Id</td>
+                    <td>@taak.Aanvraag.DatumAanvraag</td>
+                    <td>@taak.Aanvraag.Patient.Naam</td>
+                    <td>@taak.Aanvraag.Patient.Geslacht</td>
+                    <td>@taak.Aanvraag.Patient.Geboortedatum</td>
+                    <td>
+                        @switch (Patient_Transport_Migration.Models.Core.BehandelTaak.GetTransportTaakStatus(taak)) {
+                    case Patient_Transport_Migration.Models.Model.TransportTaakStatus.NietToegewezen_Wachtend:
+                                @Html.Raw("Wachtend");
+                            break;
+                        case Patient_Transport_Migration.Models.Model.TransportTaakStatus.WerknemerToegewezen_Wachtend:
+                                @Html.Raw("Wachtend, werknemer toegewezen");
+                            break;
+                        case Patient_Transport_Migration.Models.Model.TransportTaakStatus.WerknemerToegewezen_HuidigeTaak:
+                                @Html.Raw("Wordt verplaatst");
+                            break;
+                        case Patient_Transport_Migration.Models.Model.TransportTaakStatus.Voltooid:
+                                @Html.Raw("Voltooid");
+                            break;
+                        default:
+                                @Html.Raw("Onbekend");
+                            break;
+                    }
+                    </td>
+                    <th>
+                        @if (@taak.Aanvraag.PatientBij != null) {
+                            <button onclick="Ontsla(@taak.Id)" class="btn">Ontsla Patient</button>
+                        }
+                    </th>
+                </tr>
+        }
+
+        </table>
+    </div>
+</div>
+
+<script>
+    $(new function () {
+        DokterId = "@Model.Dokter.Id";
+
+        $('#btn-verwacht-consult').click(VeranderConsultStatus);
+
+        var interval = 300000; //300 Seconds = 5 minutes
+        setInterval(RefreshSelf, interval); //Refresh page every 5 minutes
+    });
+
+    function RefreshSelf() {
+        location = "/Home/DokterPraktijk";
+    }
+
+    function VeranderConsultStatus() {
+        var $btn = $('#btn-verwacht-consult');
+        var status = $btn.text() == "Ja" ? 0 : 1; // Waardes omdraaien
+
+        $.ajax({
+            type: "POST",
+            timeout: 3000,
+            async: true,
+            url: "DokterPraktijk_VeranderConsultStatus?dokterId="+ DokterId + "&verwachtConsult=" + status,
+            beforeSend: function () {
+                $btn.css({ opacity: 0.6 });
+            }, success: function (result) {
+                if (result == "True") {
+                    MaakStatus('alert-success', "Consultstatus wijziging opgeslagen.");
+                    status == 1 ? $btn.text("Ja") : $btn.text("Nee");
+                } else {
+                    MaakStatus('alert-danger', "Consultstatus niet opgeslagen, probeer opnieuw.");
+                };
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                MaakStatus('alert-danger', "Consultstatus niet opgeslagen, probeer opnieuw.");
+            }, complete: function () {
+                $btn.css({ opacity: 1 });
+            }
+        });
+    };
+
+    function Ontsla(TaakId) {
+        $td = $('#ontsla-' + TaakId);
+
+        $.ajax({
+            type: "POST",
+            timeout: 3000,
+            async: true,
+            url: "DokterPraktijk_OntslaPatient?dokterId=" + DokterId + "&taakId=" + TaakId,
+            beforeSend: function () {
+                $td.css({ opacity: 0.6 });
+            }, success: function (result) {
+                if (result == "True") {
+                    MaakStatus('alert-success', "Patient ontslagen.");
+                    // Herlaad pagina na 10 seconden
+                    setInterval(RefreshSelf, 10);
+                } else {
+                    MaakStatus('alert-danger', "Kon de patient niet ontslaan, probeer opnieuw.");
+                };
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                MaakStatus('alert-danger', "Kon de patient niet ontslaan, probeer opnieuw.");
+            }, complete: function () {
+                $td.css({ opacity: 1 });
+            }
+        });
+    };
+
+    function MaakStatus(AlertType, Message) {
+        $.fx.speeds.slow = 6000;
+
+        $('#alert-dokter').remove();
+
+        var $Element = $('<div id=alert-dokter></div>');
+        $Element.addClass("alert").addClass(AlertType);
+        $Element.text(Message);
+        $Element.html($Element.html().replace(/\n/g, '<br/>'));
+
+        $Element.fadeTo("slow", "0.6", function () {
+            $(this).remove();
+        });
+    };
+</script>

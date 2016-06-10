@@ -9,8 +9,7 @@ using Patient_Transport_Migration.Models.POCO;
 namespace Patient_Transport_Migration.Models.DAL {
     public class Context : DbContext {
         public Context() : base("MSSQLDB_V3") {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Migrations.Configuration>());
-            
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Migrations.Configuration>());           
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder) {
@@ -20,6 +19,10 @@ namespace Patient_Transport_Migration.Models.DAL {
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Administrator> tblAdministrators { get; set; }
+
+        public DbSet<DispatchWerknemer> tblDispatchWerknemers { get; set; }
 
         public DbSet<ExceptionLogger> tblExceptionLogger { get; set; }
 

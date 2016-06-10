@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Mvc;
 
 namespace Patient_Transport_Migration.Models.POCO {
@@ -17,7 +18,10 @@ namespace Patient_Transport_Migration.Models.POCO {
         [Display(Name = "Verwacht consult")]
         public bool IsConsultVerwachtend { get; set; }
 
-        public Locatie Locatie { get; set; }
+        public string Locatie_Kamer { get; set; }
+        public string Locatie_Afdeling { get; set; }
+        [ForeignKey("Locatie_Kamer, Locatie_Afdeling")]
+        public virtual Locatie Locatie { get; set; }
 
         /// <summary>
         /// De Domain User die wordt gebruikt om de taken te beheren.

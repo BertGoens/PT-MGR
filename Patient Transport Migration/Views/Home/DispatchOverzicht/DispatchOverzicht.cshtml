@@ -247,8 +247,8 @@
                 data: "jsonTaak=" + JSON.stringify({ "TaakId": TaakId }),
                 beforeSend() {
                     $TaakTr.css({ opacity: 0.5 });
-                }, success: function () {
-                    if (data) { // = True
+                }, success: function (data) {
+                    if (data == "True") { // = True
                         MaakTaakStatus(TaakId, "alert-success", "Taak verwijderd!");
                         VerbergTaak(TaakId);
                     } else {

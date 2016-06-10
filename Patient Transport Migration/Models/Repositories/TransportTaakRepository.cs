@@ -16,7 +16,7 @@ namespace Patient_Transport_Migration.Models.Repositories {
         public IEnumerable<TransportTaak> GetWachtendeTaken() {
             return _context.tblTransportTaken.Where(t =>
             t.TransportWerknemer == null &&
-            t.DatumCompleet == null);
+            t.DatumCompleet == null).ToList();
         }
 
         /// <summary>
@@ -27,14 +27,14 @@ namespace Patient_Transport_Migration.Models.Repositories {
         public IEnumerable<TransportTaak> GetWerknemerTakenQueue(string WerknemerId) {
             return _context.tblTransportTaken.Where(t =>
             t.TransportWerknemerId == WerknemerId &&
-            t.DatumCompleet == null);
+            t.DatumCompleet == null).ToList();
         }
 
         public IEnumerable<TransportTaak> GetWerknemerTakenQueueOrdered(string WerknemerId) {
             return _context.tblTransportTaken.Where(t =>
             t.TransportWerknemerId == WerknemerId &&
             t.DatumCompleet == null)
-            .OrderBy(t => t.TaakWachtrijNummer);
+            .OrderBy(t => t.TaakWachtrijNummer).ToList();
         }
 
         public TransportTaak GetTransportTaakByWerknemerByNumber(string WerknemerId, int TaakId) {
@@ -48,13 +48,20 @@ namespace Patient_Transport_Migration.Models.Repositories {
                      t.DatumCompleet == null &&
                      t.TransportWerknemerId == medewerker &&
                      t.TaakWachtrijNummer > taakNummerInQueue)
-                     .OrderBy(t => t.TaakWachtrijNummer);
+                     .OrderBy(t => t.TaakWachtrijNummer).ToList();
         }
 
         public IEnumerable<TransportTaak> GetTransportTakenForPatientOrderByDatum(string patientVisitId) {
             return _context.tblTransportTaken
                     .Where(a => a.Aanvraag.PatientVisit.Equals(patientVisitId))
-                    .OrderBy(t => t.DatumGemaakt);
+                    .OrderBy(t => t.DatumGemaakt).ToList();
+        }
+
+        public IEnumerable<TransportTaak> GetTransportTakenForDokterOrderByTaakId(string DokId) {
+            return _context.tblTransportTaken.Where(t =>
+                t.DokterId == DokId &&
+                t.Aanvraag.DatumCompleet == null)
+                .OrderBy(t => t.Id).ToList();
         }
 
         #region IDisposable Support

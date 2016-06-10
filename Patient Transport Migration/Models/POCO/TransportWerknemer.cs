@@ -15,10 +15,5 @@ namespace Patient_Transport_Migration.Models.POCO {
 
         public string Naam { get { return Voornaam + " " + Achternaam; } }
 
-        /// <summary>
-        /// TODO Houd de status van is werknemer present zelf bij (in DispatchOverzicht)
-        /// </summary>
-        public bool IsPresent { get; set; }
-
     }
 }

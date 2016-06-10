@@ -5,9 +5,10 @@
 }
 
 <div class="content-container">
+    <p>Vraag vervoer aan (voor een patient)</p>
     <div class="content-left">
         <div>
-            <label for="dllRequestTypes">Selecteer een aanvraag</label>
+            <label for="dllRequestTypes">Selecteer een aanvraag</label><br />
             @Html.DropDownListFor(m => m.SelectedAanvraagTypeId, new SelectList(Model.AanvraagTypeLijst, "Value", "Text"), "Aanvragen",
     htmlAttributes: new { id = "dllRequestTypes", onchange = "renderAanvraag(this.value)" })
         </div>
